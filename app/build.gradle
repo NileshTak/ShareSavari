@@ -6,6 +6,12 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.0"
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
     defaultConfig {
         applicationId "com.nil.productionapp.sharesavari"
         minSdkVersion 22
@@ -33,5 +39,67 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+
+    //Firebase
+    implementation 'com.google.firebase:firebase-analytics:17.4.3'
+
+    // Add the Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
+
+
+    //Volly
+    implementation 'com.android.volley:volley:1.1.0'
+
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    //Lottiee
+    implementation 'com.airbnb.android:lottie:3.0.7'
+
+    //CIrcleImageView
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
+
+    //Glide
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+
+    //Permission
+    implementation 'com.github.florent37:runtime-permission-kotlin:1.1.0'
+
+
+    //Calligraphy
+    implementation 'io.github.inflationx:calligraphy3:3.1.1'
+    implementation 'io.github.inflationx:viewpump:2.0.3'
+
+    //Groupie
+    implementation 'com.xwray:groupie:2.1.0'
+
+
+    //Bottom Nav
+    implementation 'com.aurelhubert:ahbottomnavigation:2.3.4'
+    implementation 'com.google.android.material:material:1.1.0'
+
+    //PhotoView.
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+
+    //Butterknife
+//    implementation 'com.jakewharton:butterknife:10.2.1'
+//    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
+    implementation 'com.github.yalantis:ucrop:2.2.2'
+
+//Swipe Refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //Compresser
+    implementation 'id.zelory:compressor:3.0.0'
+
+
 
 }
