@@ -1,10 +1,56 @@
 <resources>
+
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="AppThemeActivity" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MineCustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">18sp</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="NavigationDrawerStyle">
+        <item name="android:textSize">16sp</item><!-- text size in menu-->
+        <item name="android:listPreferredItemHeightSmall">56dp</item><!-- item size in menu-->
+        <item name="listPreferredItemHeightSmall">56dp</item><!-- item size in menu-->
+    </style>
+
+    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+
+    <style name="DetailDialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+
+    <style name="collapsedAppBar" parent="android:style/TextAppearance.Medium">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/md_white_1000</item>
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+
+
+    <style name="expandedAppBar" parent="android:style/TextAppearance.Material.Title">
+        <item name="android:textColor">@color/colorHeadingColor</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+
 
 </resources>
