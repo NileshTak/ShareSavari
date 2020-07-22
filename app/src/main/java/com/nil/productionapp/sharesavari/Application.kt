@@ -16,7 +16,7 @@ class Application : Application()
                 .addInterceptor(
                     CalligraphyInterceptor(
                         CalligraphyConfig.Builder()
-                            .setDefaultFontPath("Exo-Bold.ttf")
+                            .setDefaultFontPath("Comfortaa-Medium.ttf")
                             .setFontAttrId(R.attr.fontPath)
                             .build()
                     )

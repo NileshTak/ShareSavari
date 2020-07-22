@@ -1,18 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/md_white_1000"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    <FrameLayout
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="53dp"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:weightSum="5"
+        android:background="@drawable/bg_dialog"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/md_white_1000"
+        android:elevation="20dp"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="55dp">
+
+
+        <LinearLayout
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_width="match_parent"
+            android:weightSum="3"
+            android:layout_height="match_parent" >
+
+
+            <ImageView
+                android:layout_gravity="center"
+                android:src="@drawable/ic_baseline_search_24"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
+                android:scaleType="fitCenter"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:text="Rides"
+                android:textAlignment="center"
+                android:textSize="12dp"
+                android:layout_weight="1"
+                android:layout_marginTop="-6dp"
+                tools:ignore="MissingPrefix"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llSearch"
+            android:layout_gravity="center"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:weightSum="3"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+
+
+            <ImageView
+                android:layout_gravity="center"
+                android:src="@drawable/ic_baseline_search_24"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
+                android:scaleType="fitCenter"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:text="Search"
+                android:textAlignment="center"
+                android:textSize="12dp"
+                android:layout_weight="1"
+                android:layout_marginTop="-6dp"
+                tools:ignore="MissingPrefix"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
