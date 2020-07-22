@@ -1,5 +1,6 @@
 package com.nil.productionapp.sharesavari.Intro;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,11 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.nil.productionapp.sharesavari.MainActivity;
+import com.nil.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues;
 import com.nil.productionapp.sharesavari.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.inflationx.viewpump.ViewPumpContextWrapper;
 
 
 public class IntroActivity extends AppCompatActivity {
@@ -35,6 +38,11 @@ public class IntroActivity extends AppCompatActivity {
 
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        Fabric.with(this, new Crashlytics());
@@ -48,7 +56,7 @@ public class IntroActivity extends AppCompatActivity {
         // when this activity is about to be launch we need to check if its openened before or not
 
         if (restorePrefData()) {
-            Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+            Intent mainActivity = new Intent(getApplicationContext(), LogInSignUpQues.class);
             startActivity(mainActivity);
             finish();
         }
@@ -69,9 +77,9 @@ public class IntroActivity extends AppCompatActivity {
         // fill list screen
 
         final List<ScreenItem> mList = new ArrayList<>();
-        boolean fresh_food = mList.add(new ScreenItem("Fresh Fruits", "Sweets and pie will make you cry, Fruits and Vegetables give you the edge", R.drawable.ic_launcher_background));
-        mList.add(new ScreenItem("Fresh Vegetables", "Have fruits & vegetables if you want to lead a fruitful life", R.drawable.ic_launcher_background));
-        mList.add(new ScreenItem("Fast Delivery", "Extraordinary Service For Extraordinary Customers. Stay Connected", R.drawable.ic_launcher_background));
+        boolean fresh_food = mList.add(new ScreenItem("Share with Love", "Carpooling? Why not. Make new Friends", R.drawable.sharing1));
+        mList.add(new ScreenItem("Cost Effective", "Save some cash with Sharing Savari", R.drawable.sharing3));
+        mList.add(new ScreenItem("Fast Delivery", "Extraordinary Service For Extraordinary Customers. Stay Connected", R.drawable.sharing2));
 
         // setup viewpager
         screenPager = findViewById(R.id.screen_viewpager);
@@ -139,7 +147,7 @@ public class IntroActivity extends AppCompatActivity {
 
                 //open main activity
 
-                Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                Intent mainActivity = new Intent(getApplicationContext(), LogInSignUpQues.class);
                 startActivity(mainActivity);
                 // also we need to save a boolean value to storage so next time when the user run the app
                 // we could know that he is already checked the intro screen activity

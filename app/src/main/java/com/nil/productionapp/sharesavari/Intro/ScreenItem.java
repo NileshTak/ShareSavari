@@ -1,5 +1,7 @@
 package com.nil.productionapp.sharesavari.Intro;
 
+import android.view.animation.Animation;
+
 public class ScreenItem {
 
     String Title,Description;

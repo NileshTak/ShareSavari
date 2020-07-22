@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LogInSignUpQues.QuesBottomSheet">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/bg_dialog"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/tvTotalAmtOrder"
+            android:text="Share Savari takes the trek out of the journey."
+            android:layout_gravity="center_horizontal"
+            android:textSize="22sp"
+            fontPath="Exo-Bold.ttf"
+            android:textAlignment="center"
+            android:layout_margin="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorHeadingColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
+
+
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            tools:ignore="MissingPrefix"
+            android:textSize="18dp"
+            fontPath="Exo-Bold.ttf"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimary"
+            android:text="SIGN UP"
+            android:textAllCaps="false"
+            android:textColor="#fff"  />
+
+
+        <TextView
+            android:id="@+id/tvLogIn"
+            android:text="LOG IN"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18sp"
+            fontPath="Exo-Bold.ttf"
+            android:textAlignment="center"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

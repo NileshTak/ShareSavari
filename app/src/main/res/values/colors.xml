@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#0277BD</color>
+    <color name="colorPrimaryDark">#01579B</color>
+    <color name="colorAccent">#E040FB</color>
 
 
 
-    <color name="gradient_start_color">#4c84ff</color>
-    <color name="gradient_end_color">#18a3fe</color>
+    <color name="gradient_start_color">#004D40</color>
+    <color name="gradient_end_color">#03A9F4</color>
 
-    <color name="colorEndGrad">#167A1C</color>
-    <color name="colorStartGrad">#54B159</color>
+    <color name="colorEndGrad">#058BC8</color>
+    <color name="colorStartGrad"> #004D40</color>
 
     <color name="colorEndGradBG">#E2BAC8</color>
     <color name="colorStartGradBG">#D8F8DA</color>
