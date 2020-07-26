@@ -9,9 +9,6 @@
 
 
 
-
-
-
     <FrameLayout
         android:id="@+id/frame"
         android:layout_width="match_parent"
@@ -30,6 +27,7 @@
 
 
         <LinearLayout
+            android:id="@+id/llHome"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
@@ -43,6 +41,7 @@
 
 
             <ImageView
+                android:id="@+id/ivHome"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_baseline_search_24"
                 android:layout_width="match_parent"
@@ -51,6 +50,7 @@
                 android:layout_height="match_parent"/>
 
             <TextView
+                android:id="@+id/tvHome"
                 android:text="Rides"
                 android:textAlignment="center"
                 android:textSize="12dp"
@@ -82,6 +82,7 @@
 
 
             <ImageView
+                android:id="@+id/ivSearch"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_baseline_search_24"
                 android:layout_width="match_parent"
@@ -90,6 +91,7 @@
                 android:layout_height="match_parent"/>
 
             <TextView
+                android:id="@+id/tvSearch"
                 android:text="Search"
                 android:textAlignment="center"
                 android:textSize="12dp"

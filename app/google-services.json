@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "681288909028",
+    "firebase_url": "https://sharesavari-3ed54.firebaseio.com",
+    "project_id": "sharesavari-3ed54",
+    "storage_bucket": "sharesavari-3ed54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681288909028:android:22dcd1b3602375c5756cf1",
+        "android_client_info": {
+          "package_name": "com.nil.productionapp.sharesavari"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "681288909028-eoevg542ngi4rimofnq99ng4pl69d6qk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nil.productionapp.sharesavari",
+            "certificate_hash": "158715a10c940f5a5e1cd6e3b6eb71b546172f34"
+          }
+        },
+        {
+          "client_id": "681288909028-7b06ru0udgkkpcpe2h1ghojc5hu5299o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXBb8aPsx2s1WX_P6IC7tT5deH_vRpOrk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "681288909028-7b06ru0udgkkpcpe2h1ghojc5hu5299o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

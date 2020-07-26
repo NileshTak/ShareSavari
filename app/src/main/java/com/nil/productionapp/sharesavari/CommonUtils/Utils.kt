@@ -1,6 +1,8 @@
-package com.productionapp.amhimemekar.CommonUtils
+package com.nil.productionapp.sharesavari.CommonUtils
 
 import android.content.Context
+import android.location.Address
+import android.location.Geocoder
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Handler
@@ -11,6 +13,8 @@ import com.nil.productionapp.sharesavari.R
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
+import java.io.IOException
+import java.util.*
 
 object Utils {
     fun writeStringToPreferences(key: String, value: String, activity: Context?) {
@@ -31,6 +35,42 @@ object Utils {
         return sharedPreferences.getString(key, defaultValue)
     }
 
+
+    fun getAddreddFromLatLong(context: Context, lat: Double, lng: Double): Address {
+
+        var addresses: List<Address>? = null
+        val geocoder = Geocoder(context, Locale.getDefault())
+        try {
+
+            addresses = geocoder.getFromLocation(lat, lng, 1)
+
+            return addresses!![0]
+
+        } catch (e: IndexOutOfBoundsException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return Address(Locale(""))
+
+    }
+
+
+
+    fun showSnackMSG(view: View,msg : String) {
+        val snackbar = Snackbar
+            .make(view, msg, Snackbar.LENGTH_LONG)
+            .setAction("Okey") {   }
+
+        snackbar.view.setBackgroundResource(R.drawable.gradient)
+        snackbar.view.elevation = 6.0f
+        snackbar.setActionTextColor(view.resources.getColor(R.color.md_white_1000))
+
+        snackbar.show()
+
+
+    }
 
     fun fileToBytes(input: File?): ByteArray? {
         var objFileIS: FileInputStream? = null
@@ -72,7 +112,10 @@ object Utils {
     private fun showSnack(view: View) {
         val snackbar = Snackbar
             .make(view, "Low Internet Connection", Snackbar.LENGTH_LONG)
-            .setAction("Okey") { view -> showSnack(view) }
+            .setAction("Okey") { view ->
+//                showSnack(view)
+
+            }
 
 //        snackbar.view.setBackgroundResource(R.drawable.gradient)
         snackbar.view.elevation = 6.0f

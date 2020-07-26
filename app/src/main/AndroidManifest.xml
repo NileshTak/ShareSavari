@@ -30,8 +30,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LogInSignUpQues.QuesBottomSheet"
-            android:theme="@style/Theme.UserDialog" ></activity>
+        <activity android:name=".ShowMap.ShowMapActivity"></activity>
+        <activity
+            android:name=".LogInSignUpQues.QuesBottomSheet"
+            android:theme="@style/Theme.UserDialog" />
         <activity android:name=".LogInSignUpQues.LogInSignUpQues" />
         <activity android:name=".SplashScreen">
             <intent-filter>
@@ -42,6 +44,10 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".Intro.IntroActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDptJpfJ0pWBWnvZ7jhsrCsZzzEgYngGN8" />
     </application>
 
 </manifest>
