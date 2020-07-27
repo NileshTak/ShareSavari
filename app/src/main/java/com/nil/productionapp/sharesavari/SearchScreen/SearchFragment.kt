@@ -33,11 +33,7 @@ class SearchFragment : Fragment() {
 
         cvFromLocation.setOnClickListener {
 
-            val bundle = ActivityOptionsCompat.makeCustomAnimation(
-                activity!!.applicationContext,
-               R.anim.slide_up,  R.anim.slide_down
-            ).toBundle()
-            startActivity(Intent(activity, ShowMapActivity::class.java), bundle)
+            startActivity(Intent(activity, ShowMapActivity::class.java) )
 
         }
 

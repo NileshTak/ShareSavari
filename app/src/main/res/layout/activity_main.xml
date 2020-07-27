@@ -8,6 +8,212 @@
     tools:context=".MainActivity">
 
 
+    <LinearLayout
+        android:id="@+id/llLogin"
+        android:orientation="vertical"
+        android:layout_marginBottom="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/tvTitleTool"
+                android:layout_marginStart="20dp"
+                android:text="Login"
+                android:textSize="25sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textAlignment="center"
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:textColor="@color/md_white_1000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+        </RelativeLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvFromLocation"
+            android:layout_width="match_parent"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
+            android:layout_height="50dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="60dp"
+                android:layout_height="match_parent">
+
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_margin="10dp"
+                    android:tint="@color/md_white_1000"
+                    android:src="@drawable/ic_baseline_my_location_24"
+                    android:layout_centerInParent="true"
+                    android:layout_height="30dp"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="2dp"
+                android:background="@color/md_white_1000"
+                android:layout_height="match_parent"/>
+
+            <TextView
+                android:id="@+id/tvFromAdd"
+                android:layout_width="match_parent"
+                android:text="LOG IN WITH FACEBOOK"
+                android:textColor="@color/md_white_1000"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textStyle="bold"
+                tools:ignore="MissingPrefix"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_marginStart="25dp"
+                android:textSize="14dp"
+                android:layout_height="match_parent"/>
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_height="60dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:text="OR"
+                android:layout_centerInParent="true"
+                android:textColor="@color/md_black_1000"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textStyle="bold"
+                tools:ignore="MissingPrefix"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_marginStart="25dp"
+                android:textSize="16dp"
+                android:layout_height="match_parent"/>
+
+            <View
+                android:layout_width="150dp"
+                android:layout_centerVertical="true"
+                android:background="@color/textColorHead"
+                android:layout_height="1dp"/>
+
+            <View
+                android:layout_width="150dp"
+                android:layout_centerVertical="true"
+                android:background="@color/textColorHead"
+                android:layout_height="1dp"
+                android:layout_alignParentEnd="true"/>
+
+        </RelativeLayout>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:hint="Email"
+            fontPath="Comfortaa-Bold.ttf"
+            android:textSize="16dp"
+            tools:ignore="MissingPrefix"
+            android:textColor="@color/md_black_1000"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginEnd="20dp"
+            android:layout_height="60dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:hint="Password"
+            android:layout_marginStart="20dp"
+            android:textSize="16dp"
+            tools:ignore="MissingPrefix"
+            android:textColor="@color/md_black_1000"
+            fontPath="Comfortaa-Bold.ttf"
+            android:layout_marginBottom="30dp"
+            android:layout_marginEnd="20dp"
+            android:layout_height="60dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvLogin"
+            android:layout_width="match_parent"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            android:layout_height="50dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="LOG IN "
+                    android:textColor="@color/md_white_1000"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textStyle="bold"
+                    tools:ignore="MissingPrefix"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_marginStart="25dp"
+                    android:textSize="14dp"
+                    android:layout_height="match_parent"/>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="FORGOT YOUR PASSWORD?"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            tools:ignore="MissingPrefix"
+            fontPath="Comfortaa-Bold.ttf"
+            android:textSize="12dp"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="NOT A MEMBER YET? JOIN FOR FREE"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textStyle="bold"
+            tools:ignore="MissingPrefix"
+            fontPath="Comfortaa-Bold.ttf"
+            android:textSize="14dp"
+            android:layout_height="wrap_content"/>
+
+
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/frame"

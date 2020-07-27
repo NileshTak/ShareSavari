@@ -3,6 +3,7 @@ package com.nil.productionapp.sharesavari
 import android.Manifest
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -86,8 +87,9 @@ class MainActivity : AppCompatActivity() {
 
 
     fun loadSearchFrag(fragHome : SearchFragment) {
-
+        llLogin.visibility = View.GONE
         val fm = supportFragmentManager.beginTransaction()
+
         fm.setCustomAnimations(android.R.anim.fade_in,
             android.R.anim.fade_out)
 
@@ -100,8 +102,9 @@ class MainActivity : AppCompatActivity() {
 
 
     fun loadHomeFrag(fragHome : HomeScreen) {
-
+        llLogin.visibility = View.VISIBLE
         val fm = supportFragmentManager.beginTransaction()
+
         fm.setCustomAnimations(android.R.anim.fade_in,
             android.R.anim.fade_out)
 
