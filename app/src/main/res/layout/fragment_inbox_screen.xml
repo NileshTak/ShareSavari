@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/swipeRefreshHome"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"
+        android:layout_height="60dp">
+
+        <TextView
+            android:id="@+id/tvTitleTool"
+            android:layout_marginStart="20dp"
+            android:text="Inbox"
+            android:textSize="25sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:textAlignment="center"
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textColor="@color/md_white_1000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
+
+
+    </RelativeLayout>
+
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutInbox"
+            android:layout_below="@+id/rl"
+            android:layout_width="match_parent"
+            android:layout_height="45sp"
+            android:minHeight="?actionBarSize"
+            app:tabGravity="fill"
+            app:tabIconTint="@color/colorPrimary"
+            app:tabRippleColor="@color/colorPrimary"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabIndicatorHeight="4dp"
+            app:tabBackground="@color/md_white_1000"
+            >
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPagerInbox"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/tabLayoutInbox"
+            android:layout_height="match_parent">
+        </androidx.viewpager.widget.ViewPager>
+
+
+
+    </RelativeLayout>

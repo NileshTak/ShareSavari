@@ -10,6 +10,7 @@ import com.nil.productionapp.sharesavari.MainActivity
 import com.nil.productionapp.sharesavari.R
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_ques_bottom_sheet.*
+import org.greenrobot.eventbus.EventBus
 
 class QuesBottomSheet : AppCompatActivity() {
 
@@ -28,6 +29,8 @@ class QuesBottomSheet : AppCompatActivity() {
         )
 
         tvLogIn.setOnClickListener {
+//            EventBus.getDefault().post("LogIn");
+
             var int = Intent(this,
                 MainActivity::class.java)
             val bundle =
@@ -35,8 +38,22 @@ class QuesBottomSheet : AppCompatActivity() {
                     this@QuesBottomSheet,
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
+            int.putExtra("type","LogIn")
             startActivity(int,bundle)
-            finishAffinity()
+        }
+
+        btnSignUp.setOnClickListener {
+//            EventBus.getDefault().post("SignUp");
+
+            var int = Intent(this,
+                MainActivity::class.java)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    this@QuesBottomSheet,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            int.putExtra("type","SignUp")
+            startActivity(int,bundle)
         }
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InboxScreen.Fragments.NotificationFrag">
+
+    <TextView
+        android:id="@+id/tvTitleTool"
+        android:text="All done! You have no notification right now."
+        android:textSize="25sp"
+        android:layout_margin="25dp"
+        fontPath="Comfortaa-Bold.ttf"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textColor="@color/colorHeadingColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingPrefix" />
+
+</RelativeLayout>
