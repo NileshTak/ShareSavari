@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".ProfileScreen.ProfileScreen">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"
+        android:elevation="7dp"
+        android:layout_height="60dp">
+
+        <TextView
+            android:id="@+id/tvTitleTool"
+            android:layout_marginStart="20dp"
+            android:text="Profile"
+            android:textSize="25sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:textAlignment="center"
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textColor="@color/md_white_1000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
+
+
+    </RelativeLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_marginTop="-12dp"
+        app:cardElevation="6dp"
+        app:cardCornerRadius="12dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        app:cardBackgroundColor="@color/md_white_1000"
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieSelectImage"
+            android:layout_width="180dp"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="camera.json"
+            android:layout_gravity="center"
+            app:lottie_loop="true"
+            android:layout_height="180dp"/>
+
+        <RelativeLayout
+            android:id="@+id/rlParent"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivProf"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                app:civ_border_color="#BCffffff"
+                android:visibility="visible"
+                android:src="@mipmap/ic_launcher_round"
+                android:layout_centerHorizontal="true"  />
+
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Name"
+                android:layout_centerHorizontal="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_below="@id/ivProf"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="22sp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textAlignment="center"
+                tools:ignore="MissingPrefix"  />
+
+
+        </RelativeLayout>
+
+
+
+    </androidx.cardview.widget.CardView>
+
+
+    <RelativeLayout
+        android:id="@+id/tvP"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

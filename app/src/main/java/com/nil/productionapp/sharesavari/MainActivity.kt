@@ -17,6 +17,7 @@ import com.nil.productionapp.sharesavari.CommonUtils.Utils
 import com.nil.productionapp.sharesavari.HomeScreen.HomeScreen
 import com.nil.productionapp.sharesavari.InboxScreen.InboxScreen
 import com.nil.productionapp.sharesavari.OfferScreen.OfferScreen
+import com.nil.productionapp.sharesavari.ProfileScreen.ProfileScreen
 import com.nil.productionapp.sharesavari.SearchScreen.SearchFragment
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         llProfile.setOnClickListener {
             changeIconColor(ivProfile,tvProfile,"Profile")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
-                loadHomeFrag(fragHome = HomeScreen())
+                loadProfileFrag(fragHome = ProfileScreen())
             } else {
                 llLogin.visibility = View.VISIBLE
                 nsvSignUp.visibility = View.GONE
@@ -243,6 +244,22 @@ class MainActivity : AppCompatActivity() {
             android.R.anim.fade_out)
 
 
+
+        fm.replace(R.id.frame,fragHome)
+        fm.commit()
+    }
+
+
+    fun loadProfileFrag(fragHome : ProfileScreen) {
+
+        llLogin.visibility = View.GONE
+        nsvSignUp.visibility = View.GONE
+        frame.visibility = View.VISIBLE
+
+        val fm = supportFragmentManager.beginTransaction()
+
+        fm.setCustomAnimations(android.R.anim.fade_in,
+            android.R.anim.fade_out)
 
         fm.replace(R.id.frame,fragHome)
         fm.commit()
