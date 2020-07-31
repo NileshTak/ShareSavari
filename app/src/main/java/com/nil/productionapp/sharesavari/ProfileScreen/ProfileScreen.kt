@@ -58,7 +58,7 @@ class ProfileScreen : Fragment() {
 
             val builder =
                 android.app.AlertDialog.Builder(activity)
-            builder.setTitle("Select from")
+            builder.setTitle("Select")
             builder.setItems(Choice) { dialog, which -> // the user clicked on colors[which]
                 if (which == 0) {
 

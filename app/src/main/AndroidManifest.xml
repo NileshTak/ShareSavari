@@ -31,6 +31,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ShowMap.ShowMapActivity"></activity>
+        <activity android:name=".ShowMap.ShowMapActivityPickUp"/>
         <activity
             android:name=".LogInSignUpQues.QuesBottomSheet"
             android:theme="@style/Theme.UserDialog" />

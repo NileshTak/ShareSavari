@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/parentConst"
+
+    android:layout_height="match_parent"
+    tools:context=".ShowMap.ShowMapActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+
+
+    <LinearLayout
+        android:id="@+id/llTop"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivCloseScreen"
+            android:layout_width="40dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_baseline_close_24"
+            android:tint="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:layout_height="40dp"/>
+
+        <TextView
+            android:id="@+id/tvTitleTool"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Pick-up"
+            android:textSize="25sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:textAlignment="center"
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
+
+    </LinearLayout>
+
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvFromLocation"
+        android:layout_width="match_parent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        app:cardBackgroundColor="@color/md_blue_grey_50"
+        android:layout_height="55dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/ivBack"
+                android:src="@drawable/ic_baseline_search_24"
+                android:layout_width="30dp"
+                android:layout_margin="4dp"
+                android:layout_centerVertical="true"
+                android:tint="@color/textColorHead"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_height="match_parent"/>
+
+            <EditText
+                android:id="@+id/tvAddSearch"
+                android:layout_width="fill_parent"
+                android:hint="Address"
+                android:layout_marginStart="50dp"
+                android:textColor="@color/md_black_1000"
+                android:layout_marginEnd="50dp"
+                android:singleLine="true"
+                android:layout_centerInParent="true"
+                android:background="#00000000"
+                android:layout_gravity="center_vertical"
+                android:textSize="20dp"
+                android:layout_height="wrap_content"/>
+
+
+            <ImageView
+                android:id="@+id/ivClear"
+                android:visibility="gone"
+                android:src="@drawable/ic_baseline_close_24"
+                android:layout_width="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="4dp"
+                android:layout_centerVertical="true"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:id="@+id/rlCurrentLoc"
+        android:layout_width="match_parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="55dp" >
+
+
+        <ImageView
+            android:id="@+id/icon"
+            android:src="@drawable/ic_baseline_my_location_24"
+            android:layout_width="30dp"
+            android:layout_margin="6dp"
+            android:layout_centerVertical="true"
+            android:backgroundTint="@color/bottomNavText"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:hint="Use current location"
+            android:layout_marginStart="5dp"
+            android:layout_toRightOf="@id/icon"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            fontPath="Comfortaa-Bold.ttf"
+            tools:ignore="MissingPrefix"
+            android:textColor="@color/md_black_1000"
+            android:gravity="center_vertical"
+            android:textSize="20dp"
+            android:layout_height="wrap_content"/>
+
+        <ImageView
+            android:id="@+id/righticon"
+            android:src="@drawable/ic_baseline_chevron_left_24"
+            android:layout_width="30dp"
+            android:layout_alignParentEnd="true"
+            android:rotation="180"
+            android:layout_centerVertical="true"
+            android:layout_margin="6dp"
+            android:backgroundTint="@color/bottomNavText"
+            android:layout_height="match_parent"/>
+
+
+    </RelativeLayout>
+
+        <RelativeLayout
+
+            android:visibility="gone"
+            android:id="@+id/ivMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="6dp"
+            android:layout_margin="15dp"
+            app:cardElevation="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <com.google.android.gms.maps.MapView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:map="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/map1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <com.github.florent37.shapeofview.shapes.BubbleView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:shape_bubble_arrowHeight="15dp"
+                    android:id="@+id/cardContainerCurrentAddress"
+                    app:shape_bubble_arrowWidth="10dp"
+                    android:background="@color/md_grey_200"
+                    app:shape_bubble_arrowPosition="top"
+                    app:shape_bubble_borderRadius="0dp"
+                    android:layout_alignParentBottom="true"
+                    >
+
+                    <RelativeLayout
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginTop="17dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <TextView
+                            android:paddingTop="15dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="10dp"
+                            android:layout_marginTop="5dp"
+                            android:textColor="@color/colorAccent"
+                            tools:ignore="MissingPrefix"
+                            android:textSize="14sp"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/tvCurrentAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+
+                    </RelativeLayout>
+
+                </com.github.florent37.shapeofview.shapes.BubbleView>
+
+
+
+                <ImageView
+                    android:id="@+id/mapPin"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/pin"
+                    android:layout_centerInParent="true"/>
+
+
+            </RelativeLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+
+
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fabDone"
+        app:borderWidth="0dp"
+        android:src="@drawable/ic_baseline_chevron_left_24_white"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="normal"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:rotation="180"
+        android:layout_margin="30dp"
+        android:adjustViewBounds="true"
+        />
+
+</RelativeLayout>

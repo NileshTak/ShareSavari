@@ -2,6 +2,7 @@ package com.nil.productionapp.sharesavari
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.nil.productionapp.sharesavari.CommonUtils.Utils
@@ -19,6 +21,8 @@ import com.nil.productionapp.sharesavari.InboxScreen.InboxScreen
 import com.nil.productionapp.sharesavari.OfferScreen.OfferScreen
 import com.nil.productionapp.sharesavari.ProfileScreen.ProfileScreen
 import com.nil.productionapp.sharesavari.SearchScreen.SearchFragment
+import com.nil.productionapp.sharesavari.ShowMap.ShowMapActivity
+import com.nil.productionapp.sharesavari.ShowMap.ShowMapActivityPickUp
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -93,15 +97,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         llOffer.setOnClickListener {
-            changeIconColor(ivOffer,tvOffer,"Offer")
-            if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
-                loadOfferFrag(fragHome = OfferScreen())
-            }else {
-                llLogin.visibility = View.VISIBLE
-                nsvSignUp.visibility = View.GONE
-                frame.visibility = View.GONE
-            }
+//            changeIconColor(ivOffer,tvOffer,"Offer")
+//            if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
+//                loadOfferFrag(fragHome = OfferScreen())
+//            }else {
+//                llLogin.visibility = View.VISIBLE
+//                nsvSignUp.visibility = View.GONE
+//                frame.visibility = View.GONE
+//            }
 
+            var int = Intent(this,
+                ShowMapActivityPickUp::class.java)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    this@MainActivity,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            int.putExtra("screen","Offer")
+            startActivity(int,bundle)
         }
 
         llHome.setOnClickListener {
