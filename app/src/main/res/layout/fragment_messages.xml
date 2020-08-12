@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="15dp"
-    tools:context=".InboxScreen.Fragments.MessagesFrag">
+    tools:context="com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag">
 
     <LinearLayout
         android:layout_width="match_parent"

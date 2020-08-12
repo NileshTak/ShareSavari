@@ -6,7 +6,7 @@
     android:id="@+id/parentConst"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".ShowMap.ShowMapActivity">
+    tools:context="com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvFromLocation"
