@@ -2,10 +2,16 @@ package com.productionapp.amhimemekar.CommonUtils
 
 object Configure {
 
-    //    val BASE_URL = "http://139.59.64.98/"
-//    val BASE_URL = "http://aamhimemekar.com/"
 
-    val BASE_URL = "http://aamhimemekar.com:8000/"
+    val BASE_URL = "https://ddsio.com/sharesawaari/rest/auth/"
+
+
+    //Registration
+    val REGISTRATION_URL = "register/"
+
+
+    //LOGIN_URL
+    val LOGIN_URL = "login/"
 
 
     //SharedPreferenceValue

@@ -1,19 +1,20 @@
 package com.ddsio.productionapp.sharesavari
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
+import com.android.volley.*
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreen
@@ -24,11 +25,13 @@ import com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivityPickUp
 import com.ddsio.productionapp.sharesavari.R
+import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +42,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var tvLogin : TextView
     var type  = ""
     lateinit var nsvSignUp : NestedScrollView
+
+
+    lateinit var emailtxtlogin : String
+    lateinit var passtxtlogin : String
+
+
+    var request: RequestQueue? = null
+    lateinit var progressDialog: ProgressDialog
 
     var LOGIN_TOKEN = ""
 
@@ -52,6 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         type = bundle!!.getString("type")!!
+        request= Volley.newRequestQueue(this);
 
         tvSignUp = findViewById<TextView>(R.id.tvSignUp)
         nsvSignUp = findViewById<NestedScrollView>(R.id.nsvSignUp)
@@ -60,9 +72,9 @@ class MainActivity : AppCompatActivity() {
         llSearch = findViewById<LinearLayout>(R.id.llSearch)
         llLogin = findViewById<LinearLayout>(R.id.llLogin)
 
-        Utils.writeStringToPreferences(LOGIN_KEY, "",this)
+//        Utils.writeStringToPreferences(LOGIN_KEY, "",this)
 
-        LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this)!!
+//        LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this)!!
 
 
         Utils.checkConnection(this@MainActivity,frameContainer)
@@ -80,17 +92,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         cvLogin.setOnClickListener {
-            Utils.writeStringToPreferences(LOGIN_KEY,"123",this)
-            LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this)!!
 
-           loadScreens()
+            emailtxtlogin = loginetEmail.text.toString()
+            passtxtlogin = loginetPass.text.toString()
+            checkFieldsLogin(emailtxtlogin,passtxtlogin)
+
         }
 
         cvSignUp.setOnClickListener {
-            Utils.writeStringToPreferences(LOGIN_KEY,"123",this)
-            LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this)!!
 
-           loadScreens()
+            progressDialog = ProgressDialog(this)
+            progressDialog.setMessage("Wait a Sec....Loging In")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+            checkFieldsSignUp()
+
         }
 
         llSearch.setOnClickListener {
@@ -132,7 +148,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         llInbox.setOnClickListener {
-
             loadInboxFrag(fragHome = InboxScreen())
         }
 
@@ -160,6 +175,189 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+
+
+    private fun checkFieldsLogin(value: String, lazyMessage: String) {
+        if(value.isEmpty()) {
+            etEmail.error = "Enter Valid Email Address"
+        }
+        else if(lazyMessage.isEmpty()) {
+            etPass.error = "Enter Valid Password"
+        } else {
+            progressDialog = ProgressDialog(this@MainActivity)
+            progressDialog.setMessage("Wait a Sec....Loging In")
+            progressDialog.setCancelable(false)
+            progressDialog.show()
+
+            hitLoginAPI()
+        }
+    }
+
+
+
+
+    private fun checkFieldsSignUp() {
+        if(etEmail.text.toString().isEmpty()) {
+            etEmail.error = "Enter Valid Email Address"
+            progressDialog.dismiss()
+        }
+        else if(etPass.text.toString().isEmpty()) {
+            etPass.error = "Enter Valid Password"
+            progressDialog.dismiss()
+        }
+        else if(etConPass.text.toString().isEmpty()) {
+            etConPass.error = "Enter Valid Password"
+            progressDialog.dismiss()
+        } else if(!isValidPassword(etPass.text.toString())) {
+            etPass.error = "Password must be combination of Numbers and Alphabets"
+            progressDialog.dismiss()
+        } else {
+            hitSignUpAPI()
+        }
+    }
+
+
+    private fun hitLoginAPI() {
+
+        var url = Configure.BASE_URL + Configure.LOGIN_URL
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                    Log.i( "Responceiskey", response.toString())
+
+                    val obj = JSONObject(response)
+                    val key =obj.get("key")
+
+                    Log.i( "Responceiskey", key.toString())
+
+                    Utils.writeStringToPreferences(LOGIN_KEY, key.toString(),this@MainActivity)
+                    LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this@MainActivity)!!
+
+                    loadScreens()
+
+                    progressDialog.dismiss()
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("loginerror",  "Error: " + error.message+"Error: " + error.networkResponse.statusCode)
+                    progressDialog.dismiss()
+
+                    if (error.networkResponse.statusCode == 400) {
+                        Toast.makeText(applicationContext,"Username or Mail ID Not Registered Yet. Please Create One..",
+                            Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(applicationContext,"Something Went Wrong ! Please try after some time",
+                            Toast.LENGTH_LONG).show()
+                    }
+                }
+            }) {
+            override fun getBodyContentType(): String {
+                return "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params["email"] = emailtxtlogin
+                params["password"] = passtxtlogin
+                return params
+            }
+        }
+
+        request!!.add(jsonObjRequest)
+//            request!!.start()
+
+//            AppController.getInstance().addToRequestQueue(jsonObjRequest)
+
+    }
+
+
+    private fun hitSignUpAPI() {
+
+        var url =  Configure.BASE_URL + Configure.REGISTRATION_URL
+
+        Log.d("Responceis",url)
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                    Log.i( "Responceis", response.toString())
+
+                    val obj = JSONObject(response)
+                    val key =obj.get("key")
+
+                    Log.i( "Responceis", key.toString())
+
+                    Utils.writeStringToPreferences(LOGIN_KEY,key.toString(),this@MainActivity)
+                    LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this@MainActivity)!!
+
+                    loadScreens()
+                    progressDialog.dismiss()
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+
+
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.networkResponse.data)
+                    if (error.networkResponse.statusCode == 400) {
+                        Toast.makeText(applicationContext,"A user is already registered with this e-mail address",
+                            Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(applicationContext,"Something Went Wrong ! Please try after some time",
+                            Toast.LENGTH_LONG).show()
+                    }
+                    progressDialog.dismiss()
+
+                }
+            }) {
+            override fun getBodyContentType(): String {
+                return "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params["email"] = etEmail.text.toString()
+                params["password1"] = etPass.text.toString()
+                params["password2"] = etConPass.text.toString()
+
+                return params
+            }
+        }
+        jsonObjRequest.setRetryPolicy(
+            DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        )
+        request!!.add(jsonObjRequest)
+
+    }
+
+
+
+    fun isValidPassword(password: String?) : Boolean {
+        password?.let {
+            val passwordPattern = "^(?=.*[0-9])(?=.*[a-z]).{4,}$"
+            val passwordMatcher = Regex(passwordPattern)
+
+            return passwordMatcher.find(password) != null
+        } ?: return false
     }
 
     private fun loadScreens() {

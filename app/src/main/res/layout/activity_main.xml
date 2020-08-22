@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context="com.ddsio.productionapp.sharesavari.MainActivity">
 
-
     <LinearLayout
         android:id="@+id/llLogin"
         android:orientation="vertical"
@@ -148,6 +147,7 @@
                 android:layout_height="60dp">
 
         <EditText
+            android:id="@+id/loginetEmail"
             android:layout_width="match_parent"
             android:hint="Email"
             fontPath="Comfortaa-Bold.ttf"
@@ -173,6 +173,7 @@
             android:layout_width="match_parent"
             android:hint="Password"
             android:layout_marginStart="20dp"
+            android:id="@+id/loginetPass"
             android:textSize="20dp"
             tools:ignore="MissingPrefix"
             android:textColor="@color/md_black_1000"

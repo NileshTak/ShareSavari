@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:681288909028:android:22dcd1b3602375c5756cf1",
         "android_client_info": {
-          "package_name": "com.nil.productionapp.sharesavari"
+          "package_name": "com.ddsio.productionapp.sharesavari"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "681288909028-eoevg542ngi4rimofnq99ng4pl69d6qk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.nil.productionapp.sharesavari",
+            "package_name": "com.ddsio.productionapp.sharesavari",
             "certificate_hash": "158715a10c940f5a5e1cd6e3b6eb71b546172f34"
           }
         },
