@@ -28,6 +28,16 @@
             tools:ignore="MissingPrefix" />
 
 
+        <ImageView
+            android:id="@+id/ivLogout"
+            android:layout_width="35dp"
+            android:src="@drawable/logout"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:layout_centerVertical="true"
+            android:layout_height="35dp"/>
+
+
     </RelativeLayout>
 
 
@@ -100,16 +110,52 @@
         android:id="@+id/tvP"
         android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
 
 
 
 
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvSave"
+            android:layout_width="match_parent"
+            app:cardCornerRadius="20dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            app:cardElevation="4dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            android:layout_height="50dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="SAVE"
+                    android:textColor="@color/md_white_1000"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textStyle="bold"
+                    tools:ignore="MissingPrefix"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_marginStart="25dp"
+                    android:textSize="14dp"
+                    android:layout_height="match_parent"/>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
 
 
     </RelativeLayout>
+
 
 
 </LinearLayout>

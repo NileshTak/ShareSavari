@@ -389,6 +389,18 @@
             </RelativeLayout>
 
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/civProfImg"
+                android:src="@mipmap/ic_launcher_round"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_margin="10dp"
+                android:visibility="gone"
+                android:layout_gravity="center_horizontal"
+                app:civ_border_color="@color/md_black_1000"
+                app:civ_border_width="0.5dp"/>
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -403,7 +415,7 @@
                 android:layout_width="match_parent"
                 android:hint="Gender"
                 fontPath="Comfortaa-Bold.ttf"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 tools:ignore="MissingPrefix"
                 android:textColor="@color/md_black_1000"
                 android:layout_marginStart="20dp"
@@ -411,6 +423,31 @@
                 android:layout_height="60dp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                app:boxStrokeColor="@color/colorPrimary"
+                android:layout_marginBottom="15dp"
+                app:boxBackgroundColor="@color/md_white_1000"
+                android:outlineSpotShadowColor="@color/colorPrimary"
+                android:layout_height="60dp">
+
+                <EditText
+                    android:id="@+id/etUserName"
+                    android:layout_width="match_parent"
+                    android:hint="Username"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:textSize="18dp"
+                    tools:ignore="MissingPrefix"
+                    android:textColor="@color/md_black_1000"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="60dp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -425,7 +462,7 @@
                 android:layout_width="match_parent"
                 android:hint="First Name"
                 android:layout_marginStart="20dp"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 android:layout_marginEnd="20dp"
                 tools:ignore="MissingPrefix"
                 android:textColor="@color/md_black_1000"
@@ -472,7 +509,7 @@
                 android:layout_width="match_parent"
                 android:hint="Year Of Birth"
                 android:layout_marginStart="20dp"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 tools:ignore="MissingPrefix"
                 android:textColor="@color/md_black_1000"
                 fontPath="Comfortaa-Bold.ttf"
@@ -496,13 +533,37 @@
                 android:layout_width="match_parent"
                 android:hint="E-mail"
                 android:layout_marginStart="20dp"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 android:inputType="textEmailAddress"
                 tools:ignore="MissingPrefix"
                 android:textColor="@color/md_black_1000"
                 fontPath="Comfortaa-Bold.ttf"
                 android:layout_marginEnd="20dp"
                 android:layout_height="60dp"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                app:boxStrokeColor="@color/colorPrimary"
+                android:layout_marginBottom="15dp"
+                app:boxBackgroundColor="@color/md_white_1000"
+                android:outlineSpotShadowColor="@color/colorPrimary"
+                android:layout_height="60dp">
+
+                <EditText
+                    android:id="@+id/etMobile"
+                    android:layout_width="match_parent"
+                    android:hint="Mobile Number"
+                    android:layout_marginStart="20dp"
+                    android:textSize="18dp"
+                    android:inputType="textEmailAddress"
+                    tools:ignore="MissingPrefix"
+                    android:textColor="@color/md_black_1000"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_marginEnd="20dp"
+                    android:layout_height="60dp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -523,7 +584,7 @@
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:layout_marginStart="20dp"
-                android:textSize="20dp"
+                android:textSize="18dp"
                 tools:ignore="MissingPrefix"
                 android:textColor="@color/md_black_1000"
                 fontPath="Comfortaa-Bold.ttf"
@@ -682,7 +743,7 @@
             <ImageView
                 android:id="@+id/ivHome"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_baseline_search_24"
+                android:src="@drawable/ic_baseline_directions_car_24"
                 android:layout_width="match_parent"
                 android:layout_weight="3"
                 android:scaleType="fitCenter"
@@ -761,7 +822,7 @@
             <ImageView
                 android:id="@+id/ivOffer"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_baseline_my_location_24"
+                android:src="@drawable/ic_baseline_local_offer_24"
                 android:layout_width="match_parent"
                 android:layout_weight="3"
                 android:scaleType="fitCenter"
@@ -801,7 +862,7 @@
             <ImageView
                 android:id="@+id/ivInbox"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_baseline_search_24"
+                android:src="@drawable/ic_baseline_move_to_inbox_24"
                 android:layout_width="match_parent"
                 android:layout_weight="3"
                 android:scaleType="fitCenter"
@@ -841,7 +902,7 @@
             <ImageView
                 android:id="@+id/ivProfile"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_baseline_search_24"
+                android:src="@drawable/ic_baseline_home_24"
                 android:layout_width="match_parent"
                 android:layout_weight="3"
                 android:scaleType="fitCenter"

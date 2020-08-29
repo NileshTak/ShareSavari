@@ -15,9 +15,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.ddsio.productionapp.sharesavari.MainActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues;
 import com.ddsio.productionapp.sharesavari.R;
+import com.productionapp.amhimemekar.CommonUtils.Configure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,9 +58,22 @@ public class IntroActivity extends AppCompatActivity {
         // when this activity is about to be launch we need to check if its openened before or not
 
         if (restorePrefData()) {
-            Intent mainActivity = new Intent(getApplicationContext(), LogInSignUpQues.class);
-            startActivity(mainActivity);
-            finish();
+
+            SharedPreferences pref = getApplicationContext().getSharedPreferences("com.ddsio.productionapp.sharesavari_preferences", MODE_PRIVATE);
+            String isIntroActivityOpnendBefore = pref.getString("Login_key",  "");
+
+            if (isIntroActivityOpnendBefore != null && isIntroActivityOpnendBefore != "") {
+                Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                mainActivity.putExtra("type", "");
+                startActivity(mainActivity);
+                finish();
+            } else {
+
+                Intent mainActivity = new Intent(getApplicationContext(), LogInSignUpQues.class);
+                startActivity(mainActivity);
+                finish();
+            }
+
         }
 
         setContentView(R.layout.activity_intro);

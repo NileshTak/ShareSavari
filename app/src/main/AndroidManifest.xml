@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.google.android.apps.photos.permission.GOOGLE_PHOTOS" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
@@ -27,24 +28,44 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity"></activity>
-        <activity android:name="com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivityPickUp"/>
+        <activity android:name=".OfferScreen.NumberOfPassenersToTake"></activity>
+        <activity android:name=".OfferScreen.GoingDateAndTime" />
+        <activity android:name=".OfferScreen.ReturnDateAndTime" />
+        <activity android:name=".ShowMap.ShowMapActivity" />
+        <activity android:name=".CommonUtils.ImagePickerActivity" />
+        <activity android:name=".OfferScreen.ShowMapActivityPickUp" />
+        <activity android:name=".OfferScreen.ShowMapActivityDrop" />
         <activity
-            android:name="com.ddsio.productionapp.sharesavari.LogInSignUpQues.QuesBottomSheet"
+            android:name=".LogInSignUpQues.QuesBottomSheet"
             android:theme="@style/Theme.UserDialog" />
-        <activity android:name="com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues" />
-        <activity android:name="com.ddsio.productionapp.sharesavari.SplashScreen">
+        <activity android:name=".LogInSignUpQues.LogInSignUpQues" />
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.ddsio.productionapp.sharesavari.MainActivity" />
-        <activity android:name="com.ddsio.productionapp.sharesavari.Intro.IntroActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".Intro.IntroActivity" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoAction" /> <!-- cache directory file provider paths -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

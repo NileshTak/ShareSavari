@@ -1,4 +1,4 @@
-package com.ddsio.productionapp.sharesavari.ShowMap
+package com.ddsio.productionapp.sharesavari.OfferScreen
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -9,14 +9,12 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -31,22 +29,21 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
-import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
+import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_show_map.*
 import kotlinx.android.synthetic.main.activity_show_map.fabDone
 import kotlinx.android.synthetic.main.activity_show_map.ivBack
 import kotlinx.android.synthetic.main.activity_show_map.ivClear
 import kotlinx.android.synthetic.main.activity_show_map.ivMap
 import kotlinx.android.synthetic.main.activity_show_map.rlCurrentLoc
-import kotlinx.android.synthetic.main.activity_show_map.tvAddSearch
+import kotlinx.android.synthetic.main.activity_show_map_drop.*
 import kotlinx.android.synthetic.main.activity_show_map_pick_up.*
-import org.greenrobot.eventbus.EventBus
+import kotlinx.android.synthetic.main.activity_show_map_pick_up.ivCloseScreen
 import java.io.IOException
 import java.util.*
 
-class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationListener, GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraIdleListener {
+class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationListener, GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraIdleListener {
 
     lateinit var tvCurrentAddress: TextView
 
@@ -56,7 +53,8 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
 
     lateinit var mapView: MapView
 
-    var screen = ""
+   lateinit var pojoWithData : offerRideModel
+
 
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
@@ -92,15 +90,10 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_show_map_pick_up)
+        setContentView(R.layout.activity_show_map_drop)
 
         val bundle: Bundle? = intent.extras
-        screen = bundle!!.getString("screen")!!
-
-
-        if (screen == "Drop") {
-            tvTitleTool.text = "Drop-off"
-        }
+          pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
 
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
@@ -122,7 +115,22 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
             onBackPressed()
         }
 
-        tvAddSearch.addTextChangedListener(object : TextWatcher {
+        fabNextDate.setOnClickListener {
+
+            pojoWithData.going =  tvAddSearchDrop.text.toString()
+
+            var int = Intent(this,
+                GoingDateAndTime::class.java)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    this ,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            int.putExtra("pojoWithData",pojoWithData)
+            startActivity(int,bundle)
+        }
+
+        tvAddSearchDrop.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
 
             }
@@ -152,43 +160,43 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
         })
 
         ivClear.setOnClickListener {
-            tvAddSearch.setText("")
+            tvAddSearchDrop.setText("")
         }
 
-        fabDone.setOnClickListener {
-//            Utils.writeStringToPreferences("selectedAddress",tvCurrentAddress.text.toString(),this)
-//            EventBus.getDefault().post(tvCurrentAddress.text.toString());
-//            onBackPressed()
-
-//            if (screen == "Drop") {
-
-                var int = Intent(this,
-                    ShowMapActivityPickUp::class.java)
-                val bundle =
-                    ActivityOptionsCompat.makeCustomAnimation(
-                        this ,
-                        R.anim.fade_in, R.anim.fade_out
-                    ).toBundle()
-                int.putExtra("screen","Drop")
-                startActivity(int,bundle)
-//            }
-//            else if (screen != "Offer" && screen != "Drop"){
+//        fabDone.setOnClickListener {
+////            Utils.writeStringToPreferences("selectedAddress",tvCurrentAddress.text.toString(),this)
+////            EventBus.getDefault().post(tvCurrentAddress.text.toString());
+////            onBackPressed()
 //
-//                Toast.makeText(this,"Booked",Toast.LENGTH_LONG).show()
+////            if (screen == "Drop") {
+//
 //                var int = Intent(this,
-//                    MainActivity::class.java)
+//                    ShowMapActivityDrop::class.java)
 //                val bundle =
 //                    ActivityOptionsCompat.makeCustomAnimation(
 //                        this ,
 //                        R.anim.fade_in, R.anim.fade_out
 //                    ).toBundle()
+//                int.putExtra("screen","Drop")
 //                startActivity(int,bundle)
-//                finishAffinity()
+////            }
+////            else if (screen != "Offer" && screen != "Drop"){
+////
+////                Toast.makeText(this,"Booked",Toast.LENGTH_LONG).show()
+////                var int = Intent(this,
+////                    MainActivity::class.java)
+////                val bundle =
+////                    ActivityOptionsCompat.makeCustomAnimation(
+////                        this ,
+////                        R.anim.fade_in, R.anim.fade_out
+////                    ).toBundle()
+////                startActivity(int,bundle)
+////                finishAffinity()
+////
+////            }
 //
-//            }
-
-
-        }
+//
+//        }
 
         rlCurrentLoc.setOnClickListener {
 //            rlCurrentLoc.visibility = View.GONE
@@ -240,7 +248,7 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
     private fun getCurrentLocation() {
 
         fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(this@ShowMapActivityPickUp)
+            LocationServices.getFusedLocationProviderClient(this@ShowMapActivityDrop)
 
         try {
 
@@ -301,8 +309,11 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
 
                 tvCurrentAddress!!.setText(addresses.getAddressLine(0))
 
-                tvAddSearch!!.setText(addresses.getAddressLine(0))
+                tvAddSearchDrop!!.setText(addresses.getAddressLine(0))
 
+
+                pojoWithData.gline = addresses.adminArea
+                pojoWithData.gcity = addresses.locality
             }
             if (addresses.getAddressLine(1) != null) {
 
@@ -312,8 +323,8 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
                     )
                 )
 
-                tvAddSearch!!.setText(
-                    tvAddSearch.getText().toString() + addresses.getAddressLine(
+                tvAddSearchDrop!!.setText(
+                    tvAddSearchDrop.getText().toString() + addresses.getAddressLine(
                         1
                     )
                 )
@@ -329,6 +340,10 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
         var addresses: List<Address>? = null
         try {
             addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+            pojoWithData.glat = location.latitude.toString()
+            pojoWithData.glog = location.longitude.toString()
+
         } catch (e: IOException) {
             e.printStackTrace()
         }

@@ -8,8 +8,10 @@ import android.net.NetworkInfo
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.view.View
-import com.google.android.material.snackbar.Snackbar
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
 import com.ddsio.productionapp.sharesavari.R
+import com.google.android.material.snackbar.Snackbar
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
@@ -35,6 +37,14 @@ object Utils {
         return sharedPreferences.getString(key, defaultValue)
     }
 
+
+    fun setVolleyRetryPolicy(req: Request<*>) {
+        req.retryPolicy = DefaultRetryPolicy(
+            40000,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+    }
 
     fun getAddreddFromLatLong(context: Context, lat: Double, lng: Double): Address {
 

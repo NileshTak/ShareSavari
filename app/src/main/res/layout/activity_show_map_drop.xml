@@ -27,7 +27,7 @@
             android:id="@+id/ivCloseScreen"
             android:layout_width="40dp"
             android:layout_marginStart="15dp"
-            android:src="@drawable/ic_baseline_close_24"
+            android:src="@drawable/ic_baseline_chevron_left_24_white"
             android:tint="@color/colorPrimary"
             android:layout_marginTop="10dp"
             android:layout_height="40dp"/>
@@ -36,7 +36,7 @@
             android:id="@+id/tvTitleTool"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:text="Pick-up"
+            android:text="Drop"
             android:textSize="25sp"
             fontPath="Comfortaa-Bold.ttf"
             android:textAlignment="center"
@@ -81,7 +81,7 @@
                 android:layout_height="match_parent"/>
 
             <EditText
-                android:id="@+id/tvAddSearchPickUp"
+                android:id="@+id/tvAddSearchDrop"
                 android:layout_width="fill_parent"
                 android:hint="Address"
                 android:layout_marginStart="50dp"
@@ -250,7 +250,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fabDone"
+        android:id="@+id/fabNextDate"
         app:borderWidth="0dp"
         android:src="@drawable/ic_baseline_chevron_left_24_white"
         app:backgroundTint="@color/colorPrimary"
