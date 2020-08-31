@@ -20,13 +20,23 @@ object Configure {
     //Update User Details
     val UPDATE_USER_DETAILS = "user/details/"
 
+
+    //GET User Details
+    val GET_USER_DETAILS = "users/"
+
     //Offering Rides
     val OFFER_RIDE_URL = "rides/"
+
+
+    //Book Rides
+    val Book_RIDE_URL = "rides/"
+
 
 
     //SharedPreferenceValue
     val LOGIN_KEY = "Login_key"
     val USER_ID_KEY = "USER_ID"
+    val USER_UPDATE_ID = "USER_UPDATE_ID"
     val EDIT_PROF_BACK_PRESS_KEY = "EDIT_PROF_ON_BACK"
 
 

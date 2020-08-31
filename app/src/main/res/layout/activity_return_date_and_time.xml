@@ -78,7 +78,7 @@
             <EditText
                 android:id="@+id/etSelectDateReturn"
                 android:layout_width="fill_parent"
-                android:hint="Date"
+                android:hint="Return Date"
                 android:layout_marginStart="50dp"
                 android:textColor="@color/md_black_1000"
                 android:layout_marginEnd="50dp"
@@ -152,7 +152,7 @@
             <EditText
                 android:id="@+id/etSelectTimeReturn"
                 android:layout_width="fill_parent"
-                android:hint="Time"
+                android:hint="Return Time"
                 android:layout_marginStart="50dp"
                 android:textColor="@color/md_black_1000"
                 android:layout_marginEnd="50dp"

@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreen">
-
 
 
     <RelativeLayout
@@ -33,9 +33,10 @@
 
     <TextView
         android:id="@+id/tvTitleTool"
-        android:text="No Hsitory Available"
+        android:text="No Offered Rides Found"
         android:textSize="25sp"
-        android:layout_margin="25dp"
+        android:layout_margin="10dp"
+        android:visibility="visible"
         fontPath="Comfortaa-Bold.ttf"
         android:textAlignment="center"
         android:textStyle="bold"
@@ -43,6 +44,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="MissingPrefix" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvOfferedRides"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:padding="5dp"
+        android:layout_margin="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </LinearLayout>

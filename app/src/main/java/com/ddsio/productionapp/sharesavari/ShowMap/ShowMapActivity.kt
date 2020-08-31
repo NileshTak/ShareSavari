@@ -28,6 +28,8 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
+import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
+import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_show_map.*
 import org.greenrobot.eventbus.EventBus
@@ -37,6 +39,7 @@ import java.util.*
 class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraIdleListener {
 
     lateinit var tvCurrentAddress: TextView
+    var city = ""
 
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
     private var mMap: GoogleMap? = null
@@ -45,6 +48,8 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
     lateinit var mapView: MapView
 
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
+
+    var type = ""
 
     override fun onMapReady(googleMap: GoogleMap) {
 
@@ -80,7 +85,8 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_map)
 
-
+        val bundle: Bundle? = intent.extras
+        type = bundle!!.getString("typeis")!!
 
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
@@ -132,8 +138,12 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
         }
 
         fabDone.setOnClickListener {
-            Utils.writeStringToPreferences("selectedAddress",tvCurrentAddress.text.toString(),this)
-            EventBus.getDefault().post(tvCurrentAddress.text.toString());
+
+            var pojo = BookRideScreenFetchCity()
+            pojo.city = city
+            pojo.type = type
+
+            EventBus.getDefault().post(pojo)
             onBackPressed()
         }
 
@@ -248,7 +258,13 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
 
                 tvCurrentAddress!!.setText(addresses.getAddressLine(0))
 
-                tvAddSearch!!.setText(addresses.getAddressLine(0))
+
+                if ( addresses.locality != null && addresses.locality.isNotEmpty() ) {
+                    city = addresses.locality
+                    tvAddSearch!!.setText(city)
+                } else {
+                                    tvAddSearch!!.setText(addresses.getAddressLine(0))
+                }
 
             }
             if (addresses.getAddressLine(1) != null) {

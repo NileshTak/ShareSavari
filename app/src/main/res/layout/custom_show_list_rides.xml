@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardBg"
+        app:cardCornerRadius="5dp"
+        android:background="@color/md_white_1000"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="10dp"
+        app:cardElevation="6dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/llcustomCustomer"
+            android:padding="8dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="From : "
+                    android:layout_marginTop="6dp"
+                    android:textSize="20dp"
+                    android:layout_marginLeft="4dp"
+                    android:textStyle="bold"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:textColor="@color/md_black_1000"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvFromAdd"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="To : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvToAdd"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Leaving Date and Time : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Return Ride : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvReturn"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Return Date and Time : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvRDate"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Offered By : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvOfferedby"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Mobile No : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvNumber"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Passengers : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvPass"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Price : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="Comment : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/tvComment"
+                android:layout_width="wrap_content"
+                android:text="From"
+                android:layout_marginTop="6dp"
+                android:textSize="18dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:layout_marginStart="40dp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <Button
+                android:id="@+id/btnBook"
+                android:layout_width="150dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Book Ride"
+                android:textAllCaps="false"
+                android:textSize="18dp"
+                android:layout_height="50dp"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

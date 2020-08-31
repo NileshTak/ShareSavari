@@ -13,6 +13,8 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.google.android.apps.photos.permission.GOOGLE_PHOTOS" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
 
     <uses-feature
         android:name="android.hardware.location.gps"
@@ -37,7 +39,6 @@
         <activity android:name=".OfferScreen.GoingDateAndTime" />
         <activity android:name=".OfferScreen.ReturnDateAndTime" />
         <activity android:name=".ShowMap.ShowMapActivity" />
-        <activity android:name=".CommonUtils.ImagePickerActivity" />
         <activity android:name=".OfferScreen.ShowMapActivityPickUp" />
         <activity android:name=".OfferScreen.ShowMapActivityDrop" />
         <activity
@@ -56,7 +57,7 @@
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoAction" /> <!-- cache directory file provider paths -->
+            android:theme="@style/AppThemeNoAction" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -117,17 +118,7 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
 
         fabNextDate.setOnClickListener {
 
-            pojoWithData.going =  tvAddSearchDrop.text.toString()
-
-            var int = Intent(this,
-                GoingDateAndTime::class.java)
-            val bundle =
-                ActivityOptionsCompat.makeCustomAnimation(
-                    this ,
-                    R.anim.fade_in, R.anim.fade_out
-                ).toBundle()
-            int.putExtra("pojoWithData",pojoWithData)
-            startActivity(int,bundle)
+         checkFields()
         }
 
         tvAddSearchDrop.addTextChangedListener(object : TextWatcher {
@@ -163,41 +154,6 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
             tvAddSearchDrop.setText("")
         }
 
-//        fabDone.setOnClickListener {
-////            Utils.writeStringToPreferences("selectedAddress",tvCurrentAddress.text.toString(),this)
-////            EventBus.getDefault().post(tvCurrentAddress.text.toString());
-////            onBackPressed()
-//
-////            if (screen == "Drop") {
-//
-//                var int = Intent(this,
-//                    ShowMapActivityDrop::class.java)
-//                val bundle =
-//                    ActivityOptionsCompat.makeCustomAnimation(
-//                        this ,
-//                        R.anim.fade_in, R.anim.fade_out
-//                    ).toBundle()
-//                int.putExtra("screen","Drop")
-//                startActivity(int,bundle)
-////            }
-////            else if (screen != "Offer" && screen != "Drop"){
-////
-////                Toast.makeText(this,"Booked",Toast.LENGTH_LONG).show()
-////                var int = Intent(this,
-////                    MainActivity::class.java)
-////                val bundle =
-////                    ActivityOptionsCompat.makeCustomAnimation(
-////                        this ,
-////                        R.anim.fade_in, R.anim.fade_out
-////                    ).toBundle()
-////                startActivity(int,bundle)
-////                finishAffinity()
-////
-////            }
-//
-//
-//        }
-
         rlCurrentLoc.setOnClickListener {
 //            rlCurrentLoc.visibility = View.GONE
             ivMap.visibility = View.VISIBLE
@@ -207,25 +163,32 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
                  R.anim.fade_in);
             ivMap.startAnimation(animZoomIn);
 
-//            Handler().postDelayed(
-//                Runnable {
-//                    var aniZoom = AnimationUtils.loadAnimation(getApplicationContext(),
-//          R.anim.fade_out);
-//                    ivMap.startAnimation(aniZoom)
-//
-//                    Handler().postDelayed(
-//                        Runnable {
-//                            ivMap.visibility = View.GONE
-//                            ivMap.elevation = 0F
-//
-//                        },1000
-//                    )
-//
-//                },4000
-//            )
         }
 
     }
+
+
+
+    private fun checkFields() {
+
+        if (tvAddSearchDrop.text.toString().isEmpty() || tvAddSearchDrop.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Drop Address",
+                Toast.LENGTH_LONG).show()
+        }  else {
+            pojoWithData.going =  tvAddSearchDrop.text.toString()
+
+            var int = Intent(this,
+                GoingDateAndTime::class.java)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    this ,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            int.putExtra("pojoWithData",pojoWithData)
+            startActivity(int,bundle)
+        }
+    }
+
 
 
 

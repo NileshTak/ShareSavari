@@ -8,6 +8,8 @@
     tools:context="com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment">
 
 
+
+
     <TextView
         android:id="@+id/tvTotalAmtOrder"
         android:text="Find a ride"
@@ -23,11 +25,27 @@
         tools:ignore="MissingPrefix" />
 
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_margin="25dp"
         android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_height="wrap_content">
+
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cvFromLocation"
@@ -53,6 +71,7 @@
 
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cvToLocation"
             android:layout_width="match_parent"
             app:cardCornerRadius="20dp"
             android:layout_marginStart="5dp"
@@ -64,6 +83,7 @@
 
 
             <TextView
+                android:id="@+id/tvToAdd"
                 android:layout_width="fill_parent"
                 android:hint="Going to"
                 android:gravity="center_vertical"
@@ -80,6 +100,7 @@
             android:layout_marginBottom="20dp"
            android:backgroundTint="@color/md_blue_grey_50"
             android:background="@color/md_blue_grey_50"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="2dp"/>
 
@@ -87,6 +108,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_marginBottom="20dp"
+            android:visibility="gone"
             android:layout_height="wrap_content">
 
             <TextView
@@ -131,6 +153,7 @@
 
 
         <Button
+            android:id="@+id/btnSearch"
             android:layout_width="150dp"
             android:layout_gravity="center_horizontal"
             android:text="Search"
@@ -139,8 +162,23 @@
             android:layout_height="50dp"/>
 
 
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRides"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:padding="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
     </LinearLayout>
 
+
+    </androidx.core.widget.NestedScrollView>
 
 
 

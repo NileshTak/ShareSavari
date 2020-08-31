@@ -3,7 +3,9 @@ package com.ddsio.productionapp.sharesavari.OfferScreen
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.DialogFragment
@@ -38,6 +40,15 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
             datePicker()
         }
 
+        etSelectDateReturn.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(p0: View?, p1: Boolean) {
+                if (p1 == true) {
+                    datePicker()
+                }
+            }
+        })
+
+
 
 
         ivBackReturn.setOnClickListener {
@@ -50,8 +61,34 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
             timePickerFragment.show(supportFragmentManager, "timePicker")
         }
 
+        etSelectTimeReturn.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(p0: View?, p1: Boolean) {
+                if (p1 == true) {
+                    val timePickerFragment: DialogFragment = TimePickerFragment()
+                    timePickerFragment.setCancelable(false)
+                    timePickerFragment.show(supportFragmentManager, "timePicker")
+                }
+            }
+        })
+
 
         fabNextReturn.setOnClickListener {
+         checkFields()
+        }
+
+    }
+
+
+
+    private fun checkFields() {
+
+        if (etSelectDateReturn.text.toString().isEmpty() || etSelectDateReturn.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Drop Date ",
+                Toast.LENGTH_LONG).show()
+        } else  if (etSelectTimeReturn.text.toString().isEmpty() || etSelectTimeReturn.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Drop Time",
+                Toast.LENGTH_LONG).show()
+        }  else {
             var int = Intent(this,
                 NumberOfPassenersToTake::class.java)
             val bundle =
@@ -62,7 +99,6 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
             int.putExtra("pojoWithData",pojoWithData)
             startActivity(int,bundle)
         }
-
     }
 
     override fun onTimeSet(timePicker: TimePicker?, hour: Int, minute: Int) {

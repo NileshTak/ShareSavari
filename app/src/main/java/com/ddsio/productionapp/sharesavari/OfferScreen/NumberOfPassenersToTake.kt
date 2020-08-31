@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -16,6 +17,7 @@ import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
+import kotlinx.android.synthetic.main.activity_going_date_and_time.*
 import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
 
 class NumberOfPassenersToTake : AppCompatActivity() {
@@ -80,12 +82,26 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 
         fabFinish.setOnClickListener {
 
+          checkFields()
+        }
+    }
+
+
+    private fun checkFields() {
+
+        if (etPrice.text.toString().isEmpty() || etPrice.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Riding Price for per Passenger ",
+                Toast.LENGTH_LONG).show()
+        } else {
             pojoWithData.price = totalAmt.toString()
             pojoWithData.passenger = tvCount.text.toString()
 
             hitOfferRideAPI()
         }
     }
+
+
+
 
     private fun hitOfferRideAPI() {
 

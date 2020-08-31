@@ -1,15 +1,14 @@
 package com.ddsio.productionapp.sharesavari
 
 import android.Manifest
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -17,11 +16,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.lifecycleScope
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.ddsio.productionapp.sharesavari.CommonUtils.ImagePickerActivity
-import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.CommonUtils.*
+import com.ddsio.productionapp.sharesavari.CommonUtils.FileUtil
 import com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreen
 import com.ddsio.productionapp.sharesavari.InboxScreen.InboxScreen
 import com.ddsio.productionapp.sharesavari.OfferScreen.OfferScreen
@@ -33,18 +33,23 @@ import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.loadBitmap
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.launch
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
+import java.net.URLConnection
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
-    val REQUEST_IMAGE = 100
-
+    var GALLERY_REQUEST = 1666
+    var ADHAR_REQUEST = 1888
     lateinit var frameContainer : FrameLayout
     lateinit var llSearch : LinearLayout
     lateinit var llLogin : LinearLayout
@@ -66,6 +71,14 @@ class MainActivity : AppCompatActivity() {
     lateinit var datePickerdialog: DatePickerDialog
 
     var LOGIN_TOKEN = ""
+
+    private var actualProfImage: File? = null
+    private var compressedProfImage: File? = null
+    private var actualAdharImage: File? = null
+    private var compressedAdharImage: File? = null
+
+    var profPicURL: String? = null
+    var adharPicURL: String? = null
 
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
     var formate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -136,13 +149,11 @@ class MainActivity : AppCompatActivity() {
 
 
         cvSignUp.setOnClickListener {
-
-            progressDialog = ProgressDialog(this)
-            progressDialog.setMessage("Wait a Sec....Loging In")
+            progressDialog = ProgressDialog(this@MainActivity)
+            progressDialog.setMessage("Wait a Sec....Uploading Files")
             progressDialog.setCancelable(false)
             progressDialog.show()
             checkFieldsSignUp()
-
         }
 
         llSearch.setOnClickListener {
@@ -150,14 +161,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         llOffer.setOnClickListener {
-//            changeIconColor(ivOffer,tvOffer,"Offer")
-//            if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
-//                loadOfferFrag(fragHome = OfferScreen())
-//            }else {
-//                llLogin.visibility = View.VISIBLE
-//                nsvSignUp.visibility = View.GONE
-//                frame.visibility = View.GONE
-//            }
 
             var int = Intent(this,
                 ShowMapActivityPickUp::class.java)
@@ -189,7 +192,12 @@ class MainActivity : AppCompatActivity() {
 
 
         civProfImg.setOnClickListener {
-            askCameraPermission()
+            askCameraPermission(GALLERY_REQUEST)
+        }
+
+
+        civAdharImg.setOnClickListener {
+            askCameraPermission(ADHAR_REQUEST)
         }
 
         llProfile.setOnClickListener {
@@ -219,15 +227,15 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun askCameraPermission() {
+    private fun askCameraPermission(RequestType: Int) {
         askPermission(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            Manifest.permission.CAMERA ,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) {
-//            selectPhoto()
-//            showImagePickerOptions()
-
-            launchGalleryIntent()
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            startActivityForResult(intent, RequestType)
         }.onDeclined { e ->
             if (e.hasDenied()) {
                 //the list of denied permissions
@@ -256,83 +264,32 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun showImagePickerOptions() {
-        ImagePickerActivity.showImagePickerOptions(this!! , object :
-            ImagePickerActivity.PickerOptionListener {
-            override fun onTakeCameraSelected() {
-                launchCameraIntent()
-            }
-
-            override fun onChooseGallerySelected() {
-                launchGalleryIntent()
-            }
-        })
-    }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE) {
-            if (resultCode == Activity.RESULT_OK) {
-                val uri = data!!.getParcelableExtra<Uri>("path")
-                Log.d("receiveddata",uri.toString())
-                try { // You can update this bitmap to your server
-                      bitmap =
-                        MediaStore.Images.Media.getBitmap(this!!.getContentResolver(), uri)
+        if (resultCode == AppCompatActivity.RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(this, "null", Toast.LENGTH_LONG).show()
+                return
+            }
+            try {
+                if (requestCode == GALLERY_REQUEST) {
+                    actualProfImage = FileUtil.from(this , data.data!!)?.also {
 
-                    civProfImg.setImageBitmap(bitmap)
+                        civProfImg.setImageBitmap(loadBitmap(it))
+                    }
+                } else {
+                    actualAdharImage = FileUtil.from(this , data.data!!)?.also {
 
-                    imageUri = getImageUriFromBitmap(this,bitmap).toString()
+                        civAdharImg.setImageBitmap(loadBitmap(it))
+                    }
+                    }
 
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    Log.d("receiveddata",e.toString())
-                }
+            } catch (e: IOException) {
+                Toast.makeText(this, "failed to read", Toast.LENGTH_LONG).show()
+                e.printStackTrace()
             }
         }
     }
-
-    fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri{
-        val bytes = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
-        return Uri.parse(path.toString())
-    }
-
-
-
-    private fun launchCameraIntent() {
-        val intent = Intent(this, ImagePickerActivity::class.java)
-        intent.putExtra(
-            ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION,
-            ImagePickerActivity.REQUEST_IMAGE_CAPTURE
-        )
-        // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1)
-        // setting maximum bitmap width and height
-        intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true)
-        intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 1000)
-        intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 1000)
-        startActivityForResult(intent,  REQUEST_IMAGE)
-    }
-
-    private fun launchGalleryIntent() {
-        val intent = Intent(this, ImagePickerActivity::class.java)
-        intent.putExtra(
-            ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION,
-            ImagePickerActivity.REQUEST_GALLERY_IMAGE
-        )
-        // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true)
-        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1) // 16x9, 1x1, 3:4, 3:2
-        intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1)
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, REQUEST_IMAGE)
-        }
-    }
-
 
     private fun setGenderList() {
         val Choice =
@@ -382,9 +339,6 @@ class MainActivity : AppCompatActivity() {
                 override fun onResponse(response: String?) {
                     Log.d("jukjbkj", response.toString())
 
-                    Toast.makeText(this@MainActivity,"Successfully Registered",
-                        Toast.LENGTH_LONG).show()
-
                     val gson = Gson()
 
                     val userArray: UserDetailsModel =
@@ -394,10 +348,7 @@ class MainActivity : AppCompatActivity() {
 
                     Utils.writeStringToPreferences(Configure.USER_ID_KEY,userid.toString(),this@MainActivity)
 
-                    loadScreens()
-
-                    progressDialog.dismiss()
-
+                    uploadImage(userid)
 
                 }
             }, object : Response.ErrorListener {
@@ -405,11 +356,9 @@ class MainActivity : AppCompatActivity() {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
                     Log.e("jukjbkj",  "Error: " + error.message)
-
+                    progressDialog.dismiss()
                     Toast.makeText(this@MainActivity,"Something Went Wrong ! Please try after some time",
                         Toast.LENGTH_LONG).show()
-
-                    progressDialog.dismiss()
                 }
             }) {
 
@@ -439,6 +388,87 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
+    fun uploadImage(userid: Int) {
+
+        val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS
+        Log.e("proceddod", "enterUpload")
+
+        val multipartRequest: VolleyMultipartRequest = object : VolleyMultipartRequest(
+            Method.POST,
+            url,
+            Response.Listener<NetworkResponse> { response ->
+
+                val resultResponse = String(response.data)
+                Log.i( "Responceis", resultResponse.toString())
+                try {
+                    val result = JSONObject(resultResponse)
+                    val ID = result.getString("id")
+                    Log.i( "Responceis", ID.toString())
+                    Utils.writeStringToPreferences(Configure.USER_UPDATE_ID,ID.toString(),this)
+                    Toast.makeText(this@MainActivity,"Successfully Registered",
+                        Toast.LENGTH_LONG).show()
+
+                    loadScreens()
+
+                    progressDialog.dismiss()
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            },
+            Response.ErrorListener { error ->
+
+                VolleyLog.d("volley", "Error: " + error.message)
+                error.printStackTrace()
+                Log.e("jukjbkj",  "Error: " + error.message)
+                Toast.makeText(this,"Something Went Wrong",Toast.LENGTH_LONG).show()
+                progressDialog.dismiss()
+            },
+
+            VolleyProgressListener { }) {
+            override fun getHeaders(): Map<String, String>? {
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token " + LOGIN_TOKEN!!);
+                return params;
+            }
+
+            override fun getParams(): Map<String, String> {
+                val params= HashMap<String, String>()
+                params.put("user",userid.toString() )
+                params.put("mobile","8446613467")
+                params.put("mobile_status","false")
+                params.put("bio","j")
+                params.put("birthdate","2020-8-10")
+                params.put("gender","1")
+                return params
+            }
+
+            override fun getByteData(): Map<String, DataPart>? {
+                val params: MutableMap<String, DataPart> =
+                    java.util.HashMap()
+                val mimeType =
+                    URLConnection.guessContentTypeFromName(actualProfImage!!.name)
+                val mimeTypeAdhar =
+                    URLConnection.guessContentTypeFromName(actualAdharImage!!.name)
+                params["profile_image"] = DataPart(actualProfImage!!.name, Utils.fileToBytes(actualProfImage), mimeType)
+                params["adhar_image"] = DataPart(actualAdharImage!!.name, Utils.fileToBytes(actualAdharImage), mimeTypeAdhar)
+
+                return params
+            }
+
+            override fun parseNetworkError(volleyError: VolleyError): VolleyError? {
+                try {
+                    Log.e("VOL ERR", volleyError.toString())
+                } catch (ex: java.lang.Exception) {
+                }
+                return super.parseNetworkError(volleyError)
+            }
+        }
+        Utils.setVolleyRetryPolicy(multipartRequest)
+        VolleySingleton.getInstance(this).addToRequestQueue(multipartRequest, "POST_COMMENTS")
+    }
 
 
     fun getUserNameData( ) {
@@ -522,8 +552,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun checkFieldsSignUp() {
         if(etEmail.text.toString().isEmpty()) {
             etEmail.error = "Enter Valid Email Address"
@@ -533,10 +561,14 @@ class MainActivity : AppCompatActivity() {
             etPass.error = "Enter Valid Password"
             progressDialog.dismiss()
         }
-//        else if(imageUri.isEmpty() || imageUri =="") {
-//            Toast.makeText(this,"Please select valid Profile Picture.",Toast.LENGTH_LONG).show()
-//            progressDialog.dismiss()
-//        }
+        else if(actualProfImage == null) {
+            Toast.makeText(this,"Please select valid Profile Picture.",Toast.LENGTH_LONG).show()
+            progressDialog.dismiss()
+        }
+        else if(actualAdharImage == null) {
+            Toast.makeText(this,"Please select valid Adhar Picture.",Toast.LENGTH_LONG).show()
+            progressDialog.dismiss()
+        }
         else if(etConPass.text.toString().isEmpty()) {
             etConPass.error = "Enter Valid Password"
             progressDialog.dismiss()
@@ -553,10 +585,60 @@ class MainActivity : AppCompatActivity() {
             etPass.error = "Password must be combination of Numbers and Alphabets"
             progressDialog.dismiss()
         } else {
-            hitSignUpAPI()
+            compressImage()
+
         }
     }
 
+
+    private fun compressImage() {
+
+        actualProfImage?.let { imageFile ->
+            lifecycleScope.launch {
+                // Default compression
+
+                actualAdharImage?.let { imageAdharFile ->
+                    lifecycleScope.launch {
+
+                        compressedProfImage = Compressor.compress(this@MainActivity, imageFile)
+                        compressedAdharImage = Compressor.compress(this@MainActivity, imageAdharFile)
+                        setCompressedImage()
+
+                    }
+                } ?:
+                Log.d("receiveddata","Please Choose an Image")
+                progressDialog.dismiss()
+
+            }
+        } ?:
+        Log.d("receiveddata","Please Choose an Image")
+        progressDialog.dismiss()
+    }
+
+
+    private fun setCompressedImage() {
+        compressedProfImage?.let {
+            civProfImg.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+            val uri = Uri.fromFile(it)
+            profPicURL = uri.toString()
+
+            compressedAdharImage?.let {
+                civAdharImg.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+                val uri = Uri.fromFile(it)
+                adharPicURL = uri.toString()
+
+                hitSignUpAPI()
+
+                Toast.makeText(this@MainActivity, "Compressed image save in " + it.path, Toast.LENGTH_LONG).show()
+                Log.d("Compressor", "Compressed image save in adhar " + it.path)
+            } ?:
+            Toast.makeText(this@MainActivity, "File not Found " , Toast.LENGTH_LONG).show()
+
+            Log.d("Compressor", "Compressed image save in " + it.path)
+        } ?:
+        Toast.makeText(this@MainActivity, "File not Found " , Toast.LENGTH_LONG).show()
+
+    }
 
     private fun hitLoginAPI() {
 

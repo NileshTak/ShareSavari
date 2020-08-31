@@ -1,19 +1,16 @@
 package com.ddsio.productionapp.sharesavari.ProfileScreen
 
 import android.Manifest
-import android.app.Activity
 import android.app.ProgressDialog
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.preference.PreferenceManager
 import android.provider.MediaStore
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,30 +19,38 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.airbnb.lottie.LottieAnimationView
 import com.android.volley.*
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
-import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest
+import com.bumptech.glide.Glide
+import com.ddsio.productionapp.sharesavari.CommonUtils.*
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.VolleyProgressListener
-import com.ddsio.productionapp.sharesavari.CommonUtils.VolleySingleton
 import com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues
-import com.ddsio.productionapp.sharesavari.LogInSignUpQues.QuesBottomSheet
-import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.Configure
-import com.yalantis.ucrop.UCrop
-import com.yalantis.ucrop.model.AspectRatio
+import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
+import com.productionapp.amhimemekar.CommonUtils.Configure.GET_USER_DETAILS
+import com.productionapp.amhimemekar.CommonUtils.FetchProfileData
+import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
 import de.hdodenhof.circleimageview.CircleImageView
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.loadBitmap
+import kotlinx.android.synthetic.main.fragment_profile_screen.*
+import kotlinx.coroutines.launch
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.*
 import java.net.URLConnection
 
 class ProfileScreen : Fragment() {
 
-    var CAMERA_REQUEST = 1888
     var GALLERY_REQUEST = 1666
     var LOGIN_TOKEN = ""
     lateinit var lottieSelectImage : LottieAnimationView
@@ -56,8 +61,12 @@ class ProfileScreen : Fragment() {
     lateinit var cvSave : CardView
     var request: RequestQueue? = null
     lateinit var ivLogout : ImageView
-
+    private var compressedImage: File? = null
     lateinit var bitmap: Bitmap
+
+    var USER_UPDATE_ID = ""
+
+    private var actualImage: File? = null
 
       var resultUri : Uri? = null
 
@@ -73,7 +82,9 @@ class ProfileScreen : Fragment() {
         val view = inflater.inflate(R.layout.fragment_profile_screen, container, false)
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",activity)!!
+        USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",activity)!!
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",activity)!!
+
         request= Volley.newRequestQueue(activity);
 
         lottieSelectImage = view.findViewById<LottieAnimationView>(R.id.lottieSelectImage)
@@ -84,12 +95,12 @@ class ProfileScreen : Fragment() {
 
 
 
+
         ivLogout.setOnClickListener {
 
             val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
 
             val editor = preferences.edit()
-
 
             preferences.getString(Configure.LOGIN_KEY,"")
             editor.clear()
@@ -112,34 +123,113 @@ class ProfileScreen : Fragment() {
         }
 
         cvSave.setOnClickListener {
-            progressDialog = ProgressDialog(activity)
-            progressDialog.setMessage("Wait a Sec....Loging In")
-            progressDialog.setCancelable(false)
-            progressDialog.show()
-
-            if (destinationURL != null) {
-                convertUriToFile(Uri.parse(destinationURL)!!)
-            }
-
+            compressImage()
         }
 
         lottieSelectImage.setOnClickListener {
             askGalleryPermissionCamera()
         }
 
+        getUserData()
+
         return view
     }
 
 
+    fun getUserData( ) {
+
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage("Wait a Sec....Loading Details..")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+
+        val url = BASE_URL+ GET_USER_DETAILS+USER_ID_KEY+"/"
+//        val url = "https://ddsio.com/sharesawaari/rest/users/22/"
+
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkj", response.toString())
+
+                    val gson = Gson()
+
+                    val userArray: FetchProfileData =
+                        gson.fromJson(response, FetchProfileData ::class.java)
+
+                    val image = userArray.image
+
+                    if (image.isNotEmpty() || image != null || image != "") {
+                        lottieSelectImage.visibility= View.GONE
+                        rlParent.visibility= View.VISIBLE
+                        Glide.with(activity!!).load(image).into(ivProf)
+
+                        tvFN.text = userArray.first_name
+                        tvLN.text = userArray.last_name
+                        tvBio.text = userArray.bio
+                        tvDate.text = userArray.birthdate
+                        tvEMail.text = userArray.email
+                        tvMN.text = userArray.mobile
+                        tvVerified.text = userArray.verification
+                        tvName.text = userArray.first_name+" "+userArray.last_name
+                        if (userArray.gender == "1" ) {
+                            tvGender.text = "Male"
+                        } else if (userArray.gender == "2" ) {
+                            tvGender.text = "Female"
+                        } else {
+                            tvGender.text = "Other"
+                        }
+
+
+                    }
+
+                    progressDialog.dismiss()
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(activity,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
+
     private fun convertUriToFile(data: Uri? ) {
-
-        Log.d("proceddod","conert")
-
         var bm: Bitmap? = null
 
         if (data != null) {
             try {
-
 
                 var dataF = getImageUri(activity!!.applicationContext,bitmap)
 
@@ -159,8 +249,11 @@ class ProfileScreen : Fragment() {
                     Log.e(javaClass.simpleName, "Error writing bitmap", e)
                 }
 
-                uploadImage(imageFile, data,USER_ID_KEY)
-
+//                if (temp == null) {
+                uploadImage(imageFile ,USER_ID_KEY)
+//                } else {
+//                    convertTempURI(temp, imageFile, data)
+//                }
 
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -169,48 +262,13 @@ class ProfileScreen : Fragment() {
     }
 
 
-    private fun startCrop(uri: Uri) {
-//        val destinationFileName = "ACb"
-//        var uCrop = UCrop.of(
-//            uri,
-//            Uri.fromFile(
-//                File(
-//                    Environment.getExternalStorageDirectory(),
-//                    destinationFileName
-//                )
-//            )
-//        )
-//        uCrop.withAspectRatio(1f, 1f)
-//        uCrop.useSourceImageAspectRatio()
-//        uCrop = advancedConfig(uCrop)
-//        Log.e("proceddod", "200f")
-//        uCrop.start(activity!!, 200)
-
-
-        val destinationUri = Uri.fromFile(
-            File(
-                activity!!.cacheDir, queryNameTemp(activity!!.contentResolver, uri)
-            )
-        )
-
-        destinationURL = destinationUri.toString()
-
-        bitmap =
-            MediaStore.Images.Media.getBitmap(activity!!.getContentResolver(), selectedImageUri)
-
-        ivProf.setImageBitmap(bitmap)
+    fun getImageUri( inContext : Context, inImage : Bitmap) : Uri {
+        var bytes = ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        var tsLong = System.currentTimeMillis()/1000;
+        var path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, tsLong.toString(), null);
+        return Uri.parse(path);
     }
-
-
-    fun queryNameTemp(resolver: ContentResolver, uri: Uri?): String {
-        val returnCursor = resolver.query(uri!!, null, null, null, null)!!
-        val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        returnCursor.moveToFirst()
-        val name = returnCursor.getString(nameIndex)
-        returnCursor.close()
-        return name
-    }
-
 
 //    @Subscribe
 //    fun callAPI(resCode: String) {
@@ -220,76 +278,44 @@ class ProfileScreen : Fragment() {
 //        }
 //    }
 
-    private fun advancedConfig(uCrop: UCrop): UCrop? {
-        val options = UCrop.Options()
-        options.setToolbarTitle("")
-        //        options.setMaxScaleMultiplier(5);
-//        options.setImageToCropBoundsAnimDuration(666);
-//        options.setDimmedLayerColor(Color.CYAN);
-        options.setCircleDimmedLayer(true)
-        options.setShowCropFrame(false)
-        //        options.setCropGridStrokeWidth(20);
-//        options.setCropGridColor(Color.GREEN);
-        options.setCropGridColumnCount(0)
-        options.setCropGridRowCount(0)
-        //        options.setToolbarCropDrawable(R.drawable.your_crop_icon);
-//        options.setToolbarCancelDrawable(R.drawable.your_cancel_icon);
-//        // Color palette
-        options.setToolbarColor(Color.BLACK)
-        options.setStatusBarColor(Color.BLACK)
-        //        options.setActiveWidgetColor(ContextCompat.getColor(this, R.color.your_color_res));
-//        options.setToolbarWidgetColor(ContextCompat.getColor(this, R.color.your_color_res));
-//        options.setRootViewBackgroundColor(ContextCompat.getColor(this, R.color.your_color_res));
-        // Aspect ratio options
-        options.setAspectRatioOptions(
-            0,
-            AspectRatio("1 : 1", 1F, 1F)
-        )
-        return uCrop.withOptions(options)
-    }
 
-    fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path = MediaStore.Images.Media.insertImage(
-            inContext.contentResolver,
-            inImage,
-            "Title",
-            null
-        )
-        return Uri.parse(path)
-    }
+    fun uploadImage(path: File , pk: String) {
 
-
-    fun uploadImage(path: File, data: Uri?, pk: String) {
-
-        val url = "https://ddsio.com/sharesawaari/rest/user/details/"
+        val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
+//        val url = "https://ddsio.com/sharesawaari/rest/user/details/11/"
 
         Log.e("proceddod", "enterUpload")
 
         val multipartRequest: VolleyMultipartRequest = object : VolleyMultipartRequest(
-            Method.POST,
+            Method.PUT,
             url,
-            Response.Listener { response ->
+            Response.Listener<NetworkResponse> { response ->
+
+                val resultResponse = String(response.data)
+                Log.i( "Responceis", resultResponse.toString())
                 try {
+                    val result = JSONObject(resultResponse)
+                    val ID = result.getString("id")
+                    Log.i( "Responceis", ID.toString())
+                    Toast.makeText(activity,"Successfully Updated",Toast.LENGTH_LONG).show()
+                    Utils.writeStringToPreferences(Configure.USER_UPDATE_ID,ID.toString(),activity)
 
-                    Toast.makeText(activity,"Success",Toast.LENGTH_LONG).show()
-                    progressDialog.dismiss()
-
-                } catch (e: java.lang.Exception) {
+                progressDialog.dismiss()
+                } catch (e: JSONException) {
                     e.printStackTrace()
-                    progressDialog.dismiss()
                 }
             },
             Response.ErrorListener { error ->
+
+                VolleyLog.d("volley", "Error: " + error.message)
+                error.printStackTrace()
+                Log.e("jukjbkj",  "Error: " + error.message)
                 Toast.makeText(activity,"Something Went Wrong",Toast.LENGTH_LONG).show()
                 progressDialog.dismiss()
             },
 
-
             VolleyProgressListener { }) {
             override fun getHeaders(): Map<String, String>? {
-
                 var params = java.util.HashMap<String, String>()
                 params.put("Content-Type", "application/json; charset=UTF-8");
                 params.put("Authorization", "Token " + LOGIN_TOKEN!!);
@@ -297,7 +323,6 @@ class ProfileScreen : Fragment() {
             }
 
             override fun getParams(): Map<String, String> {
-
                 val params= HashMap<String, String>()
                 params.put("user",pk.toString())
                 params.put("mobile","8446613467")
@@ -314,6 +339,9 @@ class ProfileScreen : Fragment() {
                 val mimeType =
                     URLConnection.guessContentTypeFromName(path.name)
                 params["profile_image"] = DataPart(path.name, Utils.fileToBytes(path), mimeType)
+                params["adhar_image"] = DataPart(path.name, Utils.fileToBytes(path), mimeType)
+
+
                 return params
             }
 
@@ -330,119 +358,7 @@ class ProfileScreen : Fragment() {
     }
 
 
-    private fun onSelectFromGalleryResult(data: Uri?) {
 
-        Log.e("proceddod", "bitmap")
-        var bm: Bitmap? = null
-        if (data != null) {
-            try {
-                Log.e("proceddod", "try")
-                bm = MediaStore.Images.Media.getBitmap(activity!!.getContentResolver(), data)
-                val filesDir = Environment.getExternalStorageDirectory()
-                val imageFile = File(filesDir, "img" + ".jpg")
-                val os: OutputStream
-                try {
-                    Log.e("proceddod", "try2")
-                    os = FileOutputStream(imageFile)
-                    bm.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                    os.flush()
-                    os.close()
-                } catch (e: java.lang.Exception) {
-                    Log.e("proceddod", "catch2")
-                    Log.e(javaClass.simpleName, "Error writing bitmap", e)
-                }
-                Log.e("proceddod", imageFile.toString())
-                uploadImage(imageFile, data,USER_ID_KEY)
-            } catch (e: IOException) {
-                Log.e("proceddod", "catch")
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun putUserExtraDetails( pk: String) {
-//        val file: File = imageFile
-
-        val url = "https://ddsio.com/sharesawaari/rest/user/details/"
-
-        val multipartRequest: VolleyMultipartRequest = object : VolleyMultipartRequest(
-            Request.Method.POST,
-            url,
-            Response.Listener<NetworkResponse> { response ->
-                Log.i("dataIsForUplod", response.toString())
-                progressDialog.dismiss()
-
-            },
-            Response.ErrorListener { error ->
-                try {
-                    Log.i("dataIsForUplod", error.message!!)
-                    Toast.makeText(
-                        activity, "Failed to Upload ! Please try after some time",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    progressDialog.dismiss()
-                } catch (ex: Exception) {
-                    Toast.makeText(
-                        activity, "Failed to Upload ! Please try after some time",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    progressDialog.dismiss()
-                }
-                progressDialog.dismiss()
-            }) {
-
-            override fun getHeaders(): MutableMap<String, String> {
-
-                var params = java.util.HashMap<String, String>()
-                params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("Authorization", "Token "+LOGIN_TOKEN);
-
-                Log.d("Dataos",LOGIN_TOKEN)
-
-                return params;
-            }
-
-//            override fun getByteData(): MutableMap<String, DataPart> {
-//                val params: MutableMap<String, DataPart> = java.util.HashMap()
-//
-//                val mimeType =
-//                    URLConnection.guessContentTypeFromName(file.name)
-//                params["profile_image"] = DataPart(file.name, Utils.fileToBytes(file), mimeType)
-//                Log.d("Dataos",params.get("profile_image").toString() )
-//                return params
-//            }
-
-            @Throws(AuthFailureError::class)
-            override fun getParams(): Map<String, String> {
-
-                var gender = 0
-
-                val params= HashMap<String, String>()
-                params.put("user",pk.toString())
-                params.put("mobile","8446613467")
-                params.put("mobile_status","false")
-                params.put("bio","j")
-
-                params.put("birthdate","2020-8-10")
-//                if (etGender.text.toString() == "Male") {
-//                    gender = 1
-//                } else if (etGender.text.toString() == "Female") {
-//                    gender = 2
-//                } else {
-//                    gender = 3
-//                }
-                params.put("gender","1")
-
-
-
-
-                Log.d("Dataos",pk.toString())
-
-                return params
-            }
-        }
-        request!!.add(multipartRequest)
-    }
 
     private fun askGalleryPermissionCamera() {
         askPermission(
@@ -451,29 +367,30 @@ class ProfileScreen : Fragment() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) {
 
-            val Choice =
-                arrayOf<CharSequence>("From Camera", "From Gallery")
+//            val Choice =
+//                arrayOf<CharSequence>("From Camera", "From Gallery")
+//
+//            val builder =
+//                android.app.AlertDialog.Builder(activity)
+//            builder.setTitle("Select")
+//            builder.setItems(Choice) { dialog, which -> // the user clicked on colors[which]
+//                if (which == 0) {
+//
+//                    var cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    startActivityForResult(cameraIntent, CAMERA_REQUEST)
+//
+//                } else if (which == 1) {
+//
+//                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+//                    intent.type = "image/*"
+//                    startActivityForResult(intent, GALLERY_REQUEST)
+//                }
+//            }
+//            builder.show()
 
-            val builder =
-                android.app.AlertDialog.Builder(activity)
-            builder.setTitle("Select")
-            builder.setItems(Choice) { dialog, which -> // the user clicked on colors[which]
-                if (which == 0) {
-
-                    var cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, CAMERA_REQUEST)
-
-                } else if (which == 1) {
-
-                    val galleryIntent = Intent(
-                        Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                    )
-                    startActivityForResult(galleryIntent, GALLERY_REQUEST)
-                }
-            }
-            builder.show()
-
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            startActivityForResult(intent, GALLERY_REQUEST)
 
         }.onDeclined { e ->
             if (e.hasDenied()) {
@@ -500,45 +417,67 @@ class ProfileScreen : Fragment() {
                 e.goToSettings();
             }
         }
+    }
 
+    private fun compressImage() {
+        actualImage?.let { imageFile ->
+            lifecycleScope.launch {
+                // Default compression
+
+
+                progressDialog = ProgressDialog(activity)
+                progressDialog.setMessage("Wait a Sec....Uploading Files")
+                progressDialog.setCancelable(false)
+                progressDialog.show()
+
+                compressedImage = Compressor.compress( activity!!, imageFile)
+                setCompressedImage()
+            }
+        } ?:
+        Log.d("receiveddata","Please Choose an Image")
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val imageUri: Uri? = null
-        Log.e("proceddod", data.toString())
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == GALLERY_REQUEST) {
-                  selectedImageUri = data!!.data!!
-                val bitmap =
-                    MediaStore.Images.Media.getBitmap(activity!!.getContentResolver(), selectedImageUri)
-                lottieSelectImage.visibility= View.GONE
-                rlParent.visibility= View.VISIBLE
-                ivProf.setImageBitmap(bitmap)
-
-                if (selectedImageUri != null) {
-                    startCrop(selectedImageUri)
-                } else {
-                    Toast.makeText(activity, "Done", Toast.LENGTH_SHORT).show()
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == GALLERY_REQUEST && resultCode == AppCompatActivity.RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(activity, "null", Toast.LENGTH_LONG).show()
+                return
+            }
+            try {
+                actualImage = FileUtil.from(activity!!, data.data!!)?.also {
+                    lottieSelectImage.visibility= View.GONE
+                    rlParent.visibility= View.VISIBLE
+                    ivProf.setImageBitmap(loadBitmap(it))
                 }
-
-            }  else if (requestCode == CAMERA_REQUEST) {
-                try {
-                    val thumbnail = MediaStore.Images.Media.getBitmap(
-                        activity!!.getContentResolver(), imageUri
-                    )
-                    val imageurl = getImageUri(activity!!, thumbnail)
-                    startCrop(imageurl)
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                }
+            } catch (e: IOException) {
+                Toast.makeText(activity, "failed to read", Toast.LENGTH_LONG).show()
+                e.printStackTrace()
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun setCompressedImage() {
+        compressedImage?.let {
+            lottieSelectImage.visibility= View.GONE
+            rlParent.visibility= View.VISIBLE
+            ivProf.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+            val uri = Uri.fromFile(it)
+            destinationURL = uri.toString()
 
+
+                uploadImage(compressedImage!!,USER_ID_KEY)
+//                val uri = Uri.fromFile(compressedImage)
+//                convertUriToFile(uri)
+
+
+            Toast.makeText(activity, "Compressed image save in " + it.path, Toast.LENGTH_LONG).show()
+            Log.d("Compressor", "Compressed image save in " + it.path)
+        } ?:
+        Toast.makeText(activity, "File not Found " , Toast.LENGTH_LONG).show()
+
+    }
 
 
 }

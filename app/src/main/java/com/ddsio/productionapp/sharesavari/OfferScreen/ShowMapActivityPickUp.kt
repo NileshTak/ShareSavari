@@ -2,6 +2,7 @@ package com.ddsio.productionapp.sharesavari.OfferScreen
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,6 +16,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
@@ -39,6 +41,7 @@ import kotlinx.android.synthetic.main.activity_show_map.ivClear
 import kotlinx.android.synthetic.main.activity_show_map.ivMap
 import kotlinx.android.synthetic.main.activity_show_map.rlCurrentLoc
 import kotlinx.android.synthetic.main.activity_show_map_pick_up.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import java.io.IOException
 import java.util.*
 
@@ -158,21 +161,8 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
         }
 
         fabDone.setOnClickListener {
+            checkFields()
 
-            pojoWithData.user = USER_ID_KEY
-            pojoWithData.leaving =  tvAddSearchPickUp.text.toString()
-
-            Log.d("jhbhb",pojoWithData.lline.toString() + pojoWithData.lcity.toString())
-
-                var int = Intent(this,
-                    ShowMapActivityDrop::class.java)
-                val bundle =
-                    ActivityOptionsCompat.makeCustomAnimation(
-                        this ,
-                        R.anim.fade_in, R.anim.fade_out
-                    ).toBundle()
-                int.putExtra("pojoWithData",pojoWithData)
-                startActivity(int,bundle)
         }
 
         rlCurrentLoc.setOnClickListener {
@@ -188,7 +178,28 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
 
     }
 
+    private fun checkFields() {
 
+        if (tvAddSearchPickUp.text.toString().isEmpty() || tvAddSearchPickUp.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct PickUp Address",
+                Toast.LENGTH_LONG).show()
+        }  else {
+            pojoWithData.user = USER_ID_KEY
+            pojoWithData.leaving =  tvAddSearchPickUp.text.toString()
+
+            Log.d("jhbhb",pojoWithData.lline.toString() + pojoWithData.lcity.toString())
+
+            var int = Intent(this,
+                ShowMapActivityDrop::class.java)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    this ,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            int.putExtra("pojoWithData",pojoWithData)
+            startActivity(int,bundle)
+        }
+    }
 
 
     public override fun onSaveInstanceState(outState: Bundle) {

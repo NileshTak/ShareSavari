@@ -49,7 +49,7 @@
         android:layout_marginEnd="15dp"
         app:cardBackgroundColor="@color/md_white_1000"
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="230dp">
 
 
         <com.airbnb.lottie.LottieAnimationView
@@ -92,8 +92,7 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="22sp"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp" 
                 fontPath="Comfortaa-Bold.ttf"
                 android:textAlignment="center"
                 tools:ignore="MissingPrefix"  />
@@ -113,7 +112,407 @@
         android:layout_height="match_parent">
 
 
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_marginBottom="85dp"
+            android:layout_height="match_parent">
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="10dp"
+                    app:cardElevation="6dp"
+                    app:cardCornerRadius="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/add"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="FirstName"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimaryDark"
+
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+                        <TextView
+                            android:id="@+id/tvFN"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="10dp"
+                    app:cardElevation="6dp"
+                    app:cardCornerRadius="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="LastName"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimaryDark"
+
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+                        <TextView
+                            android:id="@+id/tvLN"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="10dp"
+                    app:cardElevation="6dp"
+                    app:cardCornerRadius="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="E-Mail"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimaryDark"
+
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+                        <TextView
+                            android:id="@+id/tvEMail"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="10dp"
+                    app:cardElevation="6dp"
+                    app:cardCornerRadius="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mobile No :"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimaryDark"
+
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+                        <TextView
+                            android:id="@+id/tvMN"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="10dp"
+                    app:cardElevation="6dp"
+                    app:cardCornerRadius="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Verified"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimaryDark"
+
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+                        <TextView
+                            android:id="@+id/tvVerified"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="10dp"
+                    app:cardElevation="6dp"
+                    app:cardCornerRadius="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bio"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimaryDark"
+
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+                        <TextView
+                            android:id="@+id/tvBio"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="10dp"
+                    app:cardElevation="6dp"
+                    app:cardCornerRadius="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Birth Date"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimaryDark"
+
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+                        <TextView
+                            android:id="@+id/tvDate"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_margin="10dp"
+                    app:cardElevation="6dp"
+                    app:cardCornerRadius="6dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gender"
+                            android:textStyle="bold"
+                            android:textColor="@color/colorPrimaryDark"
+
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textSize="20sp"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+                        <TextView
+                            android:id="@+id/tvGender"
+                            android:layout_marginStart="30dp"
+                            android:layout_marginEnd="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal"
+                            app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
 
 
 
