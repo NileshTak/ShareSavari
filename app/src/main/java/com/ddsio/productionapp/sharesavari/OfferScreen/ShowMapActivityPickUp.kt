@@ -283,9 +283,14 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
 
                 tvAddSearchPickUp!!.setText(addresses.getAddressLine(0))
 
-                pojoWithData.lline = addresses.adminArea
-                pojoWithData.lcity = addresses.locality
-
+                if ( addresses.locality != null && addresses.locality.isNotEmpty() ) {
+                    pojoWithData.lline = addresses.adminArea
+                    pojoWithData.lcity = addresses.locality
+                }
+                if ( addresses.longitude != null && addresses.latitude != null ) {
+                    pojoWithData.llat = addresses.latitude.toString()
+                    pojoWithData.llog = addresses.longitude.toString()
+                }
             }
             if (addresses.getAddressLine(1) != null) {
 

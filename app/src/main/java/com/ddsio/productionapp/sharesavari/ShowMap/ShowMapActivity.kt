@@ -157,21 +157,6 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
                  R.anim.fade_in);
             ivMap.startAnimation(animZoomIn);
 
-//            Handler().postDelayed(
-//                Runnable {
-//                    var aniZoom = AnimationUtils.loadAnimation(getApplicationContext(),
-//          R.anim.fade_out);
-//                    ivMap.startAnimation(aniZoom)
-//
-//                    Handler().postDelayed(
-//                        Runnable {
-//                            ivMap.elevation = 0F
-//
-//                        },1400
-//                    )
-//
-//                },4000
-//            )
         }
 
     }
@@ -258,10 +243,11 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
 
                 tvCurrentAddress!!.setText(addresses.getAddressLine(0))
 
-
+                Log.d("latis",addresses.latitude.toString())
                 if ( addresses.locality != null && addresses.locality.isNotEmpty() ) {
                     city = addresses.locality
                     tvAddSearch!!.setText(city)
+
                 } else {
                                     tvAddSearch!!.setText(addresses.getAddressLine(0))
                 }
@@ -303,17 +289,17 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
 
 
 
-    override fun onCameraIdle() {
+        override fun onCameraIdle() {
 
 
-        setAddress(
-            Utils.getAddreddFromLatLong(
-                this,
-                mMap!!.getCameraPosition().target.latitude,
-                mMap!!.getCameraPosition().target.longitude
+            setAddress(
+                Utils.getAddreddFromLatLong(
+                    this,
+                    mMap!!.getCameraPosition().target.latitude,
+                    mMap!!.getCameraPosition().target.longitude
+                )
             )
-        )
-    }
+        }
 
     override fun onCameraMove() {
 

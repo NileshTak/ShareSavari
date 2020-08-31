@@ -1,6 +1,7 @@
 package com.ddsio.productionapp.sharesavari.HomeScreen
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,12 +12,15 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.OfferScreen.NumberOfPassenersToTake
 import com.ddsio.productionapp.sharesavari.R
+import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.BookRidesPojo
 import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
@@ -89,6 +93,7 @@ class HomeScreen : Fragment() {
 
                     if (userArray.size == 0) {
                         tvTitleTool.text = "No Offered Rides Found"
+                        progressDialog.dismiss()
                     } else {
                         tvTitleTool.text = "Offered Rides : "
                     }
@@ -159,18 +164,36 @@ class HomeScreen : Fragment() {
 
         override fun bind(viewHolder: ViewHolder, position: Int) {
 
-            viewHolder.itemView.tvFromAdd.text = customers.leaving
-            viewHolder.itemView.tvToAdd.text = customers.going
-            viewHolder.itemView.tvDate.text = customers.date +"  ("+customers.time+")"
-            viewHolder.itemView.tvRDate.text = customers.rdate +"  ("+customers.rtime+")"
-            viewHolder.itemView.tvComment.text = customers.comment
-            viewHolder.itemView.tvOfferedby.text = customers.username
-            viewHolder.itemView.tvPass.text = customers.passenger.toString()
-            viewHolder.itemView.tvPrice.text = customers.price.toString()
-            viewHolder.itemView.tvReturn.text = customers.is_return.toString()
+//            viewHolder.itemView.tvFromAdd.text = customers.leaving
+//            viewHolder.itemView.tvToAdd.text = customers.going
+//            viewHolder.itemView.tvDate.text = customers.date +"  ("+customers.time+")"
+//            viewHolder.itemView.tvRDate.text = customers.rdate +"  ("+customers.rtime+")"
+//            viewHolder.itemView.tvComment.text = customers.comment
+//            viewHolder.itemView.tvOfferedby.text = customers.username
+//            viewHolder.itemView.tvPass.text = customers.passenger.toString()
+//            viewHolder.itemView.tvPrice.text = customers.price.toString()
+//            viewHolder.itemView.tvReturn.text = customers.is_return.toString()
+//
+//
+//            viewHolder.itemView.btnBook.visibility = View.GONE
 
+            viewHolder.itemView.tvFromCity.text = customers.lcity
+            viewHolder.itemView.tvToCity.text = customers.gcity
 
-            viewHolder.itemView.btnBook.visibility = View.GONE
+            Log.d("jukjbkjf",customers.user.toString())
+
+            viewHolder.itemView.setOnClickListener {
+                var int = Intent( viewHolder.itemView.tvFromCity.context,
+                    RideDetails::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        viewHolder.itemView.tvFromCity.context ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                int.putExtra("pojoWithData",customers)
+                int.putExtra("screen","home")
+                startActivity(int,bundle)
+            }
 
         }
     }

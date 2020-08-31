@@ -71,7 +71,6 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
             }
         })
 
-
         fabNextReturn.setOnClickListener {
          checkFields()
         }

@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -20,14 +21,17 @@ import androidx.lifecycle.lifecycleScope
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.ddsio.productionapp.sharesavari.CommonUtils.*
 import com.ddsio.productionapp.sharesavari.CommonUtils.FileUtil
+import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest
+import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.VolleyProgressListener
+import com.ddsio.productionapp.sharesavari.CommonUtils.VolleySingleton
 import com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreen
 import com.ddsio.productionapp.sharesavari.InboxScreen.InboxScreen
 import com.ddsio.productionapp.sharesavari.OfferScreen.OfferScreen
+import com.ddsio.productionapp.sharesavari.OfferScreen.ShowMapActivityPickUp
 import com.ddsio.productionapp.sharesavari.ProfileScreen.ProfileScreen
 import com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment
-import com.ddsio.productionapp.sharesavari.OfferScreen.ShowMapActivityPickUp
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.Configure
@@ -40,10 +44,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.*
+import java.io.File
+import java.io.IOException
 import java.net.URLConnection
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.regex.Pattern
 import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
@@ -79,6 +85,8 @@ class MainActivity : AppCompatActivity() {
 
     var profPicURL: String? = null
     var adharPicURL: String? = null
+
+    var emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
     var formate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -538,6 +546,9 @@ class MainActivity : AppCompatActivity() {
     private fun checkFieldsLogin(value: String, lazyMessage: String) {
         if(value.isEmpty()) {
             etEmail.error = "Enter Valid Email Address"
+        }else  if (!validEmail(value)) {
+            Toast.makeText( this,"Enter valid e-mail!",Toast.LENGTH_LONG).show()
+            progressDialog.dismiss()
         }
         else if(lazyMessage.isEmpty()) {
             etPass.error = "Enter Valid Password"
@@ -552,9 +563,22 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun validEmail(email: String): Boolean {
+        val pattern: Pattern = Patterns.EMAIL_ADDRESS
+        return pattern.matcher(email).matches()
+    }
+
     private fun checkFieldsSignUp() {
         if(etEmail.text.toString().isEmpty()) {
+
             etEmail.error = "Enter Valid Email Address"
+            progressDialog.dismiss()
+        } else  if (!validEmail(etEmail.text.toString())) {
+            Toast.makeText( this,"Enter valid e-mail!",Toast.LENGTH_LONG).show()
+            progressDialog.dismiss()
+        }
+        else if(etGender.text.toString().isEmpty()) {
+            etGender.error = "Please Select Gender"
             progressDialog.dismiss()
         }
         else if(etPass.text.toString().isEmpty()) {

@@ -29,7 +29,7 @@ object Configure {
 
 
     //Book Rides
-    val Book_RIDE_URL = "rides/"
+    val Book_RIDE_URL = "ride/passenger/"
 
 
 

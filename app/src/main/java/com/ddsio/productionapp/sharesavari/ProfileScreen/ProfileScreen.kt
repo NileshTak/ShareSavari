@@ -93,9 +93,6 @@ class ProfileScreen : Fragment() {
         ivLogout = view.findViewById<ImageView>(R.id.ivLogout)
         cvSave = view.findViewById<CardView>(R.id.cvSave)
 
-
-
-
         ivLogout.setOnClickListener {
 
             val preferences = PreferenceManager.getDefaultSharedPreferences(activity)

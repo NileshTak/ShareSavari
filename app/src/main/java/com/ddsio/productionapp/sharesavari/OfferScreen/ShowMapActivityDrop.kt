@@ -274,9 +274,14 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
 
                 tvAddSearchDrop!!.setText(addresses.getAddressLine(0))
 
-
-                pojoWithData.gline = addresses.adminArea
-                pojoWithData.gcity = addresses.locality
+                if ( addresses.locality != null && addresses.locality.isNotEmpty() ) {
+                    pojoWithData.gline = addresses.adminArea
+                    pojoWithData.gcity = addresses.locality
+                }
+                if ( addresses.longitude != null && addresses.latitude != null ) {
+                    pojoWithData.glat = addresses.latitude.toString()
+                    pojoWithData.glog = addresses.longitude.toString()
+                }
             }
             if (addresses.getAddressLine(1) != null) {
 

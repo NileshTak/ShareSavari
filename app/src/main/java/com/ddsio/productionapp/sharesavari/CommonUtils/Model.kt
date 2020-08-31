@@ -74,28 +74,41 @@ data class FetchProfileData(
 
 class BookRidesPojo : ArrayList<BookRidesPojoItem>()
 
-data class BookRidesPojoItem(
+ class BookRidesPojoItem : Serializable {
+    val comment: String? = null
+    val date: String? = null
+    val gcity: String? = null
+    val glat: String? = null
+    val gline: String? = null
+    val glog: String? = null
+    val going: String? = null
+    val id: Int? = null
+    val image: String? = null
+    val is_return: Boolean? = null
+    val lcity: String? = null
+    val leaving: String? = null
+    val llat: String? = null
+    val lline: String? = null
+    val llog: String? = null
+    val passenger: Int? = null
+    val price: Int? = null
+    val rdate: String? = null
+    val rtime: String? = null
+    val time: String? = null
+    val url: String? = null
+    val user: Int? = null
+    val username: String? = null
+ }
+
+
+class bookride : ArrayList<bookrideItem>()
+
+data class bookrideItem(
     val comment: String,
-    val date: String,
-    val gcity: String,
-    val glat: String,
-    val gline: String,
-    val glog: String,
-    val going: String,
     val id: Int,
-    val image: String,
-    val is_return: Boolean,
-    val lcity: String,
-    val leaving: String,
-    val llat: String,
-    val lline: String,
-    val llog: String,
     val passenger: Int,
-    val price: Int,
-    val rdate: String,
-    val rtime: String,
-    val time: String,
-    val url: String,
-    val user: Int,
-    val username: String
+    val plat: Any,
+    val plog: Any,
+    val ride: Int,
+    val ridename: String
 )

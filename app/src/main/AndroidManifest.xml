@@ -13,8 +13,8 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.google.android.apps.photos.permission.GOOGLE_PHOTOS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
     <uses-feature
         android:name="android.hardware.location.gps"
@@ -35,7 +35,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".OfferScreen.NumberOfPassenersToTake"></activity>
+        <activity android:name=".SearchScreen.child.RideDetails"></activity>
+        <activity android:name=".OfferScreen.NumberOfPassenersToTake" />
         <activity android:name=".OfferScreen.GoingDateAndTime" />
         <activity android:name=".OfferScreen.ReturnDateAndTime" />
         <activity android:name=".ShowMap.ShowMapActivity" />
@@ -58,6 +59,7 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoAction" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -70,7 +72,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDptJpfJ0pWBWnvZ7jhsrCsZzzEgYngGN8" />
+            android:value="AIzaSyDBY9Hc3WUJqYMH3n3q2vYeNaTEjytB94s" />
     </application>
 
 </manifest>
