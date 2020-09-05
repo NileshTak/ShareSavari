@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/tvTotalAmtOrder"
-            android:text="Share Savari takes the trek out of the journey."
+            android:text="Share Sawaari takes the trek out of the journey."
             android:layout_gravity="center_horizontal"
             android:textSize="22sp"
             fontPath="Comfortaa-Bold.ttf"

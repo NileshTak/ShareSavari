@@ -1,18 +1,25 @@
 package com.ddsio.productionapp.sharesavari.OfferScreen
 
+import android.Manifest
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.DialogFragment
 import com.ddsio.productionapp.sharesavari.CommonUtils.TimePickerFragment
+import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
+import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import kotlinx.android.synthetic.main.activity_going_date_and_time.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -40,6 +47,14 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
 
+        askGalleryPermissionLocation()
+
+        var cv = findViewById<FloatingActionButton>(R.id.fabNext)
+
+            Utils.checkConnection(this@GoingDateAndTime,cv)
+            if (!Utils.CheckGpsStatus(this@GoingDateAndTime)) {
+                Utils.enableGPS(this@GoingDateAndTime)
+            }
 
 
 
@@ -81,11 +96,45 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
 
 
         fabNext.setOnClickListener {
+
           checkFields()
         }
 
     }
 
+
+    private fun askGalleryPermissionLocation() {
+        askPermission(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) {
+
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(this)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+    }
 
     private fun checkFields() {
 
@@ -96,15 +145,35 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
             Toast.makeText(this,"Please Select Correct Leaving Time",
                 Toast.LENGTH_LONG).show()
         }  else {
-            var int = Intent(this,
-                ReturnDateAndTime::class.java)
-            val bundle =
-                ActivityOptionsCompat.makeCustomAnimation(
-                    this ,
-                    R.anim.fade_in, R.anim.fade_out
-                ).toBundle()
-            int.putExtra("pojoWithData",pojoWithData)
-            startActivity(int,bundle)
+            if (cvReturnRide.isChecked) {
+                pojoWithData.is_return = "true"
+
+                var int = Intent(this,
+                    ReturnDateAndTime::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        this ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                int.putExtra("pojoWithData",pojoWithData)
+                startActivity(int,bundle)
+            } else {
+                pojoWithData.rtime = pojoWithData.time
+                pojoWithData.rdate = pojoWithData.date
+                pojoWithData.is_return = "false"
+
+                var int = Intent(this,
+                    NumberOfPassenersToTake::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        this ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                int.putExtra("pojoWithData",pojoWithData)
+                startActivity(int,bundle)
+            }
+
+
         }
     }
 

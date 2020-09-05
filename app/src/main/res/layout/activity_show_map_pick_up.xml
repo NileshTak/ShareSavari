@@ -132,7 +132,7 @@
 
         <TextView
             android:layout_width="fill_parent"
-            android:hint="Use current location"
+            android:hint="Choose from Map"
             android:layout_marginStart="5dp"
             android:layout_toRightOf="@id/icon"
             android:layout_centerHorizontal="true"

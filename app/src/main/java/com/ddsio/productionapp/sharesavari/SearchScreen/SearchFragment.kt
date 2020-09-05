@@ -1,5 +1,6 @@
 package com.ddsio.productionapp.sharesavari.SearchScreen
 
+import android.Manifest
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.animation.LayoutAnimationController
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
@@ -23,6 +25,7 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
@@ -72,6 +75,7 @@ class SearchFragment : Fragment() {
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",activity)!!
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",activity)!!
 
+        askGalleryPermissionLocation()
 
         cvFromLocation.setOnClickListener {
 
@@ -120,6 +124,40 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun askGalleryPermissionLocation() {
+        askPermission(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) {
+
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(activity!!)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+    }
+
+
     private fun hitFindRideAPI() {
 
         val adapter = GroupAdapter<ViewHolder>()
@@ -140,18 +178,24 @@ class SearchFragment : Fragment() {
 
                         val userArray: ArrayList<BookRidesPojoItem> =
                             gson.fromJson(response, BookRidesPojo ::class.java)
-                        for (rides in userArray) {
-                            if (rides != null) {
-                                if (rides.user.toString() != USER_ID_KEY) {
 
-                                    adapter.add(ridesClass(rides))
-                                }
-                            }
-                            runAnimation(rvRides,2)
-                            rvRides.adapter = adapter
-                            rvRides.adapter!!.notifyDataSetChanged()
-                            rvRides.scheduleLayoutAnimation()
+                        if (userArray.size == 0) {
                             progressDialog.dismiss()
+                        } else{
+
+                            for (rides in userArray) {
+                                if (rides != null) {
+                                    if (rides.user.toString() != USER_ID_KEY) {
+
+                                        adapter.add(ridesClass(rides))
+                                    }
+                                }
+                                runAnimation(rvRides,2)
+                                rvRides.adapter = adapter
+                                rvRides.adapter!!.notifyDataSetChanged()
+                                rvRides.scheduleLayoutAnimation()
+                                progressDialog.dismiss()
+                            }
                         }
 
                     }

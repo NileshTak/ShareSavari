@@ -10,14 +10,18 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -32,6 +36,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -95,6 +100,9 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_map_pick_up)
 
+
+        var cv = findViewById<ImageView>(R.id.ivCloseScreen)
+
         val bundle: Bundle? = intent.extras
         screen = bundle!!.getString("screen")!!
 
@@ -107,8 +115,16 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
             tvTitleTool.text = "Drop-off"
         }
 
+            Utils.checkConnection(this@ShowMapActivityPickUp,cv)
+            if (!Utils.CheckGpsStatus(this@ShowMapActivityPickUp)) {
+                Utils.enableGPS(this@ShowMapActivityPickUp)
+            }
+
+        askGalleryPermissionLocation()
+
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
+            askGalleryPermissionLocation()
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
         }
 
@@ -162,7 +178,6 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
 
         fabDone.setOnClickListener {
             checkFields()
-
         }
 
         rlCurrentLoc.setOnClickListener {
@@ -205,6 +220,8 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
+        askGalleryPermissionLocation()
+
         var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
         if (mapViewBundle == null) {
             mapViewBundle = Bundle()
@@ -212,6 +229,40 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
         }
 
         mapView.onSaveInstanceState(mapViewBundle)
+    }
+
+
+    private fun askGalleryPermissionLocation() {
+        askPermission(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) {
+
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(this)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
     }
 
 

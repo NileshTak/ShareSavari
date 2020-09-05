@@ -74,6 +74,8 @@ class ProfileScreen : Fragment() {
 
     var destinationURL: String? = null
 
+    lateinit var tvAlert : ImageView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,6 +94,13 @@ class ProfileScreen : Fragment() {
         ivProf = view.findViewById<CircleImageView>(R.id.ivProf)
         ivLogout = view.findViewById<ImageView>(R.id.ivLogout)
         cvSave = view.findViewById<CardView>(R.id.cvSave)
+        tvAlert = view.findViewById<ImageView>(R.id.tvAlert)
+
+
+
+        tvAlert.setOnClickListener {
+            Toast.makeText(activity,"Number not validated yet...",Toast.LENGTH_LONG).show()
+        }
 
         ivLogout.setOnClickListener {
 
@@ -159,28 +168,26 @@ class ProfileScreen : Fragment() {
 
                     val image = userArray.image
 
-                    if (image.isNotEmpty() || image != null || image != "") {
-                        lottieSelectImage.visibility= View.GONE
-                        rlParent.visibility= View.VISIBLE
+                    lottieSelectImage.visibility= View.GONE
+                    rlParent.visibility= View.VISIBLE
+                    if ( image != null ) {
                         Glide.with(activity!!).load(image).into(ivProf)
+                    }
 
-                        tvFN.text = userArray.first_name
-                        tvLN.text = userArray.last_name
-                        tvBio.text = userArray.bio
-                        tvDate.text = userArray.birthdate
-                        tvEMail.text = userArray.email
-                        tvMN.text = userArray.mobile
-                        tvVerified.text = userArray.verification
-                        tvName.text = userArray.first_name+" "+userArray.last_name
-                        if (userArray.gender == "1" ) {
-                            tvGender.text = "Male"
-                        } else if (userArray.gender == "2" ) {
-                            tvGender.text = "Female"
-                        } else {
-                            tvGender.text = "Other"
-                        }
-
-
+                    tvFN.text = userArray.first_name
+                    tvLN.text = userArray.last_name
+                    tvBio.text = userArray.bio
+                    tvDate.text = userArray.birthdate
+                    tvEMail.text = userArray.email
+                    tvMN.text = userArray.mobile
+                    tvVerified.text = userArray.verification
+                    tvName.text = userArray.first_name+" "+userArray.last_name
+                    if (userArray.gender == "1" ) {
+                        tvGender.text = "Male"
+                    } else if (userArray.gender == "2" ) {
+                        tvGender.text = "Female"
+                    } else {
+                        tvGender.text = "Other"
                     }
 
                     progressDialog.dismiss()

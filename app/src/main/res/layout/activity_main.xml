@@ -210,7 +210,6 @@
                     android:textStyle="bold"
                     tools:ignore="MissingPrefix"
                     fontPath="Comfortaa-Bold.ttf"
-                    android:layout_marginStart="25dp"
                     android:textSize="14dp"
                     android:layout_height="match_parent"/>
 

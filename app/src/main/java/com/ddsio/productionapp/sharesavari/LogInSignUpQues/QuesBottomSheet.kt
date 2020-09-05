@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
@@ -56,4 +57,10 @@ class QuesBottomSheet : AppCompatActivity() {
             startActivity(int,bundle)
         }
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        ActivityCompat.finishAffinity(this)
+    }
+
 }

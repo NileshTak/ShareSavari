@@ -9,12 +9,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
@@ -116,8 +118,14 @@ class MainActivity : AppCompatActivity() {
         LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this)!!
 
 
-        Utils.checkConnection(this@MainActivity,frameContainer)
-        askGalleryPermissionLocation()
+        Handler().postDelayed({
+            Utils.checkConnection(this@MainActivity,frameContainer)
+            if (!Utils.CheckGpsStatus(this@MainActivity)) {
+                Utils.enableGPS(this@MainActivity)
+            }
+        }, 2000)
+
+
         loadScreens()
 
         if (type == "SignUp") {
@@ -130,6 +138,11 @@ class MainActivity : AppCompatActivity() {
             frame.visibility = View.GONE
         } else {
             loadScreens()
+        }
+
+
+        cvLoginFB.setOnClickListener {
+            Toast.makeText(this,"Coming Soon.....",Toast.LENGTH_LONG).show()
         }
 
         cvLogin.setOnClickListener {
@@ -165,21 +178,37 @@ class MainActivity : AppCompatActivity() {
         }
 
         llSearch.setOnClickListener {
-            loadSearchFrag(fragHome = SearchFragment())
+            changeIconColor(ivSearch,tvSearch,"Search")
+            if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
+                loadSearchFrag(fragHome = SearchFragment())
+            }else {
+                llLogin.visibility = View.VISIBLE
+                nsvSignUp.visibility = View.GONE
+                frame.visibility = View.GONE
+            }
         }
 
         llOffer.setOnClickListener {
 
-            var int = Intent(this,
-                ShowMapActivityPickUp::class.java)
-            val bundle =
-                ActivityOptionsCompat.makeCustomAnimation(
-                    this@MainActivity,
-                    R.anim.fade_in,
-                    R.anim.fade_out
-                ).toBundle()
-            int.putExtra("screen","Offer")
-            startActivity(int,bundle)
+            changeIconColor(ivOffer,tvOffer,"Offer")
+            if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
+
+                var int = Intent(this,
+                    ShowMapActivityPickUp::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        this@MainActivity,
+                        R.anim.fade_in,
+                        R.anim.fade_out
+                    ).toBundle()
+                int.putExtra("screen","Offer")
+                startActivity(int,bundle)
+            }else {
+                llLogin.visibility = View.VISIBLE
+                nsvSignUp.visibility = View.GONE
+                frame.visibility = View.GONE
+            }
+
         }
 
         llHome.setOnClickListener {
@@ -195,12 +224,21 @@ class MainActivity : AppCompatActivity() {
         }
 
         llInbox.setOnClickListener {
-            loadInboxFrag(fragHome = InboxScreen())
+            changeIconColor(ivInbox,tvInbox,"Inbox")
+            if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
+                loadInboxFrag(fragHome = InboxScreen())
+            }else {
+                llLogin.visibility = View.VISIBLE
+                nsvSignUp.visibility = View.GONE
+                frame.visibility = View.GONE
+            }
+
         }
 
 
         civProfImg.setOnClickListener {
             askCameraPermission(GALLERY_REQUEST)
+
         }
 
 
@@ -233,6 +271,14 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        ActivityCompat.finishAffinity(this)
+    }
+
+
 
 
     private fun askCameraPermission(RequestType: Int) {
@@ -426,12 +472,12 @@ class MainActivity : AppCompatActivity() {
                 }
             },
             Response.ErrorListener { error ->
-
+                progressDialog.dismiss()
                 VolleyLog.d("volley", "Error: " + error.message)
                 error.printStackTrace()
                 Log.e("jukjbkj",  "Error: " + error.message)
                 Toast.makeText(this,"Something Went Wrong",Toast.LENGTH_LONG).show()
-                progressDialog.dismiss()
+
             },
 
             VolleyProgressListener { }) {
@@ -445,11 +491,20 @@ class MainActivity : AppCompatActivity() {
             override fun getParams(): Map<String, String> {
                 val params= HashMap<String, String>()
                 params.put("user",userid.toString() )
-                params.put("mobile","8446613467")
+                params.put("mobile", etMobile.text.toString())
                 params.put("mobile_status","false")
-                params.put("bio","j")
-                params.put("birthdate","2020-8-10")
-                params.put("gender","1")
+                params.put("bio", "")
+                params.put("birthdate",etBirthDate.text.toString())
+
+                var gender = 1
+                if (etGender.text.toString() == "Male") {
+                    gender = 1
+                } else if (etGender.text.toString() == "Female") {
+                    gender = 2
+                } else if (etGender.text.toString() == "Other") {
+                    gender = 3
+                }
+                params.put("gender",gender.toString())
                 return params
             }
 
@@ -570,7 +625,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkFieldsSignUp() {
         if(etEmail.text.toString().isEmpty()) {
-
             etEmail.error = "Enter Valid Email Address"
             progressDialog.dismiss()
         } else  if (!validEmail(etEmail.text.toString())) {
@@ -580,9 +634,19 @@ class MainActivity : AppCompatActivity() {
         else if(etGender.text.toString().isEmpty()) {
             etGender.error = "Please Select Gender"
             progressDialog.dismiss()
+        } else if(etMobile.text.toString().isEmpty()) {
+            etMobile.error = "Please enter valid Mobile Number"
+            progressDialog.dismiss()
+        } else if(etMobile.text.toString().length != 10) {
+            etMobile.error = "Please enter valid Mobile Number"
+            progressDialog.dismiss()
         }
         else if(etPass.text.toString().isEmpty()) {
             etPass.error = "Enter Valid Password"
+            progressDialog.dismiss()
+        }
+        else if( etPass.text.toString().length <= 8) {
+            etPass.error = "Password Length must be greater the 8 "
             progressDialog.dismiss()
         }
         else if(actualProfImage == null) {
@@ -607,6 +671,10 @@ class MainActivity : AppCompatActivity() {
             progressDialog.dismiss()
         } else if(!isValidPassword(etPass.text.toString())) {
             etPass.error = "Password must be combination of Numbers and Alphabets"
+            progressDialog.dismiss()
+        } else if(etPass.text.toString() != etConPass.text.toString()) {
+            Toast.makeText(this,"Password and Confirm Password should be same...",Toast.LENGTH_LONG).show()
+
             progressDialog.dismiss()
         } else {
             compressImage()
@@ -653,10 +721,8 @@ class MainActivity : AppCompatActivity() {
 
                 hitSignUpAPI()
 
-                Toast.makeText(this@MainActivity, "Compressed image save in " + it.path, Toast.LENGTH_LONG).show()
-                Log.d("Compressor", "Compressed image save in adhar " + it.path)
+                        Log.d("Compressor", "Compressed image save in adhar " + it.path)
             } ?:
-            Toast.makeText(this@MainActivity, "File not Found " , Toast.LENGTH_LONG).show()
 
             Log.d("Compressor", "Compressed image save in " + it.path)
         } ?:
@@ -727,6 +793,9 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun hitSignUpAPI() {
+
+        progressDialog.setCancelable(false)
+        progressDialog.show()
 
         var url =  Configure.BASE_URL + Configure.REGISTRATION_URL
 
@@ -809,6 +878,7 @@ class MainActivity : AppCompatActivity() {
         if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
             loadHomeFrag(fragHome = HomeScreen())
         }else {
+            askGalleryPermissionLocation()
             llLogin.visibility = View.VISIBLE
             nsvSignUp.visibility = View.GONE
             frame.visibility = View.GONE

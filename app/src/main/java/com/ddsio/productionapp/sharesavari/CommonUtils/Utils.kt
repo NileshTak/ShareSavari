@@ -1,22 +1,32 @@
 package com.ddsio.productionapp.sharesavari.CommonUtils
 
 import android.content.Context
+import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.startActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
+import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.google.android.material.snackbar.Snackbar
+import org.greenrobot.eventbus.EventBus
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
 import java.util.*
+
 
 object Utils {
     fun writeStringToPreferences(key: String, value: String, activity: Context?) {
@@ -35,6 +45,52 @@ object Utils {
         }
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         return sharedPreferences.getString(key, defaultValue)
+    }
+
+    fun CheckGpsStatus(context: Context) : Boolean {
+       var locationManager =
+            context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        var GpsStatus : Boolean = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        return GpsStatus
+    }
+
+
+      fun enableGPS(context: Context) : Boolean {
+
+          var res  = false
+
+        val dialog =
+            AlertDialog.Builder(context).create()
+
+          dialog.setCancelable(false);
+          val view: View =
+            LayoutInflater.from(context).inflate(R.layout.custom_enable_gps, null)
+        var cvCancel = view.findViewById<CardView>(R.id.cvCancel)
+        var cvEnable = view.findViewById<CardView>(R.id.cvEnable)
+
+
+        cvEnable.setOnClickListener {
+            var int = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            res = true
+
+            context.startActivity(int);
+            dialog.setCancelable(true);
+            dialog.dismiss()
+        }
+
+        cvCancel.setOnClickListener {
+
+            res = false
+            dialog.dismiss()
+
+        }
+
+
+        dialog.setView(view)
+
+        dialog.show()
+
+          return  res
     }
 
 

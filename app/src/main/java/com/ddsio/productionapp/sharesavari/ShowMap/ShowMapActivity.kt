@@ -13,23 +13,32 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
+import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.R
+import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.places.Place
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
+import com.google.android.gms.location.places.ui.PlaceSelectionListener
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
-import com.ddsio.productionapp.sharesavari.R
 import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
-import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_show_map.*
 import org.greenrobot.eventbus.EventBus
@@ -50,6 +59,7 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     var type = ""
+
 
     override fun onMapReady(googleMap: GoogleMap) {
 
@@ -88,8 +98,20 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
         val bundle: Bundle? = intent.extras
         type = bundle!!.getString("typeis")!!
 
+        askGalleryPermissionLocation()
+
+        var cv = findViewById<CardView>(R.id.cvFromLocation)
+
+
+
+        Utils.checkConnection(this@ShowMapActivity,cv)
+            if (!Utils.CheckGpsStatus(this@ShowMapActivity)) {
+                Utils.enableGPS(this@ShowMapActivity)
+            }
+
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
+            askGalleryPermissionLocation()
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
         }
 
@@ -97,12 +119,48 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
 
+
+
         tvCurrentAddress = findViewById<TextView>(R.id.tvCurrentAddress)
 
 
         ivBack.setOnClickListener {
             onBackPressed()
         }
+
+
+        svAddSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+
+                var location = svAddSearch.query.toString()
+                var addressList : List<Address>? = null;
+                if (location != null || location!= "") {
+                    var geocoder = Geocoder(this@ShowMapActivity)
+                    try {
+                        addressList= geocoder.getFromLocationName(location,1)
+                    }catch (e : Exception) {
+                        e.printStackTrace()
+                    }
+
+                    var address = addressList!!.get(0)
+                    var latLng = LatLng(address.latitude,address.longitude)
+                    mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                    mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10f))
+
+                }
+
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+
+                return false
+            }
+
+
+        })
+
+        mapView.getMapAsync(this)
 
         tvAddSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -138,13 +196,7 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
         }
 
         fabDone.setOnClickListener {
-
-            var pojo = BookRideScreenFetchCity()
-            pojo.city = city
-            pojo.type = type
-
-            EventBus.getDefault().post(pojo)
-            onBackPressed()
+            checkFields()
         }
 
         rlCurrentLoc.setOnClickListener {
@@ -162,11 +214,28 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
     }
 
 
+    private fun checkFields() {
+
+        if (tvAddSearch.text.toString().isEmpty() || tvAddSearch.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Address",
+                Toast.LENGTH_LONG).show()
+        }  else {
+            var pojo = BookRideScreenFetchCity()
+            pojo.city = city
+            pojo.type = type
+
+            EventBus.getDefault().post(pojo)
+            onBackPressed()
+        }
+    }
+
+
 
 
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
+        askGalleryPermissionLocation()
         var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
         if (mapViewBundle == null) {
             mapViewBundle = Bundle()
@@ -177,6 +246,38 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
     }
 
 
+    private fun askGalleryPermissionLocation() {
+        askPermission(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) {
+
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(this)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+    }
 
 
     private fun getCurrentLocation() {

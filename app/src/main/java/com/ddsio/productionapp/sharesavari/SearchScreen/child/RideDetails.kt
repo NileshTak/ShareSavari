@@ -17,14 +17,17 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.Intro.IntroActivity
 import com.ddsio.productionapp.sharesavari.R
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -37,7 +40,7 @@ import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_ride_details.*
+import kotlinx.android.synthetic.main.activity_ride_detail.*
 import kotlinx.android.synthetic.main.activity_show_map.*
 import java.io.IOException
 import java.util.*
@@ -100,16 +103,16 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ride_details)
+        setContentView(R.layout.activity_ride_detail)
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
         var screen  = bundle!!.get("screen") as String
 
         if (screen == "home") {
-            btnBook.visibility = View.GONE
+            rlBottom.visibility = View.GONE
         } else {
-            btnBook.visibility = View.VISIBLE
+            rlBottom.visibility = View.VISIBLE
         }
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
@@ -117,19 +120,37 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",this)!!
         request= Volley.newRequestQueue(this)
 
-       tvFromAdd.text = pojoWithData.leaving
-     tvToAdd.text = pojoWithData.going
-        tvDate.text = pojoWithData.date +"  ("+pojoWithData.time+")"
-       tvRDate.text = pojoWithData.rdate +"  ("+pojoWithData.rtime+")"
-     tvComment.text = pojoWithData.comment
-       tvOfferedby.text = pojoWithData.username
-      tvPass.text = pojoWithData.passenger.toString()
-         tvPrice.text = pojoWithData.price.toString()
-          tvReturn.text = pojoWithData.is_return.toString()
+        askGalleryPermissionLocation()
 
+       tvFromAdd.text = pojoWithData.lline+", "+pojoWithData.lcity
+     tvToAdd.text = pojoWithData.gline+", "+pojoWithData.gcity
+        tvDate.text = pojoWithData.date
+        tvLTime.text = pojoWithData.time
+
+
+        tvFromFullAdd.text = "("+ pojoWithData.leaving+")"
+        tvToFullAdd.text = "("+ pojoWithData.going+")"
+
+        Log.d("jknj",pojoWithData.is_return.toString())
+
+        if (pojoWithData.is_return == false) {
+            tvGTime.text = ""
+        } else {
+            tvGTime.text = pojoWithData.rtime
+        }
+
+
+        tvOfferedby.text = pojoWithData.username
+         tvPrice.text = "₹ "+pojoWithData.price.toString()
+
+
+        Glide.with(this).load(pojoWithData.image).into(ivprof)
+
+        askGalleryPermissionLocation()
 
         var mapViewBundle: Bundle? = null
         if (savedInstanceState != null) {
+            askGalleryPermissionLocation()
             mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
         }
 
@@ -162,13 +183,14 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 R.anim.fade_out);
             mapRide.startAnimation(animZoomIn);
             mapRide.visibility = View.GONE
-        }, 500)
+        }, 400)
     }
 
 
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
+        askGalleryPermissionLocation()
         var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
         if (mapViewBundle == null) {
             mapViewBundle = Bundle()
@@ -354,6 +376,40 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         }
         request!!.add(jsonObjRequest)
     }
+
+    private fun askGalleryPermissionLocation() {
+        askPermission(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) {
+
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(this)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+    }
+
 
     private fun boookRideAllowed(customers: BookRidesPojoItem) {
 

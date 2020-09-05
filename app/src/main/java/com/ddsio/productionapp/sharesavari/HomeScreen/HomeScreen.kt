@@ -1,8 +1,10 @@
 package com.ddsio.productionapp.sharesavari.HomeScreen
 
+import android.Manifest
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +14,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
@@ -21,7 +24,9 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.OfferScreen.NumberOfPassenersToTake
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
+import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
 import com.productionapp.amhimemekar.CommonUtils.BookRidesPojo
 import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
 import com.productionapp.amhimemekar.CommonUtils.Configure
@@ -32,6 +37,8 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
 import kotlinx.android.synthetic.main.fragment_home_screen.*
+import kotlinx.android.synthetic.main.fragment_search.*
+import org.greenrobot.eventbus.Subscribe
 
 class HomeScreen : Fragment() {
 
@@ -65,10 +72,46 @@ class HomeScreen : Fragment() {
         progressDialog.show()
 
 
-        hitFindOfferedRideAPI()
+        askGalleryPermissionLocation()
 
         return view
     }
+
+
+    private fun askGalleryPermissionLocation() {
+        askPermission(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) {
+            hitFindOfferedRideAPI()
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(activity!!)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+    }
+
+
 
 
     private fun hitFindOfferedRideAPI() {

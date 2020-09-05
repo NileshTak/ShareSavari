@@ -1,13 +1,18 @@
 package com.ddsio.productionapp.sharesavari.OfferScreen
 
+import android.Manifest
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityOptionsCompat
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
@@ -15,6 +20,7 @@ import com.android.volley.toolbox.Volley
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import kotlinx.android.synthetic.main.activity_going_date_and_time.*
@@ -33,12 +39,25 @@ class NumberOfPassenersToTake : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number_of_passeners_to_take)
+        var cv = findViewById<CardView>(R.id.cvMinus)
+
 
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
         request= Volley.newRequestQueue(this);
+
+
+
+
+        askGalleryPermissionLocation()
+            Utils.checkConnection(this@NumberOfPassenersToTake,cv)
+            if (!Utils.CheckGpsStatus(this@NumberOfPassenersToTake)) {
+                Utils.enableGPS(this@NumberOfPassenersToTake)
+            }
+
+
 
         tvTotalPrice.text =  "0₹"
 
@@ -86,6 +105,39 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         }
     }
 
+    private fun askGalleryPermissionLocation() {
+        askPermission(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) {
+
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(this)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { _, _ ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+    }
+
 
     private fun checkFields() {
 
@@ -93,7 +145,7 @@ class NumberOfPassenersToTake : AppCompatActivity() {
             Toast.makeText(this,"Please Select Correct Riding Price for per Passenger ",
                 Toast.LENGTH_LONG).show()
         } else {
-            pojoWithData.price = totalAmt.toString()
+            pojoWithData.price = etPrice.text.toString()
             pojoWithData.passenger = tvCount.text.toString()
 
             hitOfferRideAPI()
@@ -116,11 +168,11 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         pojoWithData.image =  ""
         pojoWithData.comment =  ""
 
-        if (pojoWithData.rdate!!.isEmpty()) {
-            pojoWithData.is_return = "false"
-        } else {
-            pojoWithData.is_return = "true"
-        }
+//        if ( pojoWithData.rdate == null || pojoWithData.rdate!!.isEmpty()) {
+//            pojoWithData.is_return = "false"
+//        } else {
+//            pojoWithData.is_return = "true"
+//        }
 
         val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL
         Log.d("jukjbkj", url.toString())

@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,6 +27,8 @@
         android:required="false" />
 
     <dist:module dist:instant="true" />
+
+
 
     <application
         android:name=".Application"
@@ -60,6 +65,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoAction" />
 
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -73,6 +80,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDBY9Hc3WUJqYMH3n3q2vYeNaTEjytB94s" />
+
     </application>
 
 </manifest>
