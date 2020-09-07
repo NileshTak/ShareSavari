@@ -2,7 +2,9 @@ package com.ddsio.productionapp.sharesavari.ShowMap
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -27,9 +29,6 @@ import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.places.Place
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
-import com.google.android.gms.location.places.ui.PlaceSelectionListener
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -38,12 +37,18 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_show_map.*
 import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener, GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraIdleListener {
 
@@ -103,6 +108,15 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
         var cv = findViewById<CardView>(R.id.cvFromLocation)
 
 
+        Places.initialize(applicationContext,"AIzaSyDBY9Hc3WUJqYMH3n3q2vYeNaTEjytB94s")
+
+        tvAddSearch.isFocusable = false
+        tvAddSearch.setOnClickListener {
+            var fieldList : List<Place.Field> = arrayListOf(Place.Field.ADDRESS,Place.Field.LAT_LNG,Place.Field.NAME)
+
+            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY,fieldList).build(this)
+            startActivityForResult(intent,100)
+        }
 
         Utils.checkConnection(this@ShowMapActivity,cv)
             if (!Utils.CheckGpsStatus(this@ShowMapActivity)) {
@@ -128,6 +142,7 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
             onBackPressed()
         }
 
+        svAddSearch.onActionViewExpanded()
 
         svAddSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
@@ -158,6 +173,7 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
             }
 
 
+
         })
 
         mapView.getMapAsync(this)
@@ -185,7 +201,7 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
                 if (count == 0) {
                     ivClear.visibility = View.GONE
                 } else {
-                    ivClear.visibility = View.VISIBLE
+//                    ivClear.visibility = View.VISIBLE
                 }
 
             }
@@ -210,9 +226,23 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
             ivMap.startAnimation(animZoomIn);
 
         }
-
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            var place = Autocomplete.getPlaceFromIntent(data!!)
+             tvAddSearch.setText(place.address)
+            mapView.getMapAsync(this)
+
+        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            var status = Autocomplete.getStatusFromIntent(data!!)
+
+            Toast.makeText(this,status.statusMessage,Toast.LENGTH_LONG).show()
+        }
+    }
 
     private fun checkFields() {
 

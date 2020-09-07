@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "681288909028",
-    "firebase_url": "https://sharesavari-3ed54.firebaseio.com",
-    "project_id": "sharesavari-3ed54",
-    "storage_bucket": "sharesavari-3ed54.appspot.com"
+    "project_number": "97255814552",
+    "firebase_url": "https://sharesavaari.firebaseio.com",
+    "project_id": "sharesavaari",
+    "storage_bucket": "sharesavaari.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:681288909028:android:22dcd1b3602375c5756cf1",
+        "mobilesdk_app_id": "1:97255814552:android:92e64551836ab2473a67ed",
         "android_client_info": {
           "package_name": "com.ddsio.productionapp.sharesavari"
         }
       },
       "oauth_client": [
         {
-          "client_id": "681288909028-eoevg542ngi4rimofnq99ng4pl69d6qk.apps.googleusercontent.com",
+          "client_id": "97255814552-p9mapfui0htli9mt00ur6ja9h7uidc6q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ddsio.productionapp.sharesavari",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "681288909028-7b06ru0udgkkpcpe2h1ghojc5hu5299o.apps.googleusercontent.com",
+          "client_id": "97255814552-vq6g4cagcdl6aja0rqmv7oepnehn99do.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAXBb8aPsx2s1WX_P6IC7tT5deH_vRpOrk"
+          "current_key": "AIzaSyDBY9Hc3WUJqYMH3n3q2vYeNaTEjytB94s"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "681288909028-7b06ru0udgkkpcpe2h1ghojc5hu5299o.apps.googleusercontent.com",
+              "client_id": "97255814552-vq6g4cagcdl6aja0rqmv7oepnehn99do.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

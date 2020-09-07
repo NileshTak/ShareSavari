@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center_horizontal"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
+
+    <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/peopleImg"
+            android:layout_gravity="center"
+            app:lottie_autoPlay="true"
+            android:background="@color/md_white_1000"
+             app:lottie_fileName="verify_acc.json"
+            app:lottie_loop="true"
+        android:layout_width="400dp"
+        android:layout_height="250dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verifying Number Just a Minute"
+            android:textColor="@color/md_white_1000"
+            android:shadowColor="@color/md_blue_custom"
+            android:textSize="22sp"
+        app:fontPath = "Bitter-Bold.ttf"
+        android:textAlignment="center"
+        tools:ignore="MissingPrefix"
+            android:layout_margin="10dp"
+            android:textStyle="bold"
+             android:layout_marginBottom="10dp"/>
+
+</LinearLayout>

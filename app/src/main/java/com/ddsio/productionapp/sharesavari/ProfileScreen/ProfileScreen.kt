@@ -1,6 +1,7 @@
 package com.ddsio.productionapp.sharesavari.ProfileScreen
 
 import android.Manifest
+import android.animation.ValueAnimator
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
@@ -9,15 +10,14 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -29,10 +29,16 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.*
+import com.ddsio.productionapp.sharesavari.CommonUtils.CircularProgress.CircleProgressBar
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.VolleyProgressListener
 import com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
@@ -42,14 +48,32 @@ import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
 import de.hdodenhof.circleimageview.CircleImageView
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.loadBitmap
+import kotlinx.android.synthetic.main.activity_authentication.view.*
+import kotlinx.android.synthetic.main.activity_authentication.view.parentAuth
+import kotlinx.android.synthetic.main.activity_authentication.view.pinView
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_profile_screen.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
 import java.net.URLConnection
+import java.util.concurrent.TimeUnit
 
 class ProfileScreen : Fragment() {
+
+
+    lateinit var dialog_verifying: AlertDialog
+    lateinit var dialog_otp: AlertDialog
+    lateinit var firebaseAuth: FirebaseAuth
+
+    private var mResendToken: PhoneAuthProvider.ForceResendingToken? = null
+
+    lateinit var mCallbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+    lateinit var mAuth: FirebaseAuth
+    lateinit var cpv : CircleProgressBar
+
+
 
     var GALLERY_REQUEST = 1666
     var LOGIN_TOKEN = ""
@@ -64,7 +88,11 @@ class ProfileScreen : Fragment() {
     private var compressedImage: File? = null
     lateinit var bitmap: Bitmap
 
+
+
     var USER_UPDATE_ID = ""
+
+    lateinit var btnVerify : Button
 
     private var actualImage: File? = null
 
@@ -73,8 +101,11 @@ class ProfileScreen : Fragment() {
     lateinit var USER_ID_KEY : String
 
     var destinationURL: String? = null
+    private var mVerificationId: String? = null
 
     lateinit var tvAlert : ImageView
+    lateinit var ivVerified : ImageView
+    lateinit var cvBio : CardView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,6 +118,8 @@ class ProfileScreen : Fragment() {
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",activity)!!
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",activity)!!
 
+        mAuth = FirebaseAuth.getInstance()
+
         request= Volley.newRequestQueue(activity);
 
         lottieSelectImage = view.findViewById<LottieAnimationView>(R.id.lottieSelectImage)
@@ -95,6 +128,9 @@ class ProfileScreen : Fragment() {
         ivLogout = view.findViewById<ImageView>(R.id.ivLogout)
         cvSave = view.findViewById<CardView>(R.id.cvSave)
         tvAlert = view.findViewById<ImageView>(R.id.tvAlert)
+        ivVerified = view.findViewById<ImageView>(R.id.ivVerified)
+        cvBio = view.findViewById<CardView>(R.id.cvBio)
+        btnVerify = view.findViewById<Button>(R.id.btnVerify)
 
 
 
@@ -102,11 +138,18 @@ class ProfileScreen : Fragment() {
             Toast.makeText(activity,"Number not validated yet...",Toast.LENGTH_LONG).show()
         }
 
+        btnVerify.setOnClickListener {
+
+            sendCode()
+
+        }
+
         ivLogout.setOnClickListener {
 
             val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
 
             val editor = preferences.edit()
+
 
             preferences.getString(Configure.LOGIN_KEY,"")
             editor.clear()
@@ -138,9 +181,218 @@ class ProfileScreen : Fragment() {
 
         getUserData()
 
+        mCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onVerificationCompleted(Credential: PhoneAuthCredential) {
+                //        Toast.makeText(applicationContext,"Verfication Process",Toast.LENGTH_SHORT).show()
+//                val inflater = getLayoutInflater()
+//                val alertLayout = inflater.inflate(R.layout.processing_dialog, null)
+//                val show = AlertDialog.Builder(activity!!)
+//                show.setView(alertLayout)
+//                show.setCancelable(false)
+//                dialog_verifying = show.create()
+//                dialog_verifying.show()
+                signInWithPhoneAuthCredential(Credential)
+            }
+
+            override fun onVerificationFailed(e: FirebaseException) {
+//                Toast.makeText(applicationContext, "Something Went Wrong", Toast.LENGTH_SHORT).show()
+                Utils.showSnackMSG(lottieSelectImage,"Please Try After Some Time")
+
+                Log.d("Failure",e.toString())
+            }
+
+            override fun onCodeSent(verificationId: String ,
+                                    token: PhoneAuthProvider.ForceResendingToken ) {
+
+                // Save verification ID and resending token so we can use them later
+                mVerificationId = verificationId
+                mResendToken = token
+
+            }
+        }
+
+
+
         return view
     }
 
+
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
+        mAuth.signInWithCredential(credential)
+            .addOnCompleteListener( activity!!) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+//                    Log.d(Authentication.TAG, "signInWithCredential:success")
+
+                    sendMobielVerifiedTrueAPI()
+
+                } else {
+
+                    dialog_verifying.dismiss()
+                    dialog_otp.dismiss()
+//                    Toast.makeText(this@Authentication, "Incorrect OTP", Toast.LENGTH_SHORT).show()
+                    Utils.showSnackMSG(lottieSelectImage,"Incorrect OTP")
+
+//                    Log.w(Authentication.TAG, "signInWithCredential:failure", task.exception)
+                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
+
+                    }
+                }
+            }
+    }
+
+    private fun sendMobielVerifiedTrueAPI() {
+
+        val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.PUT,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkj", response.toString())
+
+//                    val gson = Gson()
+//
+//                    val userArray: UserDetailsModel =
+//                        gson.fromJson(response, UserDetailsModel ::class.java)
+
+                    dialog_otp.dismiss()
+                    dialog_verifying.dismiss()
+
+                    getUserData()
+
+                    Utils.showSnackMSG(lottieSelectImage,"Mobile Number Verified Successfully")
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("jukjbkj",  "Error: " + error.message)
+                    progressDialog.dismiss()
+                    Toast.makeText(activity,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params["user"] = USER_ID_KEY
+                params["mobile_status"] = "true"
+
+                return params
+            }
+        }
+
+        Utils.setVolleyRetryPolicy(jsonObjRequest)
+        request!!.add(jsonObjRequest)
+
+    }
+
+
+    private fun sendCode()
+    {
+        val phoneNumber = "+91" +tvMN!!.text.toString()
+
+//        val phoneNumber = "+918446613467"
+
+
+        createOTPEnterDialog(phoneNumber)
+
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phoneNumber, // Phone number to verify
+                60, // Timeout duration
+                TimeUnit.SECONDS, // Unit of timeout
+              activity!!, // Activity (for callback binding)
+                mCallbacks
+            )        // OnVerificationStateChangedCallbacks
+
+    }
+
+    private fun createOTPEnterDialog(phoneNumber: String) {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.activity_authentication, null)
+
+        alertLayout.phonenumberText.text = phoneNumber
+
+        alertLayout.cpv.setProgressFormatter { progress, max -> progress.toString() }
+
+        alertLayout.tvDidntGotCode.setOnClickListener {
+            dialog_otp.dismiss()
+            sendCode()
+        }
+
+        setProgress(  alertLayout.cpv,alertLayout.tvDidntGotCode)
+
+        alertLayout.verifyCodeButton!!.setOnClickListener {
+            val verificationCode = alertLayout.pinView!!.text!!.toString()
+            if (verificationCode.isEmpty()) {
+//                Toast.makeText(this@Authentication, "Enter verification code", Toast.LENGTH_SHORT).show()
+                Utils.showSnackMSG(alertLayout.parentAuth,"Please Enter Verification Code")
+
+            } else {
+
+                val inflater = getLayoutInflater()
+                val alertLayout = inflater.inflate(R.layout.processing_dialog, null)
+                val show = AlertDialog.Builder(activity!!)
+                show.setView(alertLayout)
+                show.setCancelable(false)
+                dialog_verifying = show.create()
+                dialog_verifying.show()
+                val handler = Handler()
+                handler.postDelayed({
+                    val credential = PhoneAuthProvider.getCredential(this!!.mVerificationId.toString(), verificationCode)
+                    signInWithPhoneAuthCredential(credential)
+                },3000)
+
+            }
+        }
+
+        val showOTP = AlertDialog.Builder(activity!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        dialog_otp = showOTP.create()
+        dialog_otp.show()
+
+        alertLayout.ivClose.setOnClickListener {
+            dialog_otp.dismiss()
+        }
+
+    }
+
+    private fun setProgress(
+        cpv: CircleProgressBar,
+        tvDidntGotCode: TextView
+    ) {
+        val animator = ValueAnimator.ofInt(100, 0)
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Int
+            cpv.setProgress(progress)
+
+            if (cpv.progress == 0) {
+                tvDidntGotCode.visibility = View.VISIBLE
+               cpv.visibility = View.GONE
+            }
+
+        }
+        //        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.duration = 30000
+        animator.start()
+    }
 
     fun getUserData( ) {
 
@@ -170,6 +422,22 @@ class ProfileScreen : Fragment() {
 
                     lottieSelectImage.visibility= View.GONE
                     rlParent.visibility= View.VISIBLE
+
+                    if (userArray.bio.isEmpty() || userArray.bio == "") {
+                        cvBio.visibility = View.GONE
+                    }
+
+
+                    if (userArray.verification == "False") {
+                        tvAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
+                        ivVerified.setImageDrawable(resources.getDrawable(R.drawable.alert))
+                    } else {
+                        tvAlert.setImageDrawable(resources.getDrawable(R.drawable.tick))
+                        ivVerified.setImageDrawable(resources.getDrawable(R.drawable.tick))
+                        btnVerify.visibility = View.GONE
+                    }
+
+
                     if ( image != null ) {
                         Glide.with(activity!!).load(image).into(ivProf)
                     }

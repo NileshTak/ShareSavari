@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -37,9 +38,11 @@ import com.google.android.gms.tasks.Task
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.android.gms.maps.model.MarkerOptions
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_show_map.*
 import kotlinx.android.synthetic.main.activity_show_map.fabDone
 import kotlinx.android.synthetic.main.activity_show_map.ivBack
 import kotlinx.android.synthetic.main.activity_show_map.ivClear
@@ -59,6 +62,8 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
     private val DEFAULT_ZOOM = 15f
 
     lateinit var mapView: MapView
+
+    lateinit var svSearchViewPickup: SearchView
 
     var screen = ""
     var LOGIN_TOKEN = ""
@@ -100,6 +105,7 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_map_pick_up)
 
+        svSearchViewPickup = findViewById<SearchView>(R.id.svAddSearchPickup)
 
         var cv = findViewById<ImageView>(R.id.ivCloseScreen)
 
@@ -134,6 +140,44 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
 
         tvCurrentAddress = findViewById<TextView>(R.id.tvCurrentAddress)
 
+
+        svSearchViewPickup.onActionViewExpanded()
+
+        svSearchViewPickup.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+
+                var location = svSearchViewPickup.query.toString()
+                var addressList : List<Address>? = null;
+                if (location != null || location!= "") {
+                    var geocoder = Geocoder(this@ShowMapActivityPickUp)
+                    try {
+                        addressList= geocoder.getFromLocationName(location,1)
+                    }catch (e : Exception) {
+                        e.printStackTrace()
+                    }
+
+                    var address = addressList!!.get(0)
+                    var latLng = LatLng(address.latitude,address.longitude)
+                    mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                    mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10f))
+
+                }
+
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+
+                return false
+            }
+
+
+
+        })
+
+        mapView.getMapAsync(this)
+
+
         ivCloseScreen.setOnClickListener {
             onBackPressed()
         }
@@ -166,7 +210,7 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
                 if (count == 0) {
                     ivClear.visibility = View.GONE
                 } else {
-                    ivClear.visibility = View.VISIBLE
+//                    ivClear.visibility = View.VISIBLE
                 }
 
             }

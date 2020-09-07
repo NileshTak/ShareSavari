@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/parentAuth"
+    android:layout_height="wrap_content" >
+
+
+    <ImageView
+       android:id="@+id/ivClose"
+        android:layout_width="30dp"
+        android:layout_margin="10dp"
+        android:tint="@color/md_red_800"
+        android:src="@drawable/ic_baseline_close_24"
+        android:layout_alignParentEnd="true"
+        android:layout_height="30dp"/>
+
+
+        <LinearLayout
+            android:layout_below="@+id/ivClose"
+            android:id="@+id/layout2"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                fontPath="Bitter-Bold.ttf"
+                android:text="Enter the code that was sent to"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:id="@+id/phonenumberText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                 android:textAlignment="center"
+                fontPath="Bitter-Bold.ttf"
+                android:textSize="22sp"
+                android:textColor="#019b77"
+                android:textStyle="bold"
+                tools:ignore="MissingPrefix" />
+
+            <com.chaos.view.PinView
+                android:id="@+id/pinView"
+                style="@style/PinWidget.PinView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:padding="10dp"
+                android:layout_marginTop="40dp"
+                android:textColor="#222222"
+                android:textSize="18sp"
+                android:cursorVisible="true"
+                fontPath="Bitter-Bold.ttf"
+                app:cursorColor="@color/colorAccent"
+                app:cursorWidth="2dp"
+                app:itemCount="6"
+                app:itemHeight="48dp"
+                app:itemRadius="4dp"
+                app:itemSpacing="5dp"
+                app:itemWidth="36dp"
+                app:lineColor="#2f64ba"
+                app:lineWidth="2dp"
+                app:viewType="rectangle" />
+
+            <com.ddsio.productionapp.sharesavari.CommonUtils.CircularProgress.CircleProgressBar
+                android:id="@+id/cpv"
+                android:layout_marginTop="10dp"
+                android:layout_width="50dp"
+                fontPath="Bitter-Bold.ttf"
+                app:progress_text_size="12sp"
+                app:progress_text_color="@color/md_red_800"
+                app:progress_end_color="@color/colorPrimaryDark"
+                app:progress_start_color="@color/colorPrimaryDark"
+                android:layout_height="50dp" />
+
+            <Button
+                 android:textColor="#fff"
+                android:textStyle="bold"
+                fontPath="Bitter-Bold.ttf"
+                android:id="@+id/verifyCodeButton"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Verify"
+                android:textSize="20dp"
+                tools:ignore="MissingPrefix" />
+
+
+            <TextView
+                    android:id="@+id/tvDidntGotCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#019b77"
+                android:visibility="gone"
+                android:textStyle="bold"
+                fontPath="Bitter-Regular.ttf"
+                android:textAlignment="center"
+                android:text="I didn't get a code"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                    android:id="@+id/warning"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/md_red_800"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:text="Warning"
+                    android:textSize="15sp"
+                android:layout_marginBottom="2dp"
+                fontPath="Bitter-Regular.ttf"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="20dp"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                    android:id="@+id/warn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#019b77"
+                    android:textStyle="bold"
+                fontPath="Bitter-Bold.ttf"
+                    android:textAlignment="center"
+                    android:text="(Maximum OTP limit is 3)"
+                    android:textSize="15sp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                tools:ignore="MissingPrefix" />
+
+        </LinearLayout>
+
+
+
+</RelativeLayout>

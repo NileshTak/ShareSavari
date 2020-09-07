@@ -55,7 +55,9 @@ object Utils {
     }
 
 
-      fun enableGPS(context: Context) : Boolean {
+
+
+    fun enableGPS(context: Context) : Boolean {
 
           var res  = false
 

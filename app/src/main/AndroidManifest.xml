@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
+
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="false" />
@@ -40,10 +41,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
         <activity android:name=".SearchScreen.child.RideDetails"></activity>
         <activity android:name=".OfferScreen.NumberOfPassenersToTake" />
         <activity android:name=".OfferScreen.GoingDateAndTime" />
         <activity android:name=".OfferScreen.ReturnDateAndTime" />
+        <activity android:name=".ProfileScreen.Authentication.Authentication"/>
         <activity android:name=".ShowMap.ShowMapActivity" />
         <activity android:name=".OfferScreen.ShowMapActivityPickUp" />
         <activity android:name=".OfferScreen.ShowMapActivityDrop" />

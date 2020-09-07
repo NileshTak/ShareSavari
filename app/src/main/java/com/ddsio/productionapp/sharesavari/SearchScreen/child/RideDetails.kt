@@ -450,7 +450,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 Log.d("jukjbkj", LOGIN_TOKEN.toString())
 
                 var params = java.util.HashMap<String, String>()
-                params.put("Content-Type", "application/json; charset=UTF-8");
+//                params.put("Content-Type", "application/json; charset=UTF-8");
                 params.put("Authorization", "Token "+LOGIN_TOKEN!!);
                 return params;
             }

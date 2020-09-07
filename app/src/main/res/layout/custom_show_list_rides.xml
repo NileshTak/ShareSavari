@@ -24,7 +24,7 @@
 
                 <TextView
                     android:id="@+id/tvFromCity"
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dp"
                     android:text="From : "
                     android:layout_marginTop="6dp"
                     android:textSize="20dp"
@@ -45,7 +45,7 @@
 
             <TextView
                 android:id="@+id/tvToCity"
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:text="From"
                 android:layout_marginTop="6dp"
                 android:textSize="20dp"

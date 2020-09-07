@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
@@ -35,11 +36,16 @@ import com.ddsio.productionapp.sharesavari.OfferScreen.ShowMapActivityPickUp
 import com.ddsio.productionapp.sharesavari.ProfileScreen.ProfileScreen
 import com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.firebase.FirebaseApp
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
 import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -48,11 +54,14 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import java.lang.Math.log10
 import java.net.URLConnection
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.HashMap
+import kotlin.math.pow
 
 class MainActivity : AppCompatActivity() {
 
@@ -85,6 +94,18 @@ class MainActivity : AppCompatActivity() {
     private var actualAdharImage: File? = null
     private var compressedAdharImage: File? = null
 
+
+    lateinit var cvSignUp : CardView
+
+    lateinit var etFN : EditText
+    lateinit var etLN : EditText
+    lateinit var etUserName : EditText
+
+
+    var fn = ""
+    var ln = ""
+    var un = ""
+
     var profPicURL: String? = null
     var adharPicURL: String? = null
 
@@ -105,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         type = bundle!!.getString("type")!!
 
         request= Volley.newRequestQueue(this);
+        FirebaseApp.initializeApp(this)
 
         tvSignUp = findViewById<TextView>(R.id.tvSignUp)
         nsvSignUp = findViewById<NestedScrollView>(R.id.nsvSignUp)
@@ -112,10 +134,17 @@ class MainActivity : AppCompatActivity() {
         frameContainer = findViewById<FrameLayout>(R.id.frame)
         llSearch = findViewById<LinearLayout>(R.id.llSearch)
         llLogin = findViewById<LinearLayout>(R.id.llLogin)
+        cvSignUp = findViewById<CardView>(R.id.cvSignUp)
+
+        etFN = findViewById<EditText>(R.id.etFN)
+        etLN = findViewById<EditText>(R.id.etLN)
+        etUserName = findViewById<EditText>(R.id.etLN)
 
 //        Utils.writeStringToPreferences(LOGIN_KEY, "",this)
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this)!!
+
+
 
 
         Handler().postDelayed({
@@ -142,6 +171,11 @@ class MainActivity : AppCompatActivity() {
 
 
         cvLoginFB.setOnClickListener {
+            Toast.makeText(this,"Coming Soon.....",Toast.LENGTH_LONG).show()
+        }
+
+
+        cvSignUpFB.setOnClickListener {
             Toast.makeText(this,"Coming Soon.....",Toast.LENGTH_LONG).show()
         }
 
@@ -174,6 +208,7 @@ class MainActivity : AppCompatActivity() {
             progressDialog.setMessage("Wait a Sec....Uploading Files")
             progressDialog.setCancelable(false)
             progressDialog.show()
+
             checkFieldsSignUp()
         }
 
@@ -422,7 +457,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("jukjbkj", LOGIN_TOKEN.toString())
 
                 var params = java.util.HashMap<String, String>()
-                params.put("Content-Type", "application/json; charset=UTF-8");
+//                params.put("Content-Type", "application/json; charset=UTF-8");
                 params.put("Authorization", "Token "+LOGIN_TOKEN!!);
                 return params;
             }
@@ -431,13 +466,15 @@ class MainActivity : AppCompatActivity() {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> =
                     HashMap()
-                params["first_name"] = etFN.text.toString()
-                params["last_name"] = etLN.text.toString()
-                params["username"] = etUserName.text.toString()
+                params["first_name"] = fn
+                params["last_name"] = ln
+                params["username"] = un
 
                 return params
             }
         }
+
+        Utils.setVolleyRetryPolicy(jsonObjRequest)
         request!!.add(jsonObjRequest)
 
     }
@@ -483,7 +520,7 @@ class MainActivity : AppCompatActivity() {
             VolleyProgressListener { }) {
             override fun getHeaders(): Map<String, String>? {
                 var params = java.util.HashMap<String, String>()
-                params.put("Content-Type", "application/json; charset=UTF-8");
+//                params.put("Content-Type", "application/json; charset=UTF-8");
                 params.put("Authorization", "Token " + LOGIN_TOKEN!!);
                 return params;
             }
@@ -517,7 +554,7 @@ class MainActivity : AppCompatActivity() {
                     URLConnection.guessContentTypeFromName(actualAdharImage!!.name)
                 params["profile_image"] = DataPart(actualProfImage!!.name, Utils.fileToBytes(actualProfImage), mimeType)
                 params["adhar_image"] = DataPart(actualAdharImage!!.name, Utils.fileToBytes(actualAdharImage), mimeTypeAdhar)
-
+//                params["adhar_image"] = DataPart(null,null)
                 return params
             }
 
@@ -526,6 +563,7 @@ class MainActivity : AppCompatActivity() {
                     Log.e("VOL ERR", volleyError.toString())
                 } catch (ex: java.lang.Exception) {
                 }
+                progressDialog.dismiss()
                 return super.parseNetworkError(volleyError)
             }
         }
@@ -624,6 +662,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkFieldsSignUp() {
+
+
         if(etEmail.text.toString().isEmpty()) {
             etEmail.error = "Enter Valid Email Address"
             progressDialog.dismiss()
@@ -677,6 +717,10 @@ class MainActivity : AppCompatActivity() {
 
             progressDialog.dismiss()
         } else {
+
+            fn = etFN.text.toString()
+            ln = etLN.text.toString()
+            un = etUserName.text.toString()
             compressImage()
 
         }
@@ -692,19 +736,30 @@ class MainActivity : AppCompatActivity() {
                 actualAdharImage?.let { imageAdharFile ->
                     lifecycleScope.launch {
 
-                        compressedProfImage = Compressor.compress(this@MainActivity, imageFile)
-                        compressedAdharImage = Compressor.compress(this@MainActivity, imageAdharFile)
+                        compressedProfImage = Compressor.compress(this@MainActivity, imageFile){
+                            size(100_000)
+                            resolution(600, 600)
+                            quality(60)
+                            format(Bitmap.CompressFormat.JPEG)
+                        }
+                        compressedAdharImage = Compressor.compress(this@MainActivity, imageAdharFile){
+                            size(100_000)
+                            resolution(600, 600)
+                            quality(60)
+                            format(Bitmap.CompressFormat.JPEG)
+
+                        }
                         setCompressedImage()
 
                     }
                 } ?:
                 Log.d("receiveddata","Please Choose an Image")
-                progressDialog.dismiss()
+//                progressDialog.dismiss()
 
             }
         } ?:
         Log.d("receiveddata","Please Choose an Image")
-        progressDialog.dismiss()
+//        progressDialog.dismiss()
     }
 
 
@@ -714,10 +769,14 @@ class MainActivity : AppCompatActivity() {
             val uri = Uri.fromFile(it)
             profPicURL = uri.toString()
 
+            Log.d("Compressor", "CompressedProf image size in " +getReadableFileSize(it.length()))
+
             compressedAdharImage?.let {
                 civAdharImg.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
                 val uri = Uri.fromFile(it)
                 adharPicURL = uri.toString()
+
+                Log.d("Compressor", "CompressedAdhar image size in " +getReadableFileSize(it.length()))
 
                 hitSignUpAPI()
 
@@ -728,6 +787,16 @@ class MainActivity : AppCompatActivity() {
         } ?:
         Toast.makeText(this@MainActivity, "File not Found " , Toast.LENGTH_LONG).show()
 
+    }
+
+
+    private fun getReadableFileSize(size: Long): String {
+        if (size <= 0) {
+            return "0"
+        }
+        val units = arrayOf("B", "KB", "MB", "GB", "TB")
+        val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
+        return DecimalFormat("#,##0.#").format(size / 1024.0.pow(digitGroups.toDouble())) + " " + units[digitGroups]
     }
 
     private fun hitLoginAPI() {

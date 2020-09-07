@@ -686,8 +686,10 @@
                 android:layout_width="match_parent"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="4dp"
-                android:background="?attr/selectableItemBackground"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:clickable="true"
+                android:background="?attr/selectableItemBackground"
+
                 android:layout_marginTop="25dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
@@ -718,7 +720,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:text="When I'm subscribed, I can opt out anytime by contacting BlaBlaCar or via the link in the newsletter."
+                android:text="When I'm subscribed, I can opt out anytime by contacting Share Sawaari or via the link in the newsletter."
                 android:textColor="@color/textColorHead"
                 android:gravity="center"
                 android:textStyle="bold"

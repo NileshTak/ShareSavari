@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -35,6 +36,7 @@ import com.google.android.gms.tasks.Task
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -60,6 +62,8 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
     lateinit var mapView: MapView
 
    lateinit var pojoWithData : offerRideModel
+
+    lateinit var svAddSearchDrop : SearchView
 
 
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
@@ -101,6 +105,9 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
         val bundle: Bundle? = intent.extras
           pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
 
+        svAddSearchDrop = findViewById<SearchView>(R.id.svAddSearchDrop)
+
+
         askGalleryPermissionLocation()
         var cv = findViewById<FloatingActionButton>(R.id.fabNextDate)
 
@@ -123,6 +130,44 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
         mapView.getMapAsync(this)
 
         tvCurrentAddress = findViewById<TextView>(R.id.tvCurrentAddress)
+
+
+        svAddSearchDrop.onActionViewExpanded()
+
+        svAddSearchDrop.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+
+                var location = svAddSearchDrop.query.toString()
+                var addressList : List<Address>? = null;
+                if (location != null || location!= "") {
+                    var geocoder = Geocoder(this@ShowMapActivityDrop)
+                    try {
+                        addressList= geocoder.getFromLocationName(location,1)
+                    }catch (e : Exception) {
+                        e.printStackTrace()
+                    }
+
+                    var address = addressList!!.get(0)
+                    var latLng = LatLng(address.latitude,address.longitude)
+                    mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                    mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10f))
+
+                }
+
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+
+                return false
+            }
+
+
+
+        })
+
+        mapView.getMapAsync(this)
+
 
         ivCloseScreen.setOnClickListener {
             onBackPressed()
@@ -160,7 +205,7 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
                 if (count == 0) {
                     ivClear.visibility = View.GONE
                 } else {
-                    ivClear.visibility = View.VISIBLE
+//                    ivClear.visibility = View.VISIBLE
                 }
 
             }

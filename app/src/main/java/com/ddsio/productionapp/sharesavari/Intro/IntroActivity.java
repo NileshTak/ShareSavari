@@ -93,7 +93,7 @@ public class IntroActivity extends AppCompatActivity {
 
         final List<ScreenItem> mList = new ArrayList<>();
         boolean fresh_food = mList.add(new ScreenItem("Share with Love", "Carpooling? Why not. Make new Friends", R.drawable.sharing1));
-        mList.add(new ScreenItem("Cost Effective", "Save some cash with Sharing Savari", R.drawable.sharing3));
+        mList.add(new ScreenItem("Cost Effective", "Save some cash with Share Sawaari", R.drawable.sharing3));
         mList.add(new ScreenItem("Fast Delivery", "Extraordinary Service For Extraordinary Customers. Stay Connected", R.drawable.sharing2));
 
         // setup viewpager
