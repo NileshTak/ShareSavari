@@ -32,6 +32,10 @@ object Configure {
     val Book_RIDE_URL = "ride/passenger/"
 
 
+    //Rest Password
+    val REST_PASS = "password/reset/"
+
+
 
     //SharedPreferenceValue
     val LOGIN_KEY = "Login_key"

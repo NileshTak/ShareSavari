@@ -1,7 +1,9 @@
 package com.ddsio.productionapp.sharesavari.SearchScreen
 
 import android.Manifest
+import android.app.DatePickerDialog
 import android.app.ProgressDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +14,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.Button
 import android.widget.TextView
+import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
@@ -21,39 +24,52 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.ddsio.productionapp.sharesavari.CommonUtils.TimePickerFragment
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
-import com.productionapp.amhimemekar.CommonUtils.*
+import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
+import com.productionapp.amhimemekar.CommonUtils.BookRidesPojo
+import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
+import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
-import com.productionapp.amhimemekar.CommonUtils.Configure.Book_RIDE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.reset_password_dialog.view.*
+import kotlinx.android.synthetic.main.select_passenger_number.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import java.text.SimpleDateFormat
 import java.util.*
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment()  {
 
     lateinit var cvFromLocation : CardView
     lateinit var cvToLocation : CardView
     lateinit var tvFromAdd : TextView
+    lateinit var tvPassenger : TextView
+    lateinit var tvDate : TextView
+    var selectedDateFinal = ""
     lateinit var btnSearch : Button
     lateinit var progressDialog: ProgressDialog
-
+    lateinit var datePickerdialog: DatePickerDialog
+    val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+    var formate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
     lateinit var rvRides : RecyclerView
 
     var LOGIN_TOKEN = ""
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
     var request: RequestQueue? = null
+    lateinit var dialog_otp: AlertDialog
 
 
     override fun onCreateView(
@@ -67,6 +83,8 @@ class SearchFragment : Fragment() {
         cvFromLocation = view.findViewById(R.id.cvFromLocation)
         cvToLocation = view.findViewById(R.id.cvToLocation)
         tvFromAdd = view.findViewById<TextView>(R.id.tvFromAdd)
+        tvPassenger = view.findViewById<TextView>(R.id.tvPassenger)
+        tvDate = view.findViewById<TextView>(R.id.tvDate)
         btnSearch = view.findViewById<Button>(R.id.btnSearch)
         rvRides = view.findViewById<RecyclerView>(R.id.rvRides)
 
@@ -83,6 +101,15 @@ class SearchFragment : Fragment() {
             intent.putExtra("typeis","from")
             startActivity(intent)
 
+        }
+
+        tvDate.setOnClickListener {
+            datePicker()
+        }
+
+
+        tvPassenger.setOnClickListener {
+            showDialog()
         }
 
 
@@ -103,6 +130,90 @@ class SearchFragment : Fragment() {
 
         return view
     }
+
+    private fun showDialog() {
+
+        var count = 1
+
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.select_passenger_number, null)
+
+        alertLayout.cvAdd.setOnClickListener {
+            count++
+            alertLayout.tvCount.setText(count.toString())
+        }
+
+
+        alertLayout.setOnClickListener {
+            if (count != 0) {
+                count--
+                alertLayout.tvCount.setText(count.toString())
+            }
+        }
+
+        alertLayout.cvDone.setOnClickListener {
+            tvPassenger.setText(alertLayout.tvCount.text.toString() +" Passenger")
+            dialog_otp.dismiss()
+        }
+
+        val showOTP = AlertDialog.Builder(activity!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        dialog_otp = showOTP.create()
+        dialog_otp.show()
+
+        alertLayout.ivCloseP.setOnClickListener {
+            dialog_otp.dismiss()
+        }
+
+    }
+
+    private fun datePicker() {
+        val now = Calendar.getInstance()
+        datePickerdialog = DatePickerDialog(
+            activity!! , DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, month)
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                val date = formate.format(selectedDate.time)
+
+                selectedDateFinal = date
+
+                showTimeDialog()
+            },
+            now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerdialog.show()
+    }
+
+    private fun showTimeDialog() {
+        // Get Current Time
+
+        // Get Current Time
+        val c = Calendar.getInstance()
+        var mHour = c[Calendar.HOUR_OF_DAY]
+        var mMinute = c[Calendar.MINUTE]
+
+        // Launch Time Picker Dialog
+
+        // Launch Time Picker Dialog
+        val timePickerDialog = TimePickerDialog(
+            activity,
+            object : TimePickerDialog.OnTimeSetListener  {
+                override fun onTimeSet(
+                    view: TimePicker?, hourOfDay: Int,
+                    minute: Int
+                ) {
+                    tvDate.setText(selectedDateFinal+ ", $hourOfDay:$minute")
+                }
+            }, mHour, mMinute, false
+        )
+        timePickerDialog.show()
+    }
+
+
+
 
     private fun checkFields() {
         progressDialog = ProgressDialog(activity)

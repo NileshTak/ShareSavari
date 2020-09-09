@@ -415,47 +415,55 @@ class ProfileScreen : Fragment() {
 
                     val gson = Gson()
 
+                    if (response != null ) {
+
                     val userArray: FetchProfileData =
                         gson.fromJson(response, FetchProfileData ::class.java)
 
-                    val image = userArray.image
+                    if (userArray != null) {
+                        val image = userArray.image
 
-                    lottieSelectImage.visibility= View.GONE
-                    rlParent.visibility= View.VISIBLE
+                        lottieSelectImage.visibility= View.GONE
+                        rlParent.visibility= View.VISIBLE
 
-                    if (userArray.bio.isEmpty() || userArray.bio == "") {
-                        cvBio.visibility = View.GONE
+                        if (userArray.bio == null ||userArray.bio.isEmpty() || userArray.bio == "") {
+                            cvBio.visibility = View.GONE
+                        }
+
+
+                        if (userArray.verification == "False") {
+                            tvAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
+                            ivVerified.setImageDrawable(resources.getDrawable(R.drawable.alert))
+                        } else {
+                            tvAlert.setImageDrawable(resources.getDrawable(R.drawable.tick))
+                            ivVerified.setImageDrawable(resources.getDrawable(R.drawable.tick))
+                            btnVerify.visibility = View.GONE
+                        }
+
+
+                        if ( image != null ) {
+                            Glide.with(activity!!).load(image).into(ivProf)
+                        }
+
+                        tvFN.text = userArray.first_name
+                        tvLN.text = userArray.last_name
+                        tvBio.text = userArray.bio
+                        tvDate.text = userArray.birthdate
+                        tvEMail.text = userArray.email
+                        tvMN.text = userArray.mobile
+                        tvVerified.text = userArray.verification
+                        tvName.text = userArray.first_name+" "+userArray.last_name
+                        if (userArray.gender == "1" ) {
+                            tvGender.text = "Male"
+                        } else if (userArray.gender == "2" ) {
+                            tvGender.text = "Female"
+                        } else {
+                            tvGender.text = "Other"
+                        }
+
                     }
 
 
-                    if (userArray.verification == "False") {
-                        tvAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
-                        ivVerified.setImageDrawable(resources.getDrawable(R.drawable.alert))
-                    } else {
-                        tvAlert.setImageDrawable(resources.getDrawable(R.drawable.tick))
-                        ivVerified.setImageDrawable(resources.getDrawable(R.drawable.tick))
-                        btnVerify.visibility = View.GONE
-                    }
-
-
-                    if ( image != null ) {
-                        Glide.with(activity!!).load(image).into(ivProf)
-                    }
-
-                    tvFN.text = userArray.first_name
-                    tvLN.text = userArray.last_name
-                    tvBio.text = userArray.bio
-                    tvDate.text = userArray.birthdate
-                    tvEMail.text = userArray.email
-                    tvMN.text = userArray.mobile
-                    tvVerified.text = userArray.verification
-                    tvName.text = userArray.first_name+" "+userArray.last_name
-                    if (userArray.gender == "1" ) {
-                        tvGender.text = "Male"
-                    } else if (userArray.gender == "2" ) {
-                        tvGender.text = "Female"
-                    } else {
-                        tvGender.text = "Other"
                     }
 
                     progressDialog.dismiss()

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".SearchScreen.child.DriverProfile">
+
+
+    <LinearLayout
+        android:id="@+id/llTop"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginBottom="10dp"
+        android:layout_height="60dp">
+
+        <ImageView
+            android:id="@+id/ivCloseScreen"
+            android:layout_width="40dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_baseline_chevron_left_24_white"
+            android:tint="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:layout_height="40dp"/>
+
+
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+             <de.hdodenhof.circleimageview.CircleImageView
+                 android:id="@+id/cvProf"
+                 android:layout_width="120dp"
+                 android:elevation="1dp"
+                 android:layout_margin="2dp"
+                 android:src="@drawable/account"
+                 app:civ_border_width="1dp"
+                 app:civ_border_color="@color/md_blue_grey_50"
+                 android:layout_gravity="center_horizontal"
+                 android:layout_height="120dp"/>
+
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Name"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:textSize="22sp"
+                android:layout_gravity="center_horizontal"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textAlignment="center"
+                tools:ignore="MissingPrefix"  />
+
+
+            <TextView
+                android:id="@+id/tvAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="39 y/o"
+                android:focusable="true"
+                android:layout_marginBottom="10dp"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/textColorHead"
+                android:textSize="14sp"
+                android:layout_gravity="center_horizontal"
+                fontPath="Comfortaa-Regular.ttf"
+                android:textAlignment="center"
+                tools:ignore="MissingPrefix"  />
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:src="@drawable/ic_baseline_calendar_today_24"
+                    android:layout_width="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="30dp"/>
+
+
+                <TextView
+                    android:id="@+id/tvDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="I talk depending on my mood"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@color/textColorHead"
+                    android:textSize="18sp"
+                    android:layout_gravity="center_vertical"
+                    fontPath="Comfortaa-Regular.ttf"
+                    android:textAlignment="center"
+                    tools:ignore="MissingPrefix"  />
+
+
+
+            </LinearLayout>
+
+            <View
+                android:background="@color/md_blue_grey_100"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:layout_height="2dp"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:src="@drawable/ic_baseline_calendar_today_24"
+                    android:layout_width="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="30dp"/>
+
+
+                <TextView
+                    android:id="@+id/tvPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone Verified"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@color/textColorHead"
+                    android:textSize="18sp"
+                    android:layout_gravity="center_vertical"
+                    fontPath="Comfortaa-Regular.ttf"
+                    android:textAlignment="center"
+                    tools:ignore="MissingPrefix"  />
+
+
+
+            </LinearLayout>
+
+            <View
+                android:background="@color/md_blue_grey_100"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:layout_height="2dp"/>
+
+            <TextView
+                android:id="@+id/tvRidesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="16 rides puslished"
+                android:focusable="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="15dp"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/textColorHead"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                fontPath="Comfortaa-Regular.ttf"
+                android:textAlignment="center"
+                tools:ignore="MissingPrefix"  />
+            <View
+                android:background="@color/md_blue_grey_100"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:layout_height="2dp"/>
+            <TextView
+                android:id="@+id/tvMember"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Member since Aug 2020"
+                android:focusable="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="15dp"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/textColorHead"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                fontPath="Comfortaa-Regular.ttf"
+                android:textAlignment="center"
+                tools:ignore="MissingPrefix"  />
+            <View
+                android:background="@color/md_blue_grey_100"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:layout_height="2dp"/>
+
+            <TextView
+                android:id="@+id/tvReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report this member"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="15dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textAlignment="center"
+                tools:ignore="MissingPrefix"  />
+
+
+        </LinearLayout>
+
+
+
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

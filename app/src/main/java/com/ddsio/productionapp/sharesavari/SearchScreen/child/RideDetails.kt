@@ -40,8 +40,11 @@ import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_ride_detail.*
+import kotlinx.android.synthetic.main.activity_ride_detail.ivCloseScreen
 import kotlinx.android.synthetic.main.activity_show_map.*
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -143,8 +146,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         tvOfferedby.text = pojoWithData.username
          tvPrice.text = "₹ "+pojoWithData.price.toString()
 
+        if (pojoWithData.image != null ) {
+            Glide.with(this).load(pojoWithData.image).into(ivprof)
+        }
 
-        Glide.with(this).load(pojoWithData.image).into(ivprof)
+
 
         askGalleryPermissionLocation()
 
@@ -163,6 +169,19 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         ivCloseScreen.setOnClickListener {
             onBackPressed()
+        }
+
+
+        rlProfile.setOnClickListener {
+            var int = Intent(this,
+                DriverProfile::class.java)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    this ,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            int.putExtra("pojoWithData",pojoWithData)
+            startActivity(int,bundle)
         }
 
         btnBook.setOnClickListener {

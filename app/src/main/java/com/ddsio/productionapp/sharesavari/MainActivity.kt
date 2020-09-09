@@ -37,6 +37,7 @@ import com.ddsio.productionapp.sharesavari.ProfileScreen.ProfileScreen
 import com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
@@ -48,7 +49,9 @@ import id.zelory.compressor.constraint.resolution
 import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.reset_password_dialog.view.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -72,9 +75,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var llLogin : LinearLayout
     lateinit var tvSignUp : TextView
     lateinit var tvLogin : TextView
+    lateinit var tvForgotPass : TextView
     var imageUri = ""
     var type  = ""
     lateinit var nsvSignUp : NestedScrollView
+
+    lateinit var dialog_otp: AlertDialog
 
     lateinit var bitmap : Bitmap
 
@@ -129,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
 
         tvSignUp = findViewById<TextView>(R.id.tvSignUp)
+        tvForgotPass = findViewById<TextView>(R.id.tvForgotPass)
         nsvSignUp = findViewById<NestedScrollView>(R.id.nsvSignUp)
         tvLogin = findViewById<TextView>(R.id.tvLogin)
         frameContainer = findViewById<FrameLayout>(R.id.frame)
@@ -177,6 +184,11 @@ class MainActivity : AppCompatActivity() {
 
         cvSignUpFB.setOnClickListener {
             Toast.makeText(this,"Coming Soon.....",Toast.LENGTH_LONG).show()
+        }
+
+
+        tvForgotPass.setOnClickListener {
+            showRestPassDialog()
         }
 
         cvLogin.setOnClickListener {
@@ -305,6 +317,92 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun showRestPassDialog() {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.reset_password_dialog, null)
+
+        alertLayout.cvReset!!.setOnClickListener {
+            val verificationCode = alertLayout.loginetEmail!!.text!!.toString()
+            if (verificationCode.isEmpty()) {
+//                Toast.makeText(this@Authentication, "Enter verification code", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"Please Enter Valid Email Address",Toast.LENGTH_LONG).show()
+
+            } else {
+
+                hitResetAPI(verificationCode)
+                dialog_otp.dismiss()
+            }
+        }
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        dialog_otp = showOTP.create()
+        dialog_otp.show()
+
+        alertLayout.ivCloseReset.setOnClickListener {
+            dialog_otp.dismiss()
+        }
+
+    }
+
+    private fun hitResetAPI(email: String) {
+
+        progressDialog = ProgressDialog(this@MainActivity)
+        progressDialog.setMessage("Wait a Sec....Loging In")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+        var url =  Configure.BASE_URL + Configure.REST_PASS
+
+        Log.d("Responceis",url)
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                    Log.i( "Responceis", response.toString())
+
+                    progressDialog.dismiss()
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+
+                        Toast.makeText(applicationContext,"RESET E-Mail has been sent to your given E-Mail Address.",
+                            Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+
+                }
+            }) {
+            override fun getBodyContentType(): String {
+                return "application/x-www-form-urlencoded; charset=UTF-8"
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params["email"] = email
+
+                return params
+            }
+        }
+        jsonObjRequest.setRetryPolicy(
+            DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+        )
+        request!!.add(jsonObjRequest)
     }
 
 
@@ -894,13 +992,13 @@ class MainActivity : AppCompatActivity() {
                 override fun onErrorResponse(error: VolleyError) {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
-//                    if (error.networkResponse.statusCode == 400) {
-//                        Toast.makeText(applicationContext,"A user is already registered with this e-mail address",
-//                            Toast.LENGTH_LONG).show()
-//                    } else {
+                    if (error.networkResponse.statusCode == 400) {
+                        Toast.makeText(applicationContext,"A user is already registered with this e-mail address",
+                            Toast.LENGTH_LONG).show()
+                    } else {
                         Toast.makeText(applicationContext,"Something Went Wrong ! Please try after some time",
                             Toast.LENGTH_LONG).show()
-//                    }
+                    }
                     progressDialog.dismiss()
 
                 }

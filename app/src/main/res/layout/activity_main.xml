@@ -152,6 +152,7 @@
             android:hint="Email"
             fontPath="Comfortaa-Bold.ttf"
             android:textSize="20dp"
+            android:inputType="textEmailAddress"
             tools:ignore="MissingPrefix"
             android:textColor="@color/md_black_1000"
             android:layout_marginStart="20dp"
@@ -219,6 +220,7 @@
 
 
         <TextView
+            android:id="@+id/tvForgotPass"
             android:layout_width="match_parent"
             android:text="FORGOT YOUR PASSWORD?"
             android:textColor="@color/colorPrimary"

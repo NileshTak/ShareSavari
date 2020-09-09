@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.NotificationFrag">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreen">
 
     <TextView
-        android:id="@+id/tvTitleTool"
-        android:text="All done! You have no notification right now."
-        android:textSize="25sp"
-        android:layout_margin="25dp"
+        android:id="@+id/tvTitleBooked"
+        android:text="No Booked Rides Found"
+        android:textSize="22sp"
+        android:layout_margin="10dp"
+        android:visibility="visible"
         fontPath="Comfortaa-Bold.ttf"
         android:textAlignment="center"
         android:textStyle="bold"
@@ -18,4 +21,14 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingPrefix" />
 
-</RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvBookedRides"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:padding="4dp"
+        android:layout_margin="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+</LinearLayout>

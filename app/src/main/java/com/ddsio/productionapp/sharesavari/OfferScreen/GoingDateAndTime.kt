@@ -57,7 +57,6 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
             }
 
 
-
         etSelectDate.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(p0: View?, p1: Boolean) {
                 if (p1 == true) {
