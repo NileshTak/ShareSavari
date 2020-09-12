@@ -71,6 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="39 y/o"
+                android:visibility="gone"
                 android:focusable="true"
                 android:layout_marginBottom="10dp"
                 android:focusableInTouchMode="true"
@@ -124,15 +125,19 @@
                 android:layout_height="2dp"/>
 
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
                 android:layout_height="60dp">
 
+
+
                 <ImageView
-                    android:src="@drawable/ic_baseline_calendar_today_24"
+                    android:id="@+id/iv"
+                    android:src="@drawable/ic_baseline_mobile_friendly_24"
                     android:layout_width="30dp"
                     android:layout_marginEnd="20dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginStart="20dp"
                     android:layout_gravity="center_vertical"
                     android:layout_height="30dp"/>
@@ -143,8 +148,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Phone Verified"
+                    android:layout_toRightOf="@+id/iv"
                     android:focusable="true"
-                    android:focusableInTouchMode="true"
+                    android:layout_centerVertical="true"
                     android:textColor="@color/textColorHead"
                     android:textSize="18sp"
                     android:layout_gravity="center_vertical"
@@ -152,9 +158,18 @@
                     android:textAlignment="center"
                     tools:ignore="MissingPrefix"  />
 
+                <ImageView
+                    android:id="@+id/ivAlert"
+                    android:layout_width="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/alert"
+                    android:layout_marginEnd="20dp"
+                    android:layout_gravity="end"
+                    android:layout_height="30dp"/>
 
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <View
                 android:background="@color/md_blue_grey_100"
@@ -205,6 +220,43 @@
                 android:layout_margin="5dp"
                 android:layout_height="2dp"/>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <RatingBar
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_height="wrap_content"
+                    android:saveEnabled="true"
+                    android:numStars="5"/>
+
+                <Button
+                    android:id="@+id/btnSubmit"
+                    android:visibility="gone"
+                    android:layout_width="75dp"
+                    android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                    android:layout_marginEnd="15dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:tint="@color/textColorHead"
+                    android:text="Rate"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="end"
+                    android:layout_height="match_parent"/>
+
+
+
+            </RelativeLayout>
+
+            <View
+                android:background="@color/md_blue_grey_100"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:layout_height="2dp"/>
+
             <TextView
                 android:id="@+id/tvReport"
                 android:layout_width="wrap_content"
@@ -221,6 +273,8 @@
                 fontPath="Comfortaa-Bold.ttf"
                 android:textAlignment="center"
                 tools:ignore="MissingPrefix"  />
+
+
 
 
         </LinearLayout>

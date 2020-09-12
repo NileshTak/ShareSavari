@@ -72,6 +72,10 @@ class SearchFragment : Fragment()  {
     lateinit var dialog_otp: AlertDialog
 
 
+    var dateAPi = currentDate
+    var passengerCount = 1
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -152,6 +156,9 @@ class SearchFragment : Fragment()  {
         }
 
         alertLayout.cvDone.setOnClickListener {
+
+            passengerCount = alertLayout.tvCount.text.toString().toInt()
+
             tvPassenger.setText(alertLayout.tvCount.text.toString() +" Passenger")
             dialog_otp.dismiss()
         }
@@ -179,6 +186,8 @@ class SearchFragment : Fragment()  {
                 val date = formate.format(selectedDate.time)
 
                 selectedDateFinal = date
+
+                dateAPi = selectedDateFinal
 
                 showTimeDialog()
             },
@@ -270,13 +279,11 @@ class SearchFragment : Fragment()  {
 
 
     private fun hitFindRideAPI() {
-
         val adapter = GroupAdapter<ViewHolder>()
 
+            val url = BASE_URL+ OFFER_RIDE_URL+"?gcity="+tvToAdd.text.toString()+"&lcity="+tvFromAdd.text.toString()+"&passenger="+passengerCount+"&date="+dateAPi
 
-            val url = BASE_URL+ OFFER_RIDE_URL+"?gcity="+tvToAdd.text.toString()+"&lcity="+tvFromAdd.text.toString()
-//        val url = "https://ddsio.com/sharesawaari/rest/users/22/"
-
+        Log.d("datlmkm",url)
 
             val jsonObjRequest: StringRequest = object : StringRequest(
                 Method.GET,
@@ -362,8 +369,9 @@ class SearchFragment : Fragment()  {
     fun OnAddSelected(add : BookRideScreenFetchCity?) {
         if (add!!.type == "from") {
             tvFromAdd.text = add!!.city
-        } else {
+        } else if (add!!.type == "to") {
             tvToAdd.text = add!!.city
+        }else {
         }
 
     }
@@ -396,10 +404,17 @@ class SearchFragment : Fragment()  {
 //            viewHolder.itemView.tvPrice.text = customers.price.toString()
 //            viewHolder.itemView.tvReturn.text = customers.is_return.toString()
 
-
                 viewHolder.itemView.tvFromCity.text = customers.lcity
                 viewHolder.itemView.tvToCity.text = customers.gcity
+            viewHolder.itemView.tvRate.text = "₹ "+customers.price.toString()
 
+            Log.d("jukjbkjf",customers.user.toString())
+
+            if (customers.is_direct == true) {
+                viewHolder.itemView.ivDirect.visibility = View.VISIBLE
+            } else {
+                viewHolder.itemView.ivDirect.visibility = View.GONE
+            }
 
             viewHolder.itemView.setOnClickListener {
 
@@ -414,6 +429,7 @@ class SearchFragment : Fragment()  {
                     ).toBundle()
                 int.putExtra("pojoWithData",customers)
                 int.putExtra("screen","search")
+                int.putExtra("IDToCancel","0")
                 startActivity(int,bundle)
             }
 

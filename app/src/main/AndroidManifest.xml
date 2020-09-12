@@ -36,7 +36,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SearchScreen.child.DriverProfile"></activity>
+        <activity android:name=".SearchScreen.child.BookedSuccess"></activity>
+        <activity android:name=".SearchScreen.child.DriverProfile" />
 
         <uses-library
             android:name="org.apache.http.legacy"

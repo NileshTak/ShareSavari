@@ -35,6 +35,7 @@ import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
 import kotlinx.android.synthetic.main.fragment_home_screen.*
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -222,8 +223,16 @@ class HomeScreen : Fragment() {
 
             viewHolder.itemView.tvFromCity.text = customers.lcity
             viewHolder.itemView.tvToCity.text = customers.gcity
+            viewHolder.itemView.tvRate.text = "₹ "+customers.price.toString()
 
             Log.d("jukjbkjf",customers.user.toString())
+
+            if (customers.is_direct == true) {
+                viewHolder.itemView.ivDirect.visibility = View.VISIBLE
+            } else {
+                viewHolder.itemView.ivDirect.visibility = View.GONE
+            }
+
 
             viewHolder.itemView.setOnClickListener {
                 var int = Intent( viewHolder.itemView.tvFromCity.context,
@@ -235,6 +244,7 @@ class HomeScreen : Fragment() {
                     ).toBundle()
                 int.putExtra("pojoWithData",customers)
                 int.putExtra("screen","home")
+                int.putExtra("IDToCancel","0")
                 startActivity(int,bundle)
             }
 

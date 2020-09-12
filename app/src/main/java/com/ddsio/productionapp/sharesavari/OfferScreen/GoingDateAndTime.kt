@@ -2,6 +2,7 @@ package com.ddsio.productionapp.sharesavari.OfferScreen
 
 import android.Manifest
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -72,6 +73,21 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
         }
 
 
+        etReachDate.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(p0: View?, p1: Boolean) {
+                if (p1 == true) {
+                    datePickerReach()
+                }
+            }
+        })
+
+
+
+        etReachDate.setOnClickListener {
+            datePickerReach()
+        }
+
+
         etSelectTime.setOnClickListener {
             val timePickerFragment: DialogFragment = TimePickerFragment()
             timePickerFragment.setCancelable(false)
@@ -89,6 +105,20 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
             }
         })
 
+
+        etReachTime.setOnClickListener {
+           shoeReachTimeDialog()
+        }
+
+
+        etReachTime.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(p0: View?, p1: Boolean) {
+                if (p1 == true) {
+                    shoeReachTimeDialog()
+                }
+            }
+        })
+
         ivBackGoing.setOnClickListener {
             onBackPressed()
         }
@@ -99,6 +129,30 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
           checkFields()
         }
 
+    }
+
+    private fun shoeReachTimeDialog() {
+        val c = Calendar.getInstance()
+        var mHour = c[Calendar.HOUR_OF_DAY]
+        var mMinute = c[Calendar.MINUTE]
+
+        // Launch Time Picker Dialog
+
+        // Launch Time Picker Dialog
+        val timePickerDialog = TimePickerDialog(
+            this,
+            object : TimePickerDialog.OnTimeSetListener  {
+                override fun onTimeSet(
+                    view: TimePicker?, hourOfDay: Int,
+                    minute: Int
+                ) {
+                    etReachTime.setText("$hourOfDay : $minute")
+
+                    pojoWithData.tdtime = "$hourOfDay:$minute"
+                }
+            }, mHour, mMinute, false
+        )
+        timePickerDialog.show()
     }
 
 
@@ -142,6 +196,12 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
                 Toast.LENGTH_LONG).show()
         } else  if (etSelectTime.text.toString().isEmpty() || etSelectTime.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Leaving Time",
+                Toast.LENGTH_LONG).show()
+        } else if (etReachDate.text.toString().isEmpty() || etReachDate.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Reaching Date ",
+                Toast.LENGTH_LONG).show()
+        } else  if (etReachTime.text.toString().isEmpty() || etReachTime.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Reaching Time",
                 Toast.LENGTH_LONG).show()
         }  else {
             if (cvReturnRide.isChecked) {
@@ -194,6 +254,24 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
                 val date = formate.format(selectedDate.time)
                 etSelectDate.setText(date)
                 pojoWithData.date = date
+            },
+            now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerdialog.show()
+    }
+
+
+    private fun datePickerReach() {
+        val now = Calendar.getInstance()
+        datePickerdialog = DatePickerDialog(
+            this@GoingDateAndTime, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, month)
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                val date = formate.format(selectedDate.time)
+                etReachDate.setText(date)
+                pojoWithData.tddate = date
             },
             now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
         )

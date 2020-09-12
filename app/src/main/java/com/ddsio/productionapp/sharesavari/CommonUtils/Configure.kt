@@ -24,6 +24,13 @@ object Configure {
     //GET User Details
     val GET_USER_DETAILS = "users/"
 
+    //Rating
+    val RATING = "ratings/"
+
+
+    //Complaint
+    val COMPLAINT = "complaint/"
+
     //Offering Rides
     val OFFER_RIDE_URL = "rides/"
 

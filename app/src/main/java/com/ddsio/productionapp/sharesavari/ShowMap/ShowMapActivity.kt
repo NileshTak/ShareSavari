@@ -63,6 +63,10 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
 
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
+
+    var SLat = "0"
+    var SLog = "0"
+
     var type = ""
 
 
@@ -253,14 +257,15 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
             var pojo = BookRideScreenFetchCity()
             pojo.city = city
             pojo.type = type
+            pojo.lat = SLat
+            pojo.long = SLog
+
+            Log.d("khsnkunkdjv",pojo.city + pojo.type + pojo.lat + pojo.long)
 
             EventBus.getDefault().post(pojo)
             onBackPressed()
         }
     }
-
-
-
 
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -381,6 +386,11 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
 
                 } else {
                                     tvAddSearch!!.setText(addresses.getAddressLine(0))
+                }
+
+                if ( addresses.longitude != null && addresses.latitude != null ) {
+                    SLat = addresses.latitude.toString()
+                    SLog = addresses.longitude.toString()
                 }
 
             }

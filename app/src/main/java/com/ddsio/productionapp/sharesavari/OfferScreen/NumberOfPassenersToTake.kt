@@ -20,11 +20,16 @@ import com.android.volley.toolbox.Volley
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
+import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import kotlinx.android.synthetic.main.activity_going_date_and_time.*
 import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
+import kotlinx.android.synthetic.main.fragment_search.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class NumberOfPassenersToTake : AppCompatActivity() {
 
@@ -49,7 +54,12 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         request= Volley.newRequestQueue(this);
 
 
+        cvStopPoint.setOnClickListener {
+            val intent =  (Intent(this, ShowMapActivity::class.java))
+            intent.putExtra("typeis","stop")
+            startActivity(intent)
 
+        }
 
         askGalleryPermissionLocation()
             Utils.checkConnection(this@NumberOfPassenersToTake,cv)
@@ -68,6 +78,12 @@ class NumberOfPassenersToTake : AppCompatActivity() {
             if (count != 0) {
                 count--
                 tvCount.setText(count.toString())
+
+                if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
+                    totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
+                    tvTotalPrice.text = totalAmt.toString() + "₹"
+                }
+
             }
         }
 
@@ -79,12 +95,19 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         cvAdd.setOnClickListener {
             count++
             tvCount.setText(count.toString())
+
+            if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
+                totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
+                tvTotalPrice.text = totalAmt.toString() + "₹"
+            }
         }
 
         etPrice.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                 totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
-                tvTotalPrice.text = totalAmt.toString() + "₹"
+                if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
+                    totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
+                    tvTotalPrice.text = totalAmt.toString() + "₹"
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -104,6 +127,31 @@ class NumberOfPassenersToTake : AppCompatActivity() {
           checkFields()
         }
     }
+
+    @Subscribe
+    fun OnAddSelected(add : BookRideScreenFetchCity?) {
+
+        Log.d("CITYIS",add!!.city.toString() +"jubhjbjbj")
+        if (add!!.type == "stop") {
+            tvStop.text = add!!.city
+            pojoWithData.stitle = add!!.city
+            pojoWithData.slat = add.lat
+            pojoWithData.slog = add.long
+
+        }
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        if (!EventBus.getDefault().isRegistered(this@NumberOfPassenersToTake)) EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this@NumberOfPassenersToTake)
+    }
+
 
     private fun askGalleryPermissionLocation() {
         askPermission(
@@ -144,9 +192,20 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         if (etPrice.text.toString().isEmpty() || etPrice.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Riding Price for per Passenger ",
                 Toast.LENGTH_LONG).show()
+        } else if (etCar.text.toString().isEmpty() || etCar.text.toString() == "") {
+            Toast.makeText(this,"Please enter valid Car Name ",
+                Toast.LENGTH_LONG).show()
         } else {
             pojoWithData.price = etPrice.text.toString()
             pojoWithData.passenger = tvCount.text.toString()
+            pojoWithData.carname = etCar.text.toString()
+
+            if (tvStop.text.toString().isEmpty() || tvStop.text.toString() == "StopPoint") {
+                pojoWithData.stitle = ""
+                pojoWithData.slog = "0"
+                pojoWithData.slat = "0"
+
+            }
 
             hitOfferRideAPI()
         }
@@ -157,8 +216,14 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 
     private fun hitOfferRideAPI() {
 
+        if (cbBookInstant.isChecked) {
+            pojoWithData.is_direct = true
+        } else {
+            pojoWithData.is_direct = false
+        }
+
         progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("Wait a Sec....Loging In")
+        progressDialog.setMessage("Wait a Sec....Creating your Ride")
         progressDialog.setCancelable(false)
         progressDialog.show()
 
@@ -247,6 +312,13 @@ class NumberOfPassenersToTake : AppCompatActivity() {
                 params["passenger"] = pojoWithData.passenger.toString()
                 params["comment"] = pojoWithData.comment.toString()
                 params["is_return"] = pojoWithData.is_return.toString()
+                params["tddate"] = pojoWithData.tddate.toString()
+                params["tdtime"] = pojoWithData.tdtime.toString()
+                params["is_direct"] = pojoWithData.is_direct.toString()
+                params["carname"] = pojoWithData.carname.toString()
+                params["stitle"] = pojoWithData.stitle.toString()
+                params["slat"] = pojoWithData.slat.toString()
+                params["slog"] = pojoWithData.slog.toString()
 
                 return params
             }

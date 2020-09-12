@@ -26,6 +26,7 @@ import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.Intro.IntroActivity
+import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -39,6 +40,8 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.*
+import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
+import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_ride_detail.*
@@ -73,6 +76,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     lateinit var pojoWithData : BookRidesPojoItem
+
+    var IDToCancel = "0"
 
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -111,11 +116,23 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
         var screen  = bundle!!.get("screen") as String
+        IDToCancel  = bundle!!.get("IDToCancel") as String
 
         if (screen == "home") {
             rlBottom.visibility = View.GONE
+            rlBottomDelete.visibility = View.VISIBLE
+            rlBottomEdit.visibility = View.VISIBLE
+            rlBottomCancel.visibility = View.GONE
+        } else if (screen == "Booked"){
+            rlBottom.visibility = View.GONE
+            rlBottomCancel.visibility = View.VISIBLE
+            rlBottomDelete.visibility = View.GONE
+            rlBottomEdit.visibility = View.GONE
         } else {
+            rlBottomDelete.visibility = View.GONE
+            rlBottomEdit.visibility = View.GONE
             rlBottom.visibility = View.VISIBLE
+            rlBottomCancel.visibility = View.GONE
         }
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
@@ -128,19 +145,30 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
        tvFromAdd.text = pojoWithData.lline+", "+pojoWithData.lcity
      tvToAdd.text = pojoWithData.gline+", "+pojoWithData.gcity
         tvDate.text = pojoWithData.date
-        tvLTime.text = pojoWithData.time
-
+        tvLTime.text = pojoWithData.date +" " +
+                "(${pojoWithData.time})"
 
         tvFromFullAdd.text = "("+ pojoWithData.leaving+")"
         tvToFullAdd.text = "("+ pojoWithData.going+")"
+        tvCar.text = pojoWithData.carname
+        if (pojoWithData.stitle == null || pojoWithData.stitle == "") {
+            llStopPoint.visibility = View.GONE
+        } else {
+            tvStopPoint.text = pojoWithData.stitle
+        }
+
+
+
+        if (pojoWithData.is_direct == true) {
+            llAutoApp.visibility = View.VISIBLE
+        } else {
+            llAutoApp.visibility = View.GONE
+        }
 
         Log.d("jknj",pojoWithData.is_return.toString())
 
-        if (pojoWithData.is_return == false) {
-            tvGTime.text = ""
-        } else {
-            tvGTime.text = pojoWithData.rtime
-        }
+        tvRTime.text = pojoWithData.tddate +" " +
+                "(${pojoWithData.tdtime})"
 
 
         tvOfferedby.text = pojoWithData.username
@@ -166,6 +194,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
 
         fetchLatLog()
+        getRating()
 
         ivCloseScreen.setOnClickListener {
             onBackPressed()
@@ -187,6 +216,105 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         btnBook.setOnClickListener {
                 bookRideAPI(pojoWithData)
             }
+
+        btnDelete.setOnClickListener {
+            deleteRideAPI(pojoWithData)
+        }
+
+
+
+        btnCancel.setOnClickListener {
+            CancelRide()
+        }
+
+
+        btnEdit.setOnClickListener {
+
+        }
+
+    }
+
+
+
+    private fun getRating() {
+        progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Wait a Sec.... ")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+
+        var rating = 0
+        var userRatedCount = 0
+
+        val url = BASE_URL+ RATING
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("driverprofRate", response.toString())
+                    val gson = Gson()
+
+                    val userArray: ArrayList<RatingModelItem> =
+                        gson.fromJson(response, RatingModel ::class.java)
+
+                    if (userArray != null) {
+
+                        for (i in 0..userArray.size-1) {
+
+                                if (userArray.get(i).driver == pojoWithData.user) {
+                                    if (userArray.get(i).points != null) {
+
+                                        rating = rating + userArray.get(i).points
+                                    userRatedCount = userRatedCount + 1
+                                }
+                            }
+                        }
+
+                        Log.d("dtsbjnkd",rating.toString())
+
+
+                        if (userRatedCount != 0 && userRatedCount != null) {
+                            var sum = userRatedCount * 5
+                            var finalRating = (rating * 5) / sum
+                            tvRating.text = finalRating.toString()+"/5 ratings"
+                        }
+
+                    }
+
+
+                    progressDialog.dismiss()
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
 
     }
 
@@ -329,6 +457,172 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
 
 
+    private fun deleteRideAPI(customers: BookRidesPojoItem) {
+
+        progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Wait a Sec....Deleting Ride")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+
+        val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL+ "${customers.id}/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.DELETE,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkjf", response.toString())
+
+                        Toast.makeText(this@RideDetails,"Ride Successfully Deleted.",Toast.LENGTH_LONG).show()
+                    var int = Intent(this@RideDetails,
+                        MainActivity::class.java)
+                    val bundle =
+                        ActivityOptionsCompat.makeCustomAnimation(
+                            this@RideDetails ,
+                            R.anim.fade_in, R.anim.fade_out
+                        ).toBundle()
+                    int.putExtra("type", "")
+                    startActivity(int,bundle)
+
+                    progressDialog.dismiss()
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    if (error.networkResponse.statusCode == 204) {
+                        Toast.makeText(this@RideDetails,"Ride Successfully Canceled.",Toast.LENGTH_LONG).show()
+
+                        var int = Intent(this@RideDetails,
+                            MainActivity::class.java)
+                        val bundle =
+                            ActivityOptionsCompat.makeCustomAnimation(
+                                this@RideDetails ,
+                                R.anim.fade_in, R.anim.fade_out
+                            ).toBundle()
+                        startActivity(int,bundle)
+
+                    } else {
+                        Toast.makeText(this@RideDetails,"Something Went Wrong ! Please try after some time",
+                            Toast.LENGTH_LONG).show()
+                    }
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+//                params.put("ride",customers.id.toString())
+//                params.put("passenger",USER_ID_KEY)
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
+
+
+    private fun CancelRide( ) {
+        progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Wait a Sec....Canceling Ride")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+
+        val url = Configure.BASE_URL + Configure.Book_RIDE_URL+ "${IDToCancel}/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.DELETE,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkjf", response.toString())
+
+                    Toast.makeText(this@RideDetails,"Ride Successfully Canceled.",Toast.LENGTH_LONG).show()
+                    var int = Intent(this@RideDetails,
+                        MainActivity::class.java)
+                    val bundle =
+                        ActivityOptionsCompat.makeCustomAnimation(
+                            this@RideDetails ,
+                            R.anim.fade_in, R.anim.fade_out
+                        ).toBundle()
+                    int.putExtra("type", "")
+                    startActivity(int,bundle)
+
+                    progressDialog.dismiss()
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    if (error.networkResponse.statusCode == 204) {
+                        Toast.makeText(this@RideDetails,"Ride Successfully Canceled.",Toast.LENGTH_LONG).show()
+
+                        var int = Intent(this@RideDetails,
+                            MainActivity::class.java)
+                        val bundle =
+                            ActivityOptionsCompat.makeCustomAnimation(
+                                this@RideDetails ,
+                                R.anim.fade_in, R.anim.fade_out
+                            ).toBundle()
+                        startActivity(int,bundle)
+
+                    } else {
+                        Toast.makeText(this@RideDetails,"Something Went Wrong ! Please try after some time",
+                            Toast.LENGTH_LONG).show()
+                    }
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+//                params.put("ride",customers.id.toString())
+//                params.put("passenger",USER_ID_KEY)
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
+
     private fun bookRideAPI(customers: BookRidesPojoItem) {
 
         progressDialog = ProgressDialog(this)
@@ -448,6 +742,14 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     progressDialog.dismiss()
                     Toast.makeText(this@RideDetails,"Ride Booked Successfully.",Toast.LENGTH_LONG).show()
 
+                    var int = Intent(this@RideDetails,
+                        BookedSuccess::class.java)
+                    val bundle =
+                        ActivityOptionsCompat.makeCustomAnimation(
+                            this@RideDetails ,
+                            R.anim.fade_in, R.anim.fade_out
+                        ).toBundle()
+                    startActivity(int,bundle)
 
                 }
             }, object : Response.ErrorListener {

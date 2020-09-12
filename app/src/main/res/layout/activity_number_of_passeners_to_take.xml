@@ -20,6 +20,20 @@
             android:layout_marginTop="10dp"
             android:layout_height="40dp"/>
 
+    </LinearLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
         <TextView
             android:id="@+id/tvTitleTool"
             android:layout_marginStart="20dp"
@@ -33,6 +47,15 @@
             android:layout_width="wrap_content"
             tools:ignore="MissingPrefix"
             android:layout_height="wrap_content"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+
+        </LinearLayout>
 
 
         <RelativeLayout
@@ -234,10 +257,195 @@
             android:layout_height="wrap_content"
             tools:ignore="MissingPrefix" />
 
+        <TextView
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Do you have any StopPoint"
+            android:textSize="22sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
 
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvStopPoint"
+            android:layout_width="match_parent"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            app:cardBackgroundColor="@color/md_blue_grey_50"
+            android:layout_height="55dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:src="@drawable/ic_baseline_access_time_24"
+                    android:layout_width="30dp"
+                    android:layout_margin="4dp"
+                    android:layout_centerVertical="true"
+                    android:tint="@color/textColorHead"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_height="match_parent"/>
+
+                <EditText
+                    android:id="@+id/etStopPoint"
+                    android:layout_width="fill_parent"
+                    android:hint="StopPoint"
+                    android:inputType="number"
+                    android:visibility="gone"
+                    android:layout_marginStart="50dp"
+                    android:textColor="@color/md_black_1000"
+                    android:layout_marginEnd="50dp"
+                    android:singleLine="true"
+                    android:layout_centerInParent="true"
+                    android:background="#00000000"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvStop"
+                    android:layout_width="fill_parent"
+                    android:hint="StopPoint"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:layout_marginStart="50dp"
+                    android:textSize="22dp"
+                    android:layout_height="match_parent"/>
+
+                <ImageView
+                    android:id="@+id/tvClearSt"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_close_24"
+                    android:layout_width="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="4dp"
+                    android:layout_centerVertical="true"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_height="match_parent"/>
+
+            </RelativeLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Car Name"
+            android:textSize="22sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            app:cardBackgroundColor="@color/md_blue_grey_50"
+            android:layout_height="55dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:src="@drawable/ic_baseline_access_time_24"
+                    android:layout_width="30dp"
+                    android:layout_margin="4dp"
+                    android:layout_centerVertical="true"
+                    android:tint="@color/textColorHead"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_height="match_parent"/>
+
+                <EditText
+                    android:id="@+id/etCar"
+                    android:layout_width="fill_parent"
+                    android:hint="Car Name"
+                    android:layout_marginStart="50dp"
+                    android:textColor="@color/md_black_1000"
+                    android:layout_marginEnd="50dp"
+                    android:singleLine="true"
+                    android:layout_centerInParent="true"
+                    android:background="#00000000"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:layout_height="wrap_content"/>
+
+
+                <ImageView
+                    android:id="@+id/ivClearCar"
+                    android:visibility="gone"
+                    android:src="@drawable/ic_baseline_close_24"
+                    android:layout_width="25dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="4dp"
+                    android:layout_centerVertical="true"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:layout_height="match_parent"/>
+
+            </RelativeLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_margin="20dp"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/cbBookInstant"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:text="Book Instantly"
+                android:textSize="25sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+        </LinearLayout>
 
 
     </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"

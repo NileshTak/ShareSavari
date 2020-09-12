@@ -24,14 +24,13 @@ import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
-import com.productionapp.amhimemekar.CommonUtils.Configure
-import com.productionapp.amhimemekar.CommonUtils.bookride
-import com.productionapp.amhimemekar.CommonUtils.bookrideItem
+import com.productionapp.amhimemekar.CommonUtils.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.custom_booked_rides.view.*
-import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
+import org.json.JSONException
+import org.json.JSONObject
 
 class NotificationFrag : Fragment() {
 
@@ -227,20 +226,138 @@ class NotificationFrag : Fragment() {
 
             viewHolder.itemView.tvDate.text = "Dat enot found"
 
-//            viewHolder.itemView.setOnClickListener {
-//                var int = Intent( viewHolder.itemView.tvFromCity.context,
+            Log.d("ihdui0",customers.ride.toString())
+
+
+            viewHolder.itemView.setOnClickListener {
+//                var int = Intent( viewHolder.itemView.context,
 //                    RideDetails::class.java)
 //                val bundle =
 //                    ActivityOptionsCompat.makeCustomAnimation(
-//                        viewHolder.itemView.tvFromCity.context ,
+//                        viewHolder.itemView.context ,
 //                        R.anim.fade_in, R.anim.fade_out
 //                    ).toBundle()
+//
+//
 //                int.putExtra("pojoWithData",customers)
-//                int.putExtra("screen","home")
+//                int.putExtra("screen","Booked")
 //                startActivity(int,bundle)
-//            }
+
+                hitRideSearch(customers)
+            }
 
         }
+    }
+
+    private fun hitRideSearch(customers: bookrideItem) {
+
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage("Wait a Sec.... ")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+        val adapter = GroupAdapter<ViewHolder>()
+
+        val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL + "${customers.ride}/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                    try {
+                        // get JSONObject from JSON file
+                        val obj = JSONObject(response.toString())
+                        // fetch JSONObject named employee
+//                        val employee: JSONObject = obj.getJSONObject("employee")
+
+                        var ride = BookRidesPojoItem()
+                        ride.comment = obj.getString("comment")
+                        ride.date= obj.getString("date")
+                        ride.gcity= obj.getString("gcity")
+                        ride.glat= obj.getString("glat")
+                        ride.gline= obj.getString("gline")
+                        ride.glog= obj.getString("glog")
+                        ride.going= obj.getString("going")
+                        ride.id= obj.getInt("id")
+                        ride.image= obj.getString("image")
+                        ride.is_return= obj.getBoolean("is_return")
+                        ride.lcity= obj.getString("lcity")
+                        ride.leaving= obj.getString("leaving")
+                        ride.llat= obj.getString("llat")
+                        ride.lline= obj.getString("lline")
+                        ride.llog= obj.getString("llog")
+                        ride.passenger= obj.getInt("passenger")
+                        ride.price= obj.getInt("price")
+                        ride.rdate= obj.getString("rdate")
+                        ride.rtime= obj.getString("rtime")
+                        ride.time= obj.getString("time")
+                        ride.url= obj.getString("url")
+                        ride.user= obj.getInt("user")
+                        ride.username= obj.getString("username")
+                        ride.tddate= obj.getString("tddate")
+                        ride.tdtime= obj.getString("tdtime")
+                        ride.is_direct= obj.getBoolean("is_direct")
+
+
+                        Log.d("juguiuih",ride.leaving.toString())
+
+                        var int = Intent( activity,
+                            RideDetails::class.java)
+
+                        int.putExtra("pojoWithData",ride)
+                        int.putExtra("screen","Booked")
+                        int.putExtra("IDToCancel",customers.id.toString())
+                        startActivity(int)
+
+
+                        progressDialog.dismiss()
+
+
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+
+                        progressDialog.dismiss()
+
+                    }
+
+
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(activity,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+
     }
 
 

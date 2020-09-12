@@ -48,6 +48,13 @@ data class UserUpdateDetailsModel(
      var passenger: String? = null
      var comment: String ? = null
      var is_return: String? = null
+     var tddate: String? = null
+     var tdtime: String? = null
+     var is_direct: Boolean? = null
+     var carname : String? = null
+     var stitle : String? = null
+     var slat : String? = null
+     var slog : String? = null
  }
 
 
@@ -69,35 +76,44 @@ data class FetchProfileData(
  class BookRideScreenFetchCity : Serializable {
     var city: String? = null
     var type: String? = null
+     var lat: String? = null
+     var long: String? = null
 }
 
 
 class BookRidesPojo : ArrayList<BookRidesPojoItem>()
 
  class BookRidesPojoItem : Serializable {
-    val comment: String? = null
-    val date: String? = null
-    val gcity: String? = null
-    val glat: String? = null
-    val gline: String? = null
-    val glog: String? = null
-    val going: String? = null
-    val id: Int? = null
-    val image: String? = null
-    val is_return: Boolean? = null
-    val lcity: String? = null
-    val leaving: String? = null
-    val llat: String? = null
-    val lline: String? = null
-    val llog: String? = null
-    val passenger: Int? = null
-    val price: Int? = null
-    val rdate: String? = null
-    val rtime: String? = null
-    val time: String? = null
-    val url: String? = null
-    val user: Int? = null
-    val username: String? = null
+     var comment: String? = null
+     var date: String? = null
+     var gcity: String? = null
+     var glat: String? = null
+     var gline: String? = null
+     var glog: String? = null
+     var going: String? = null
+     var id: Int? = null
+     var image: String? = null
+     var is_return: Boolean? = null
+     var lcity: String? = null
+     var leaving: String? = null
+     var llat: String? = null
+     var lline: String? = null
+     var llog: String? = null
+     var passenger: Int? = null
+     var price: Int? = null
+     var rdate: String? = null
+     var rtime: String? = null
+     var time: String? = null
+     var url: String? = null
+     var user: Int? = null
+     var username: String? = null
+     var tddate: String? = null
+     var tdtime: String? = null
+     var is_direct: Boolean? = null
+     var carname : String? = null
+     var stitle : String? = null
+     var slat : String? = null
+     var slog : String? = null
  }
 
 
@@ -111,4 +127,15 @@ data class bookrideItem(
     val plog: Any,
     val ride: Int,
     val ridename: String
+)
+
+
+class RatingModel : ArrayList<RatingModelItem>()
+
+
+data class RatingModelItem(
+    val driver: Int,
+    val id: Int,
+    val passenger: Int,
+    val points: Int
 )
