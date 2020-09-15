@@ -44,7 +44,6 @@ class DriverProfile : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
 
-
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",this)!!
@@ -63,7 +62,7 @@ class DriverProfile : AppCompatActivity() {
             Glide.with(this).load(pojoWithData.image).into(cvProf)
         }
 
-        tvName.text = pojoWithData.username
+//        tvName.text = pojoWithData.username
 
         rating.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener{
             override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
@@ -263,7 +262,7 @@ class DriverProfile : AppCompatActivity() {
                         if (userArray != null) {
                             val image = userArray.image
 
-                            tvName.text =  userArray.first_name +" "+userArray.last_name
+                            tvName.text =  userArray.first_name
 
                             if (userArray.verification == "False") {
                                 ivAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))

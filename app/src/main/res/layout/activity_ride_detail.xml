@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto" 
     android:layout_height="match_parent">
-    
-    
 
     <LinearLayout
         android:id="@+id/llTop"
@@ -459,9 +457,44 @@
                 </LinearLayout>
 
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_group_24"
+                        android:layout_height="25dp"/>
+
+
+                    <TextView
+                        android:id="@+id/tvBackSeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Max. 2 in the back seats"
+                        android:layout_gravity="center_vertical"
+                        android:focusable="true"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:focusableInTouchMode="true"
+                        android:textColor="@color/textColorHead"
+                        android:textSize="18sp"
+                        fontPath="Comfortaa-Regular.ttf"
+                        tools:ignore="MissingPrefix"  />
+
+
+                </LinearLayout>
+
+
             <LinearLayout
-                android:id="@+id/llMaxPass"
+                android:id="@+id/llSmoking"
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:orientation="horizontal"
                 android:layout_height="wrap_content">
 
@@ -469,16 +502,15 @@
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_baseline_group_24"
+                    android:src="@drawable/ic_baseline_smoking_rooms_24"
                     android:layout_height="30dp"/>
 
 
 
                 <TextView
-                    android:id="@+id/tvBio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Max. 2 in the back seats."
+                    android:text="Smoking is OK"
                     android:focusable="true"
                     android:layout_marginTop="15dp"
                     android:layout_marginStart="20dp"
@@ -493,6 +525,42 @@
 
             </LinearLayout>
 
+
+
+                <LinearLayout
+                    android:id="@+id/llPets"
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_pets_24"
+                        android:layout_height="30dp"/>
+
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No Pets"
+                        android:focusable="true"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:focusableInTouchMode="true"
+                        android:textColor="@color/textColorHead"
+                        android:textSize="18sp"
+                        android:layout_gravity="center_vertical"
+                        fontPath="Comfortaa-Regular.ttf"
+                        android:textAlignment="center"
+                        tools:ignore="MissingPrefix"  />
+
+                </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_marginStart="15dp"
@@ -500,6 +568,8 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/textColorHead"
                     android:layout_height="2dp"/>
+
+
 
                 <LinearLayout
                     android:id="@+id/llCar"
@@ -516,24 +586,50 @@
                         android:layout_height="30dp"/>
 
 
-
-                    <TextView
-                        android:id="@+id/tvCar"
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nano"
-                        android:focusable="true"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginStart="20dp"
-                        android:textAllCaps="true"
-                        android:layout_marginBottom="15dp"
-                        android:focusableInTouchMode="true"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="22sp"
-                        android:layout_gravity="center_vertical"
-                        fontPath="Comfortaa-Regular.ttf"
-                        android:textAlignment="center"
-                        tools:ignore="MissingPrefix"  />
+                        android:orientation="vertical"
+                        android:layout_height="wrap_content">
+
+
+                        <TextView
+                            android:id="@+id/tvCar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nano"
+                            android:focusable="true"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginStart="20dp"
+                            android:textAllCaps="true"
+                            android:focusableInTouchMode="true"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="22sp"
+                            android:layout_gravity="center_vertical"
+                            fontPath="Comfortaa-Regular.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+
+
+                        <TextView
+                            android:id="@+id/tvCarColor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="White"
+                            android:focusable="true"
+                            android:layout_marginStart="20dp"
+                            android:textAllCaps="true"
+                            android:layout_marginBottom="15dp"
+                            android:focusableInTouchMode="true"
+                            android:textColor="@color/textColorHead"
+                            android:textSize="16sp"
+                            android:layout_gravity="center_vertical"
+                            fontPath="Comfortaa-Regular.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                    </LinearLayout>
+
 
                 </LinearLayout>
                 <View

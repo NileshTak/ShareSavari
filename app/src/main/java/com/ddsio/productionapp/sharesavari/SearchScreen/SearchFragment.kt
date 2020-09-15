@@ -24,26 +24,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.ddsio.productionapp.sharesavari.CommonUtils.TimePickerFragment
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
-import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
-import com.productionapp.amhimemekar.CommonUtils.BookRidesPojo
-import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
-import com.productionapp.amhimemekar.CommonUtils.Configure
+import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
-import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.reset_password_dialog.view.*
+import kotlinx.android.synthetic.main.fragment_search.tvToAdd
 import kotlinx.android.synthetic.main.select_passenger_number.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -406,7 +400,12 @@ class SearchFragment : Fragment()  {
 
                 viewHolder.itemView.tvFromCity.text = customers.lcity
                 viewHolder.itemView.tvToCity.text = customers.gcity
+            viewHolder.itemView.tvName.text = customers.username
             viewHolder.itemView.tvRate.text = "₹ "+customers.price.toString()
+
+            viewHolder.itemView.rvRating.visibility = View.VISIBLE
+
+            getRating(customers,viewHolder.itemView.tvRating)
 
             Log.d("jukjbkjf",customers.user.toString())
 
@@ -436,5 +435,86 @@ class SearchFragment : Fragment()  {
 
 
         }
+    }
+
+
+
+    private fun getRating(
+        customers: BookRidesPojoItem,
+        tvRating: TextView
+    ) {
+
+        var rating = 0
+        var userRatedCount = 0
+
+        val url = BASE_URL+ Configure.RATING
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("driverprofRate", response.toString())
+                    val gson = Gson()
+
+                    val userArray: ArrayList<RatingModelItem> =
+                        gson.fromJson(response, RatingModel ::class.java)
+
+                    if (userArray != null) {
+
+                        for (i in 0..userArray.size-1) {
+
+                            if (userArray.get(i).driver == customers.user) {
+                                if (userArray.get(i).points != null) {
+
+                                    rating = rating + userArray.get(i).points
+                                    userRatedCount = userRatedCount + 1
+                                }
+                            }
+                        }
+
+                        Log.d("dtsbjnkd",rating.toString())
+
+
+                        if (userRatedCount != 0 && userRatedCount != null) {
+                            var sum = userRatedCount * 5
+                            var finalRating = (rating * 5) / sum
+                          tvRating.text = finalRating.toString()+"/5 ratings"
+
+                        }
+
+                    }
+
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+ 
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+
     }
 }

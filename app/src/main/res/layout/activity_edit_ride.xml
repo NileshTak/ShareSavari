@@ -1,0 +1,1279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeScreen.Child.EditRide">
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ivBacknumberSave"
+            android:layout_width="40dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_baseline_chevron_left_24_white"
+            android:tint="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:layout_height="40dp"/>
+
+    </LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Pick-up"
+            android:textSize="25sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:textAlignment="center"
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvFromLocationSave"
+            android:layout_width="match_parent"
+            app:cardCornerRadius="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/md_blue_grey_50"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/tvPickupSave"
+                android:layout_width="fill_parent"
+                android:hint="Leaving from"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:layout_marginStart="25dp"
+                android:textSize="22dp"
+                android:layout_height="match_parent"/>
+
+
+        </androidx.cardview.widget.CardView>
+
+
+
+        <TextView
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Drop"
+            android:textSize="25sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:textAlignment="center"
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvToLocationSave"
+            android:layout_width="match_parent"
+            app:cardCornerRadius="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            app:cardElevation="4dp"
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="@color/md_blue_grey_50"
+            android:layout_height="60dp">
+
+            <TextView
+                android:id="@+id/tvDropSave"
+                android:layout_width="match_parent"
+                android:hint="Going to"
+                android:gravity="center_vertical"
+
+                android:singleLine="true"
+                android:layout_marginStart="25dp"
+                android:textSize="22dp"
+                android:layout_height="match_parent"/>
+
+
+        </androidx.cardview.widget.CardView>
+
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="When are you going?"
+                android:textSize="25sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                app:cardBackgroundColor="@color/md_blue_grey_50"
+                android:layout_height="55dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:src="@drawable/ic_baseline_calendar_today_24"
+                        android:layout_width="30dp"
+                        android:layout_margin="4dp"
+                        android:layout_centerVertical="true"
+                        android:tint="@color/textColorHead"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:id="@+id/etSelectDateGoing"
+                        android:layout_width="fill_parent"
+                        android:hint="Date"
+                        android:layout_marginStart="50dp"
+                        android:textColor="@color/md_black_1000"
+                        android:layout_marginEnd="50dp"
+                        android:singleLine="true"
+                        android:focusable="false"
+                        android:layout_centerInParent="true"
+                        android:background="#00000000"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="20dp"
+                        android:layout_height="wrap_content"/>
+
+
+                    <ImageView
+                        android:id="@+id/ivClear"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_baseline_close_24"
+                        android:layout_width="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="4dp"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_height="match_parent"/>
+
+                </RelativeLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="What time will you pick passengers up?"
+                android:textSize="25sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                app:cardBackgroundColor="@color/md_blue_grey_50"
+                android:layout_height="55dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:src="@drawable/ic_baseline_access_time_24"
+                        android:layout_width="30dp"
+                        android:layout_margin="4dp"
+                        android:layout_centerVertical="true"
+                        android:tint="@color/textColorHead"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:id="@+id/etSelectTimeGoing"
+                        android:layout_width="fill_parent"
+                        android:hint="Time"
+                        android:layout_marginStart="50dp"
+                        android:textColor="@color/md_black_1000"
+                        android:layout_marginEnd="50dp"
+                        android:singleLine="true"
+                        android:layout_centerInParent="true"
+                        android:background="#00000000"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="20dp"
+                        android:layout_height="wrap_content"/>
+
+
+                    <ImageView
+                        android:visibility="gone"
+                        android:src="@drawable/ic_baseline_close_24"
+                        android:layout_width="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="4dp"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_height="match_parent"/>
+
+                </RelativeLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
+
+            <TextView
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="When are you going to reach?"
+                android:textSize="25sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <androidx.cardview.widget.CardView
+
+                android:layout_width="match_parent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                app:cardBackgroundColor="@color/md_blue_grey_50"
+                android:layout_height="55dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:src="@drawable/ic_baseline_calendar_today_24"
+                        android:layout_width="30dp"
+                        android:layout_margin="4dp"
+                        android:layout_centerVertical="true"
+                        android:tint="@color/textColorHead"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:id="@+id/etReachingDate"
+                        android:layout_width="fill_parent"
+                        android:hint="Date"
+                        android:layout_marginStart="50dp"
+                        android:textColor="@color/md_black_1000"
+                        android:layout_marginEnd="50dp"
+                        android:singleLine="true"
+                        android:layout_centerInParent="true"
+                        android:background="#00000000"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="20dp"
+                        android:layout_height="wrap_content"/>
+
+
+                    <ImageView
+                        android:id="@+id/ivClearR"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_baseline_close_24"
+                        android:layout_width="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="4dp"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_height="match_parent"/>
+
+                </RelativeLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="What time will you reach?"
+                android:textSize="25sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                app:cardBackgroundColor="@color/md_blue_grey_50"
+                android:layout_height="55dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:src="@drawable/ic_baseline_access_time_24"
+                        android:layout_width="30dp"
+                        android:layout_margin="4dp"
+                        android:layout_centerVertical="true"
+                        android:tint="@color/textColorHead"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:id="@+id/etReachingTime"
+                        android:layout_width="fill_parent"
+                        android:hint="Time"
+                        android:layout_marginStart="50dp"
+                        android:textColor="@color/md_black_1000"
+                        android:layout_marginEnd="50dp"
+                        android:singleLine="true"
+                        android:layout_centerInParent="true"
+                        android:background="#00000000"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="20dp"
+                        android:layout_height="wrap_content"/>
+
+
+                    <ImageView
+                        android:id="@+id/ivClearTimeR"
+                        android:visibility="gone"
+                        android:src="@drawable/ic_baseline_close_24"
+                        android:layout_width="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="4dp"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:layout_height="match_parent"/>
+
+                </RelativeLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_margin="20dp"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/cvReturnRideSave"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:text="Return Ride"
+                    android:textSize="25sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llReturnSave"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="When are you return?"
+                    android:textSize="25sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardBackgroundColor="@color/md_blue_grey_50"
+                    android:layout_height="55dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:src="@drawable/ic_baseline_calendar_today_24"
+                            android:layout_width="30dp"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/textColorHead"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                        <EditText
+                            android:id="@+id/etSelectDateReturnSave"
+                            android:layout_width="fill_parent"
+                            android:hint="Return Date"
+                            android:layout_marginStart="50dp"
+                            android:textColor="@color/md_black_1000"
+                            android:layout_marginEnd="50dp"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:background="#00000000"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="20dp"
+                            android:layout_height="wrap_content"/>
+
+
+                        <ImageView
+                            android:id="@+id/ivClearReturn"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_baseline_close_24"
+                            android:layout_width="25dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="What time will you return?"
+                    android:textSize="25sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardBackgroundColor="@color/md_blue_grey_50"
+                    android:layout_height="55dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:src="@drawable/ic_baseline_access_time_24"
+                            android:layout_width="30dp"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/textColorHead"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                        <EditText
+                            android:id="@+id/etSelectTimeReturnSave"
+                            android:layout_width="fill_parent"
+                            android:hint="Return Time"
+                            android:layout_marginStart="50dp"
+                            android:textColor="@color/md_black_1000"
+                            android:layout_marginEnd="50dp"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:background="#00000000"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="20dp"
+                            android:layout_height="wrap_content"/>
+
+
+                        <ImageView
+                            android:id="@+id/ivClearTimeReturn"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_baseline_close_24"
+                            android:layout_width="25dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="So how many Share Sawaari passengers can you take?"
+                    android:textSize="25sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    tools:ignore="MissingPrefix"
+                    android:layout_height="wrap_content"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="25dp"
+                    android:layout_height="wrap_content">
+
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvMinusSave"
+                        android:layout_width="55dp"
+                        app:cardCornerRadius="20dp"
+                        android:layout_centerVertical="true"
+                        app:cardElevation="4dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        app:cardBackgroundColor="@color/md_blue_grey_50"
+                        android:layout_height="55dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/ic_baseline_indeterminate_check_box_24"
+                                android:layout_width="30dp"
+                                android:layout_margin="4dp"
+                                android:layout_centerVertical="true"
+                                android:tint="@color/textColorHead"
+                                android:backgroundTint="@color/colorPrimary"
+                                android:layout_height="match_parent"/>
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/tvCountSave"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:text="1"
+                        android:textSize="65sp"
+                        fontPath="Comfortaa-Bold.ttf"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:textStyle="bold"
+                        android:textColor="@color/textColor"
+                        android:layout_width="wrap_content"
+                        tools:ignore="MissingPrefix"
+                        android:layout_height="wrap_content"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvAddSave"
+                        android:layout_width="55dp"
+                        app:cardCornerRadius="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        app:cardElevation="4dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        app:cardBackgroundColor="@color/md_blue_grey_50"
+                        android:layout_height="55dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/ic_baseline_add_24"
+                                android:layout_width="30dp"
+                                android:layout_margin="4dp"
+                                android:layout_centerVertical="true"
+                                android:tint="@color/textColorHead"
+                                android:backgroundTint="@color/colorPrimary"
+                                android:layout_height="match_parent"/>
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </RelativeLayout>
+
+
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Price"
+                    android:textSize="30sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardBackgroundColor="@color/md_blue_grey_50"
+                    android:layout_height="55dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:src="@drawable/ic_baseline_access_time_24"
+                            android:layout_width="30dp"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/textColorHead"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                        <EditText
+                            android:id="@+id/etPriceSave"
+                            android:layout_width="fill_parent"
+                            android:hint="Price per person"
+                            android:inputType="number"
+                            android:layout_marginStart="50dp"
+                            android:textColor="@color/md_black_1000"
+                            android:layout_marginEnd="50dp"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:background="#00000000"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="20dp"
+                            android:layout_height="wrap_content"/>
+
+
+                        <ImageView
+                            android:id="@+id/ivClearTime"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_baseline_close_24"
+                            android:layout_width="25dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Total Price : "
+                    android:textSize="30sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+
+                <TextView
+                    android:id="@+id/tvTotalPriceSave"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="1₹"
+                    android:textSize="65sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Do you have any StopPoint"
+                    android:textSize="22sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvStopPointSave"
+                    android:layout_width="match_parent"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardBackgroundColor="@color/md_blue_grey_50"
+                    android:layout_height="55dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:src="@drawable/ic_baseline_access_time_24"
+                            android:layout_width="30dp"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/textColorHead"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                        <EditText
+                            android:id="@+id/etStopPoint"
+                            android:layout_width="fill_parent"
+                            android:hint="StopPoint"
+                            android:visibility="visible"
+                            android:layout_marginStart="50dp"
+                            android:textColor="@color/md_black_1000"
+                            android:layout_marginEnd="50dp"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:background="#00000000"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="20dp"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tvStopSave"
+                            android:layout_width="fill_parent"
+                            android:hint="StopPoint"
+                            android:visibility="gone"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:layout_marginStart="50dp"
+                            android:textSize="22dp"
+                            android:layout_height="match_parent"/>
+
+                        <ImageView
+                            android:id="@+id/tvClearSt"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_baseline_close_24"
+                            android:layout_width="25dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Car Name"
+                    android:textSize="22sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardBackgroundColor="@color/md_blue_grey_50"
+                    android:layout_height="55dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:src="@drawable/ic_baseline_access_time_24"
+                            android:layout_width="30dp"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/textColorHead"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                        <EditText
+                            android:id="@+id/etCarSave"
+                            android:layout_width="fill_parent"
+                            android:hint="Car Name"
+                            android:layout_marginStart="50dp"
+                            android:textColor="@color/md_black_1000"
+                            android:layout_marginEnd="50dp"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:background="#00000000"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="20dp"
+                            android:layout_height="wrap_content"/>
+
+
+                        <ImageView
+                            android:id="@+id/ivClearCar"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_baseline_close_24"
+                            android:layout_width="25dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+                <TextView
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Car Color"
+                    android:textSize="22sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardBackgroundColor="@color/md_blue_grey_50"
+                    android:layout_height="55dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:src="@drawable/ic_baseline_color_lens_24"
+                            android:layout_width="30dp"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:tint="@color/textColorHead"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                        <EditText
+                            android:id="@+id/etCarColorSave"
+                            android:layout_width="fill_parent"
+                            android:hint="Car Color"
+                            android:layout_marginStart="50dp"
+                            android:textColor="@color/md_black_1000"
+                            android:layout_marginEnd="50dp"
+                            android:singleLine="true"
+                            android:layout_centerInParent="true"
+                            android:background="#00000000"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="20dp"
+                            android:layout_height="wrap_content"/>
+
+
+                        <ImageView
+                            android:id="@+id/ivClearColor"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_baseline_close_24"
+                            android:layout_width="25dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="4dp"
+                            android:layout_centerVertical="true"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_margin="20dp"
+                    android:layout_height="wrap_content">
+
+<!--                    <CheckBox-->
+<!--                        android:id="@+id/cbBookInstantSave"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_gravity="center_vertical"-->
+<!--                        android:layout_height="wrap_content"/>-->
+
+                    <TextView
+                        android:layout_marginTop="10dp"
+                        android:text="Book Instantly"
+                        android:textSize="25sp"
+                        android:visibility="gone"
+                        fontPath="Comfortaa-Bold.ttf"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="10dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/textColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="MissingPrefix" />
+
+
+                    <RadioGroup
+                        android:id="@+id/radiogroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/md_white_1000"
+                        android:background="#dbeceb" >
+
+
+                        <RadioButton
+                            android:id="@+id/rbBookInstantly"
+                            android:layout_width="wrap_content"
+                            android:textSize="25sp"
+                            fontPath="Comfortaa-Bold.ttf"
+                            android:layout_height="wrap_content"
+                            tools:ignore="MissingPrefix"
+                            android:text="Book Instantly" />
+
+                        <RadioButton
+                            android:id="@+id/rbMyself"
+                            android:layout_width="wrap_content"
+                            android:textSize="25sp"
+                            fontPath="Comfortaa-Bold.ttf"
+                            android:layout_height="wrap_content"
+                            android:text="No, I'll reply each request myself"
+                            tools:ignore="MissingPrefix" />
+
+                    </RadioGroup>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_margin="20dp"
+                    android:layout_height="wrap_content">
+
+                    <RadioGroup
+                        android:id="@+id/radio_groupSeatSave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/md_white_1000"
+                        android:background="#dbeceb" >
+
+
+                        <RadioButton
+                            android:id="@+id/rbMax2SeatSave"
+                            android:layout_width="wrap_content"
+                            android:textSize="25sp"
+                            fontPath="Comfortaa-Bold.ttf"
+                            android:layout_height="wrap_content"
+                            tools:ignore="MissingPrefix"
+                            android:text="Max 2 seat in back" />
+
+                        <RadioButton
+                            android:id="@+id/rbMax3SeatSave"
+                            android:layout_width="wrap_content"
+                            android:textSize="25sp"
+                            fontPath="Comfortaa-Bold.ttf"
+                            android:layout_height="wrap_content"
+                            android:text="Max 3 seat in back"
+                            tools:ignore="MissingPrefix" />
+
+                    </RadioGroup>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginStart="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/cbPetsEdit"
+                android:layout_width="wrap_content"
+                android:visibility="visible"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:text="No Pets"
+                android:textSize="25sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_centerVertical="true"
+                android:visibility="visible"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_marginStart="20dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/cbSmokingEdit"
+                android:layout_width="wrap_content"
+                android:visibility="visible"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:text="Smoking is OK"
+                android:textSize="25sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:layout_centerVertical="true"
+                android:visibility="visible"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/textColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rlBottomSave"
+            android:layout_width="match_parent"
+            android:visibility="visible"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_height="90dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginStart="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="20dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                android:layout_height="50dp">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:text="Save"
+                    android:textColor="@color/md_white_1000"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textStyle="bold"
+                    tools:ignore="MissingPrefix"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:textSize="20dp"
+                    android:layout_height="match_parent"/>
+
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+
+</RelativeLayout>

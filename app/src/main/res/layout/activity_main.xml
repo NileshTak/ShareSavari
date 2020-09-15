@@ -50,6 +50,7 @@
             android:id="@+id/cvLoginFB"
             android:layout_width="match_parent"
             app:cardCornerRadius="20dp"
+            android:visibility="gone"
             app:cardElevation="4dp"
             android:layout_marginTop="25dp"
             android:layout_marginStart="20dp"
@@ -307,6 +308,7 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:layout_marginStart="20dp"
+                android:visibility="gone"
                 android:layout_marginEnd="20dp"
                 app:cardBackgroundColor="@color/colorPrimaryDark"
                 android:layout_height="50dp">
@@ -390,42 +392,45 @@
 
             </RelativeLayout>
 
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="150dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/civProfImg"
+                    android:src="@mipmap/ic_launcher_round"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:visibility="visible"
+                    android:layout_gravity="center_horizontal"
+                    app:civ_border_color="@color/md_black_1000"
+                    app:civ_border_width="0.5dp"/>
+
+                <TextView
+                    android:text="Profile Pic"
+                    android:textSize="20sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_gravity="bottom"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:ignore="MissingPrefix" />
+
+
+            </LinearLayout>
+
+
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:weightSum="2"
                 android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_weight="1"
-                    android:layout_height="150dp">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/civProfImg"
-                        android:src="@mipmap/ic_launcher_round"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:visibility="visible"
-                        android:layout_gravity="center_horizontal"
-                        app:civ_border_color="@color/md_black_1000"
-                        app:civ_border_width="0.5dp"/>
-
-                    <TextView
-                        android:text="Profile Pic"
-                        android:textSize="20sp"
-                        fontPath="Comfortaa-Bold.ttf"
-                        android:layout_gravity="bottom"
-                        android:textAlignment="center"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:ignore="MissingPrefix" />
-
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:orientation="vertical"
@@ -444,7 +449,7 @@
                         app:civ_border_width="0.5dp"/>
 
                     <TextView
-                        android:text="Adhar Pic"
+                        android:text="Adhar Front"
                         android:textSize="20sp"
                         fontPath="Comfortaa-Bold.ttf"
                         android:layout_gravity="bottom"
@@ -458,14 +463,38 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="150dp">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/civAdharImgB"
+                        android:src="@mipmap/ic_launcher_round"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:visibility="visible"
+                        android:layout_gravity="center_horizontal"
+                        app:civ_border_color="@color/md_black_1000"
+                        app:civ_border_width="0.5dp"/>
+
+                    <TextView
+                        android:text="Adhar Back"
+                        android:textSize="20sp"
+                        fontPath="Comfortaa-Bold.ttf"
+                        android:layout_gravity="bottom"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:ignore="MissingPrefix" />
 
 
+                </LinearLayout>
 
             </LinearLayout>
-
-
-
-
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

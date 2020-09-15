@@ -55,6 +55,11 @@ data class UserUpdateDetailsModel(
      var stitle : String? = null
      var slat : String? = null
      var slog : String? = null
+     var pets : Boolean? = null
+     var smoking : Boolean? = null
+     var carcolor : String? = null
+     var max_back_2 : Boolean? = null
+     var max_back_3 : Boolean? = null
  }
 
 
@@ -78,6 +83,8 @@ data class FetchProfileData(
     var type: String? = null
      var lat: String? = null
      var long: String? = null
+     var gline: String? = null
+     var gcity: String? = null
 }
 
 
@@ -114,6 +121,11 @@ class BookRidesPojo : ArrayList<BookRidesPojoItem>()
      var stitle : String? = null
      var slat : String? = null
      var slog : String? = null
+     var pets : Boolean? = null
+     var smoking : Boolean? = null
+     var max_back_2 : Boolean? = null
+     var max_back_3 : Boolean? = null
+     var carcolor : String? = null
  }
 
 

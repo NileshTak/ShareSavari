@@ -25,6 +25,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.HomeScreen.Child.EditRide
 import com.ddsio.productionapp.sharesavari.Intro.IntroActivity
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
@@ -144,17 +145,52 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
        tvFromAdd.text = pojoWithData.lline+", "+pojoWithData.lcity
      tvToAdd.text = pojoWithData.gline+", "+pojoWithData.gcity
-        tvDate.text = pojoWithData.date
-        tvLTime.text = pojoWithData.date +" " +
+
+
+        var dateFormat = pojoWithData.date
+        val separated =
+            dateFormat!!.split("-".toRegex()).toTypedArray()
+        var yearFrom = separated[0]
+        var monthFrom =  separated[1]
+        var dateFrom =  separated[2]
+        var dateFFRom =  dateFrom +"-" +monthFrom +"-"+yearFrom
+        tvDate.text = dateFFRom
+        tvLTime.text = dateFFRom +" " +
                 "(${pojoWithData.time})"
+
+
 
         tvFromFullAdd.text = "("+ pojoWithData.leaving+")"
         tvToFullAdd.text = "("+ pojoWithData.going+")"
+        tvCarColor.text = "("+ pojoWithData.carcolor+")"
         tvCar.text = pojoWithData.carname
         if (pojoWithData.stitle == null || pojoWithData.stitle == "") {
             llStopPoint.visibility = View.GONE
         } else {
             tvStopPoint.text = pojoWithData.stitle
+        }
+
+
+        if (pojoWithData.max_back_2 == true) {
+            tvBackSeat.text = "Max. 2 in the back seats."
+        } else {
+            tvBackSeat.text = "Max. 3 in the back seats."
+        }
+
+
+        if (pojoWithData.pets == true) {
+            llPets.visibility = View.VISIBLE
+        } else {
+            llPets.visibility = View.GONE
+        }
+
+
+
+        if (pojoWithData.smoking == true) {
+            llSmoking.visibility = View.VISIBLE
+        } else {
+
+            llSmoking.visibility = View.GONE
         }
 
 
@@ -167,8 +203,20 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         Log.d("jknj",pojoWithData.is_return.toString())
 
-        tvRTime.text = pojoWithData.tddate +" " +
+
+
+
+        var dateRFormat = pojoWithData.tddate
+        val separatedR =
+            dateRFormat!!.split("-".toRegex()).toTypedArray()
+        var yearTo = separatedR[0]
+        var monthTo =  separatedR[1]
+        var dateTo =  separatedR[2]
+        var dateRTo =  dateTo +"-" +monthTo +"-"+yearTo
+        tvRTime.text = dateRTo +" " +
                 "(${pojoWithData.tdtime})"
+//        tvRTime.text = pojoWithData.tddate +" " +
+//                "(${pojoWithData.tdtime})"
 
 
         tvOfferedby.text = pojoWithData.username
@@ -229,7 +277,15 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
 
         btnEdit.setOnClickListener {
-
+            var int = Intent(this,
+                EditRide::class.java)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    this ,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            int.putExtra("pojoWithData",pojoWithData)
+            startActivity(int,bundle)
         }
 
     }
@@ -386,10 +442,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                         }
                     } else {
-
-
                         Utils.showSnackMSG(mapView,"Current Location Not Found")
-
                     }
                 }
 

@@ -37,8 +37,12 @@ import com.ddsio.productionapp.sharesavari.ProfileScreen.ProfileScreen
 import com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
+import com.letsbuildthatapp.kotlinmessenger.models.User
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
@@ -51,6 +55,7 @@ import id.zelory.compressor.loadBitmap
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.convid_poster_layout.view.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -70,23 +75,29 @@ class MainActivity : AppCompatActivity() {
 
     var GALLERY_REQUEST = 1666
     var ADHAR_REQUEST = 1888
-    lateinit var frameContainer : FrameLayout
-    lateinit var llSearch : LinearLayout
-    lateinit var llLogin : LinearLayout
-    lateinit var tvSignUp : TextView
-    lateinit var tvLogin : TextView
-    lateinit var tvForgotPass : TextView
+    var ADHARB_REQUEST = 1777
+    lateinit var frameContainer: FrameLayout
+    lateinit var llSearch: LinearLayout
+    lateinit var llLogin: LinearLayout
+    lateinit var tvSignUp: TextView
+    lateinit var tvLogin: TextView
+    lateinit var tvForgotPass: TextView
     var imageUri = ""
-    var type  = ""
-    lateinit var nsvSignUp : NestedScrollView
+
+    lateinit var USER_ID_KEY : String
+
+    var type = ""
+    lateinit var nsvSignUp: NestedScrollView
 
     lateinit var dialog_otp: AlertDialog
 
-    lateinit var bitmap : Bitmap
+    lateinit var convidPoster: AlertDialog
+
+    lateinit var bitmap: Bitmap
 
 
-    lateinit var emailtxtlogin : String
-    lateinit var passtxtlogin : String
+    lateinit var emailtxtlogin: String
+    lateinit var passtxtlogin: String
 
 
     var request: RequestQueue? = null
@@ -99,13 +110,15 @@ class MainActivity : AppCompatActivity() {
     private var compressedProfImage: File? = null
     private var actualAdharImage: File? = null
     private var compressedAdharImage: File? = null
+    private var actualAdharImageB: File? = null
+    private var compressedAdharImageB: File? = null
 
+    var selectedPhotoUri: Uri? = null
+    lateinit var cvSignUp: CardView
 
-    lateinit var cvSignUp : CardView
-
-    lateinit var etFN : EditText
-    lateinit var etLN : EditText
-    lateinit var etUserName : EditText
+    lateinit var etFN: EditText
+    lateinit var etLN: EditText
+    lateinit var etUserName: EditText
 
 
     var fn = ""
@@ -114,6 +127,7 @@ class MainActivity : AppCompatActivity() {
 
     var profPicURL: String? = null
     var adharPicURL: String? = null
+    var adharPicURLB: String? = null
 
     var emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
@@ -131,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
         type = bundle!!.getString("type")!!
 
-        request= Volley.newRequestQueue(this);
+        request = Volley.newRequestQueue(this);
         FirebaseApp.initializeApp(this)
 
         tvSignUp = findViewById<TextView>(R.id.tvSignUp)
@@ -149,13 +163,13 @@ class MainActivity : AppCompatActivity() {
 
 //        Utils.writeStringToPreferences(LOGIN_KEY, "",this)
 
-        LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this)!!
+        LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this)!!
 
 
 
 
         Handler().postDelayed({
-            Utils.checkConnection(this@MainActivity,frameContainer)
+            Utils.checkConnection(this@MainActivity, frameContainer)
             if (!Utils.CheckGpsStatus(this@MainActivity)) {
                 Utils.enableGPS(this@MainActivity)
             }
@@ -178,12 +192,11 @@ class MainActivity : AppCompatActivity() {
 
 
         cvLoginFB.setOnClickListener {
-            Toast.makeText(this,"Coming Soon.....",Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Coming Soon.....", Toast.LENGTH_LONG).show()
         }
 
-
         cvSignUpFB.setOnClickListener {
-            Toast.makeText(this,"Coming Soon.....",Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Coming Soon.....", Toast.LENGTH_LONG).show()
         }
 
 
@@ -196,7 +209,7 @@ class MainActivity : AppCompatActivity() {
             emailtxtlogin = loginetEmail.text.toString()
             passtxtlogin = loginetPass.text.toString()
 
-            checkFieldsLogin(emailtxtlogin,passtxtlogin)
+            checkFieldsLogin(emailtxtlogin, passtxtlogin)
 
         }
 
@@ -225,10 +238,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         llSearch.setOnClickListener {
-            changeIconColor(ivSearch,tvSearch,"Search")
+            changeIconColor(ivSearch, tvSearch, "Search")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
                 loadSearchFrag(fragHome = SearchFragment())
-            }else {
+            } else {
                 llLogin.visibility = View.VISIBLE
                 nsvSignUp.visibility = View.GONE
                 frame.visibility = View.GONE
@@ -237,20 +250,22 @@ class MainActivity : AppCompatActivity() {
 
         llOffer.setOnClickListener {
 
-            changeIconColor(ivOffer,tvOffer,"Offer")
+            changeIconColor(ivOffer, tvOffer, "Offer")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
 
-                var int = Intent(this,
-                    ShowMapActivityPickUp::class.java)
+                var int = Intent(
+                    this,
+                    ShowMapActivityPickUp::class.java
+                )
                 val bundle =
                     ActivityOptionsCompat.makeCustomAnimation(
                         this@MainActivity,
                         R.anim.fade_in,
                         R.anim.fade_out
                     ).toBundle()
-                int.putExtra("screen","Offer")
-                startActivity(int,bundle)
-            }else {
+                int.putExtra("screen", "Offer")
+                startActivity(int, bundle)
+            } else {
                 llLogin.visibility = View.VISIBLE
                 nsvSignUp.visibility = View.GONE
                 frame.visibility = View.GONE
@@ -259,10 +274,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         llHome.setOnClickListener {
-            changeIconColor(ivHome,tvHome,"Home")
+            changeIconColor(ivHome, tvHome, "Home")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
                 loadHomeFrag(fragHome = HomeScreen())
-            }else {
+            } else {
                 llLogin.visibility = View.VISIBLE
                 nsvSignUp.visibility = View.GONE
                 frame.visibility = View.GONE
@@ -271,10 +286,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         llInbox.setOnClickListener {
-            changeIconColor(ivInbox,tvInbox,"Inbox")
+            changeIconColor(ivInbox, tvInbox, "Inbox")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
                 loadInboxFrag(fragHome = InboxScreen())
-            }else {
+            } else {
                 llLogin.visibility = View.VISIBLE
                 nsvSignUp.visibility = View.GONE
                 frame.visibility = View.GONE
@@ -293,8 +308,13 @@ class MainActivity : AppCompatActivity() {
             askCameraPermission(ADHAR_REQUEST)
         }
 
+
+        civAdharImgB.setOnClickListener {
+            askCameraPermission(ADHARB_REQUEST)
+        }
+
         llProfile.setOnClickListener {
-            changeIconColor(ivProfile,tvProfile,"Profile")
+            changeIconColor(ivProfile, tvProfile, "Profile")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
                 loadProfileFrag(fragHome = ProfileScreen())
             } else {
@@ -319,6 +339,22 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun showConvidPoster() {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.convid_poster_layout, null)
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        convidPoster = showOTP.create()
+        convidPoster.show()
+
+        alertLayout.cvGotIt.setOnClickListener {
+            convidPoster.dismiss()
+        }
+
+    }
+
     private fun showRestPassDialog() {
         val inflater = getLayoutInflater()
         val alertLayout = inflater.inflate(R.layout.reset_password_dialog, null)
@@ -327,7 +363,7 @@ class MainActivity : AppCompatActivity() {
             val verificationCode = alertLayout.loginetEmail!!.text!!.toString()
             if (verificationCode.isEmpty()) {
 //                Toast.makeText(this@Authentication, "Enter verification code", Toast.LENGTH_SHORT).show()
-                Toast.makeText(this,"Please Enter Valid Email Address",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Please Enter Valid Email Address", Toast.LENGTH_LONG).show()
 
             } else {
 
@@ -355,9 +391,9 @@ class MainActivity : AppCompatActivity() {
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-        var url =  Configure.BASE_URL + Configure.REST_PASS
+        var url = Configure.BASE_URL + Configure.REST_PASS
 
-        Log.d("Responceis",url)
+        Log.d("Responceis", url)
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.POST,
@@ -365,7 +401,7 @@ class MainActivity : AppCompatActivity() {
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
 
-                    Log.i( "Responceis", response.toString())
+                    Log.i("Responceis", response.toString())
 
                     progressDialog.dismiss()
 
@@ -375,8 +411,11 @@ class MainActivity : AppCompatActivity() {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
 
-                        Toast.makeText(applicationContext,"RESET E-Mail has been sent to your given E-Mail Address.",
-                            Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext,
+                        "RESET E-Mail has been sent to your given E-Mail Address.",
+                        Toast.LENGTH_LONG
+                    ).show()
 
                     progressDialog.dismiss()
 
@@ -412,11 +451,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun askCameraPermission(RequestType: Int) {
         askPermission(
-            Manifest.permission.CAMERA ,
+            Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) {
@@ -460,16 +497,23 @@ class MainActivity : AppCompatActivity() {
             }
             try {
                 if (requestCode == GALLERY_REQUEST) {
-                    actualProfImage = FileUtil.from(this , data.data!!)?.also {
+                    selectedPhotoUri = data.data
+
+                    actualProfImage = FileUtil.from(this, data.data!!)?.also {
 
                         civProfImg.setImageBitmap(loadBitmap(it))
                     }
-                } else {
-                    actualAdharImage = FileUtil.from(this , data.data!!)?.also {
+                } else if (requestCode == ADHAR_REQUEST) {
+                    actualAdharImage = FileUtil.from(this, data.data!!)?.also {
 
                         civAdharImg.setImageBitmap(loadBitmap(it))
                     }
+                } else {
+                    actualAdharImageB = FileUtil.from(this, data.data!!)?.also {
+
+                        civAdharImgB.setImageBitmap(loadBitmap(it))
                     }
+                }
 
             } catch (e: IOException) {
                 Toast.makeText(this, "failed to read", Toast.LENGTH_LONG).show()
@@ -480,7 +524,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setGenderList() {
         val Choice =
-            arrayOf<CharSequence>("Male", "Female","Other")
+            arrayOf<CharSequence>("Male", "Female", "Other")
 
         val builder =
             android.app.AlertDialog.Builder(this@MainActivity)
@@ -515,7 +559,7 @@ class MainActivity : AppCompatActivity() {
         datePickerdialog.show()
     }
 
-    fun putUserNameData( ) {
+    fun putUserNameData() {
 
         val url = Configure.BASE_URL + Configure.USER_DETAILS_URL
 
@@ -529,11 +573,16 @@ class MainActivity : AppCompatActivity() {
                     val gson = Gson()
 
                     val userArray: UserDetailsModel =
-                        gson.fromJson(response, UserDetailsModel ::class.java)
+                        gson.fromJson(response, UserDetailsModel::class.java)
 
                     val userid = userArray.pk
 
-                    Utils.writeStringToPreferences(Configure.USER_ID_KEY,userid.toString(),this@MainActivity)
+                    Utils.writeStringToPreferences(
+                        Configure.USER_ID_KEY,
+                        userid.toString(),
+                        this@MainActivity
+                    )
+
 
                     uploadImage(userid)
 
@@ -542,10 +591,12 @@ class MainActivity : AppCompatActivity() {
                 override fun onErrorResponse(error: VolleyError) {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
-                    Log.e("jukjbkj",  "Error: " + error.message)
+                    Log.e("jukjbkj", "Error: " + error.message)
                     progressDialog.dismiss()
-                    Toast.makeText(this@MainActivity,"Something Went Wrong ! Please try after some time",
-                        Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@MainActivity, "Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }) {
 
@@ -556,7 +607,7 @@ class MainActivity : AppCompatActivity() {
 
                 var params = java.util.HashMap<String, String>()
 //                params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                params.put("Authorization", "Token " + LOGIN_TOKEN!!);
                 return params;
             }
 
@@ -578,7 +629,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     fun uploadImage(userid: Int) {
 
         val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS
@@ -590,18 +640,17 @@ class MainActivity : AppCompatActivity() {
             Response.Listener<NetworkResponse> { response ->
 
                 val resultResponse = String(response.data)
-                Log.i( "Responceis", resultResponse.toString())
+                Log.i("ResponceisData", resultResponse.toString())
+
+
                 try {
                     val result = JSONObject(resultResponse)
                     val ID = result.getString("id")
-                    Log.i( "Responceis", ID.toString())
-                    Utils.writeStringToPreferences(Configure.USER_UPDATE_ID,ID.toString(),this)
-                    Toast.makeText(this@MainActivity,"Successfully Registered",
-                        Toast.LENGTH_LONG).show()
+                    Log.i("Responceis", ID.toString())
+                    Utils.writeStringToPreferences(Configure.USER_UPDATE_ID, ID.toString(), this)
 
-                    loadScreens()
+                    addUserToFirebase()
 
-                    progressDialog.dismiss()
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
@@ -610,8 +659,8 @@ class MainActivity : AppCompatActivity() {
                 progressDialog.dismiss()
                 VolleyLog.d("volley", "Error: " + error.message)
                 error.printStackTrace()
-                Log.e("jukjbkj",  "Error: " + error.message)
-                Toast.makeText(this,"Something Went Wrong",Toast.LENGTH_LONG).show()
+                Log.e("jukjbkj", "Error: " + error.message)
+                Toast.makeText(this, "Something Went Wrong", Toast.LENGTH_LONG).show()
 
             },
 
@@ -624,12 +673,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun getParams(): Map<String, String> {
-                val params= HashMap<String, String>()
-                params.put("user",userid.toString() )
+                val params = HashMap<String, String>()
+                params.put("user", userid.toString())
                 params.put("mobile", etMobile.text.toString())
-                params.put("mobile_status","false")
+                params.put("mobile_status", "false")
                 params.put("bio", "")
-                params.put("birthdate",etBirthDate.text.toString())
+                params.put("birthdate", etBirthDate.text.toString())
 
                 var gender = 1
                 if (etGender.text.toString() == "Male") {
@@ -639,7 +688,7 @@ class MainActivity : AppCompatActivity() {
                 } else if (etGender.text.toString() == "Other") {
                     gender = 3
                 }
-                params.put("gender",gender.toString())
+                params.put("gender", gender.toString())
                 return params
             }
 
@@ -650,8 +699,20 @@ class MainActivity : AppCompatActivity() {
                     URLConnection.guessContentTypeFromName(actualProfImage!!.name)
                 val mimeTypeAdhar =
                     URLConnection.guessContentTypeFromName(actualAdharImage!!.name)
-                params["profile_image"] = DataPart(actualProfImage!!.name, Utils.fileToBytes(actualProfImage), mimeType)
-                params["adhar_image"] = DataPart(actualAdharImage!!.name, Utils.fileToBytes(actualAdharImage), mimeTypeAdhar)
+                val mimeTypeAdharB =
+                    URLConnection.guessContentTypeFromName(actualAdharImageB!!.name)
+                params["profile_image"] =
+                    DataPart(actualProfImage!!.name, Utils.fileToBytes(actualProfImage), mimeType)
+                params["adhar_image_f"] = DataPart(
+                    actualAdharImage!!.name,
+                    Utils.fileToBytes(actualAdharImage),
+                    mimeTypeAdhar
+                )
+                params["adhar_image_b"] = DataPart(
+                    actualAdharImageB!!.name,
+                    Utils.fileToBytes(actualAdharImageB),
+                    mimeTypeAdharB
+                )
 //                params["adhar_image"] = DataPart(null,null)
                 return params
             }
@@ -669,8 +730,59 @@ class MainActivity : AppCompatActivity() {
         VolleySingleton.getInstance(this).addToRequestQueue(multipartRequest, "POST_COMMENTS")
     }
 
+    private fun addUserToFirebase() {
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("/images/$filename")
 
-    fun getUserNameData( ) {
+        ref.putFile(selectedPhotoUri!!)
+            .addOnSuccessListener {
+                Log.d("ImageUpload", "Successfully uploaded image: ${it.metadata?.path}")
+
+                ref.downloadUrl.addOnSuccessListener {
+                    Log.d("ImageUpload", "File Location: $it")
+
+                    saveUserToFirebaseDatabase(it.toString())
+                }
+            }
+            .addOnFailureListener {
+                Log.d("ImageUpload", "Failed to upload image to storage: ${it.message}")
+                progressDialog.dismiss()
+            }
+    }
+
+
+
+    private fun saveUserToFirebaseDatabase(profileImageUrl: String) {
+        USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",this)!!
+
+        val ref = FirebaseDatabase.getInstance().getReference("/users/$USER_ID_KEY")
+
+        val user = User(USER_ID_KEY, fn, profileImageUrl)
+
+        ref.setValue(user)
+            .addOnSuccessListener {
+                Log.d("ImageUpload", "Finally we saved the user to Firebase Database")
+
+                Toast.makeText(
+                    this@MainActivity, "Successfully Registered",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                loadScreens()
+                showConvidPoster()
+                progressDialog.dismiss()
+
+            }
+            .addOnFailureListener {
+                Log.d("ImageUpload", "Failed to set value to database: ${it.message}")
+                progressDialog.dismiss()
+            }
+    }
+
+
+
+
+    fun getUserNameData() {
 
         val url = Configure.BASE_URL + Configure.USER_DETAILS_URL
 
@@ -684,16 +796,22 @@ class MainActivity : AppCompatActivity() {
                     val gson = Gson()
 
                     val userArray: UserDetailsModel =
-                        gson.fromJson(response, UserDetailsModel ::class.java)
+                        gson.fromJson(response, UserDetailsModel::class.java)
 
                     val userid = userArray.pk
 
-                    Utils.writeStringToPreferences(Configure.USER_ID_KEY,userid.toString(),this@MainActivity)
+                    Utils.writeStringToPreferences(
+                        Configure.USER_ID_KEY,
+                        userid.toString(),
+                        this@MainActivity
+                    )
 
-                    Toast.makeText(applicationContext,"Successfully Logged In...",
-                        Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext, "Successfully Logged In...",
+                        Toast.LENGTH_LONG
+                    ).show()
                     loadScreens()
-
+                    showConvidPoster()
                     progressDialog.dismiss()
 
 
@@ -702,10 +820,12 @@ class MainActivity : AppCompatActivity() {
                 override fun onErrorResponse(error: VolleyError) {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
-                    Log.e("Responceis",  "Error: " + error.message)
+                    Log.e("Responceis", "Error: " + error.message)
 
-                    Toast.makeText(this@MainActivity,"Something Went Wrong ! Please try after some time",
-                        Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this@MainActivity, "Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG
+                    ).show()
 
                     progressDialog.dismiss()
                 }
@@ -718,7 +838,7 @@ class MainActivity : AppCompatActivity() {
 
                 var params = java.util.HashMap<String, String>()
                 params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                params.put("Authorization", "Token " + LOGIN_TOKEN!!);
                 return params;
             }
 
@@ -735,13 +855,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkFieldsLogin(value: String, lazyMessage: String) {
-        if(value.isEmpty()) {
+        if (value.isEmpty()) {
             etEmail.error = "Enter Valid Email Address"
-        }else  if (!validEmail(value)) {
-            Toast.makeText( this,"Enter valid e-mail!",Toast.LENGTH_LONG).show()
+        } else if (!validEmail(value)) {
+            Toast.makeText(this, "Enter valid e-mail!", Toast.LENGTH_LONG).show()
             progressDialog.dismiss()
-        }
-        else if(lazyMessage.isEmpty()) {
+        } else if (lazyMessage.isEmpty()) {
             etPass.error = "Enter Valid Password"
         } else {
             progressDialog = ProgressDialog(this@MainActivity)
@@ -761,57 +880,59 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkFieldsSignUp() {
 
-
-        if(etEmail.text.toString().isEmpty()) {
+        if (etEmail.text.toString().isEmpty()) {
             etEmail.error = "Enter Valid Email Address"
             progressDialog.dismiss()
-        } else  if (!validEmail(etEmail.text.toString())) {
-            Toast.makeText( this,"Enter valid e-mail!",Toast.LENGTH_LONG).show()
+        } else if (!validEmail(etEmail.text.toString())) {
+            Toast.makeText(this, "Enter valid e-mail!", Toast.LENGTH_LONG).show()
             progressDialog.dismiss()
-        }
-        else if(etGender.text.toString().isEmpty()) {
+        } else if (etGender.text.toString().isEmpty()) {
             etGender.error = "Please Select Gender"
             progressDialog.dismiss()
-        } else if(etMobile.text.toString().isEmpty()) {
+        } else if (etMobile.text.toString().isEmpty()) {
             etMobile.error = "Please enter valid Mobile Number"
             progressDialog.dismiss()
-        } else if(etMobile.text.toString().length != 10) {
+        } else if (etMobile.text.toString().length != 10) {
             etMobile.error = "Please enter valid Mobile Number"
             progressDialog.dismiss()
-        }
-        else if(etPass.text.toString().isEmpty()) {
+        } else if (etPass.text.toString().isEmpty()) {
             etPass.error = "Enter Valid Password"
             progressDialog.dismiss()
-        }
-        else if( etPass.text.toString().length <= 8) {
+        } else if (etPass.text.toString().length <= 8) {
             etPass.error = "Password Length must be greater the 8 "
             progressDialog.dismiss()
-        }
-        else if(actualProfImage == null) {
-            Toast.makeText(this,"Please select valid Profile Picture.",Toast.LENGTH_LONG).show()
+        } else if (actualProfImage == null) {
+            Toast.makeText(this, "Please select valid Profile Picture.", Toast.LENGTH_LONG).show()
             progressDialog.dismiss()
-        }
-        else if(actualAdharImage == null) {
-            Toast.makeText(this,"Please select valid Adhar Picture.",Toast.LENGTH_LONG).show()
+        } else if (actualAdharImage == null) {
+            Toast.makeText(this, "Please select valid Adhar Front Picture.", Toast.LENGTH_LONG)
+                .show()
             progressDialog.dismiss()
-        }
-        else if(etConPass.text.toString().isEmpty()) {
+        } else if (actualAdharImageB == null) {
+            Toast.makeText(this, "Please select valid Adhar Back Picture.", Toast.LENGTH_LONG)
+                .show()
+            progressDialog.dismiss()
+        } else if (etConPass.text.toString().isEmpty()) {
             etConPass.error = "Enter Valid Password"
             progressDialog.dismiss()
-        } else if(etFN.text.toString().isEmpty()) {
+        } else if (etFN.text.toString().isEmpty()) {
             etFN.error = "Enter Valid First Name"
             progressDialog.dismiss()
-        } else if(etLN.text.toString().isEmpty()) {
+        } else if (etLN.text.toString().isEmpty()) {
             etLN.error = "Enter Valid Last Name"
             progressDialog.dismiss()
-        } else if(etUserName.text.toString().isEmpty()) {
+        } else if (etUserName.text.toString().isEmpty()) {
             etUserName.error = "Enter Valid UserName"
             progressDialog.dismiss()
-        } else if(!isValidPassword(etPass.text.toString())) {
+        } else if (!isValidPassword(etPass.text.toString())) {
             etPass.error = "Password must be combination of Numbers and Alphabets"
             progressDialog.dismiss()
-        } else if(etPass.text.toString() != etConPass.text.toString()) {
-            Toast.makeText(this,"Password and Confirm Password should be same...",Toast.LENGTH_LONG).show()
+        } else if (etPass.text.toString() != etConPass.text.toString()) {
+            Toast.makeText(
+                this,
+                "Password and Confirm Password should be same...",
+                Toast.LENGTH_LONG
+            ).show()
 
             progressDialog.dismiss()
         } else {
@@ -834,29 +955,43 @@ class MainActivity : AppCompatActivity() {
                 actualAdharImage?.let { imageAdharFile ->
                     lifecycleScope.launch {
 
-                        compressedProfImage = Compressor.compress(this@MainActivity, imageFile){
-                            size(100_000)
-                            resolution(600, 600)
-                            quality(60)
-                            format(Bitmap.CompressFormat.JPEG)
-                        }
-                        compressedAdharImage = Compressor.compress(this@MainActivity, imageAdharFile){
-                            size(100_000)
-                            resolution(600, 600)
-                            quality(60)
-                            format(Bitmap.CompressFormat.JPEG)
+                        actualAdharImageB?.let { imageAdharFileB ->
+                            lifecycleScope.launch {
 
-                        }
-                        setCompressedImage()
 
-                    }
-                } ?:
-                Log.d("receiveddata","Please Choose an Image")
+                                compressedProfImage =
+                                    Compressor.compress(this@MainActivity, imageFile) {
+                                        size(100_000)
+                                        resolution(600, 600)
+                                        quality(60)
+                                        format(Bitmap.CompressFormat.JPEG)
+                                    }
+                                compressedAdharImage =
+                                    Compressor.compress(this@MainActivity, imageAdharFile) {
+                                        size(100_000)
+                                        resolution(600, 600)
+                                        quality(60)
+                                        format(Bitmap.CompressFormat.JPEG)
+
+                                    }
+
+                                compressedAdharImageB =
+                                    Compressor.compress(this@MainActivity, imageAdharFileB) {
+                                        size(100_000)
+                                        resolution(600, 600)
+                                        quality(60)
+                                        format(Bitmap.CompressFormat.JPEG)
+
+                                    }
+                                setCompressedImage()
+
+                            }
+                        } ?: Log.d("receiveddata", "Please Choose an Image")
 //                progressDialog.dismiss()
-
+                    }
+                } ?: Log.d("receiveddata", "Please Choose an Image")
             }
-        } ?:
-        Log.d("receiveddata","Please Choose an Image")
+        } ?: Log.d("receiveddata", "Please Choose an Image")
 //        progressDialog.dismiss()
     }
 
@@ -867,23 +1002,36 @@ class MainActivity : AppCompatActivity() {
             val uri = Uri.fromFile(it)
             profPicURL = uri.toString()
 
-            Log.d("Compressor", "CompressedProf image size in " +getReadableFileSize(it.length()))
+            Log.d("Compressor", "CompressedProf image size in " + getReadableFileSize(it.length()))
 
             compressedAdharImage?.let {
                 civAdharImg.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
                 val uri = Uri.fromFile(it)
                 adharPicURL = uri.toString()
 
-                Log.d("Compressor", "CompressedAdhar image size in " +getReadableFileSize(it.length()))
+                Log.d(
+                    "Compressor",
+                    "CompressedAdhar image size in " + getReadableFileSize(it.length())
+                )
+                compressedAdharImageB?.let {
+                    civAdharImgB.setImageBitmap(BitmapFactory.decodeFile(it.absolutePath))
+                    val uri = Uri.fromFile(it)
+                    adharPicURLB = uri.toString()
 
-                hitSignUpAPI()
+                    Log.d(
+                        "Compressor",
+                        "CompressedAdhar image size in " + getReadableFileSize(it.length())
+                    )
 
-                        Log.d("Compressor", "Compressed image save in adhar " + it.path)
-            } ?:
+                    hitSignUpAPI()
 
-            Log.d("Compressor", "Compressed image save in " + it.path)
-        } ?:
-        Toast.makeText(this@MainActivity, "File not Found " , Toast.LENGTH_LONG).show()
+                    Log.d("Compressor", "Compressed image save in adhar " + it.path)
+                } ?: Log.d("Compressor", "Compressed image save in " + it.path)
+
+
+                Log.d("Compressor", "Compressed image save in adhar " + it.path)
+            } ?: Log.d("Compressor", "Compressed image save in " + it.path)
+        } ?: Toast.makeText(this@MainActivity, "File not Found ", Toast.LENGTH_LONG).show()
 
     }
 
@@ -907,33 +1055,41 @@ class MainActivity : AppCompatActivity() {
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
 
-                    Log.i( "Responceiskey", response.toString())
+                    Log.i("Responceiskey", response.toString())
 
                     val obj = JSONObject(response)
-                    val key =obj.get("key")
+                    val key = obj.get("key")
 
-                    Log.i( "Responceiskey", key.toString())
+                    Log.i("Responceiskey", key.toString())
 
-                    Utils.writeStringToPreferences(LOGIN_KEY, key.toString(),this@MainActivity)
-                    LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this@MainActivity)!!
+                    Utils.writeStringToPreferences(LOGIN_KEY, key.toString(), this@MainActivity)
+                    LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this@MainActivity)!!
 
 
-                  getUserNameData()
+                    getUserNameData()
 
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
-                    Log.e("loginerror",  "Error: " + error.message+"Error: " + error.networkResponse.statusCode)
+                    Log.e(
+                        "loginerror",
+                        "Error: " + error.message + "Error: " + error.networkResponse.statusCode
+                    )
                     progressDialog.dismiss()
 
                     if (error.networkResponse.statusCode == 400) {
-                        Toast.makeText(applicationContext,"Username or Mail ID Not Registered Yet. Please Create One..",
-                            Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "Username or Mail ID Not Registered Yet. Please Create One..",
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else {
-                        Toast.makeText(applicationContext,"Something Went Wrong ! Please try after some time",
-                            Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            applicationContext, "Something Went Wrong ! Please try after some time",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }) {
@@ -964,9 +1120,9 @@ class MainActivity : AppCompatActivity() {
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-        var url =  Configure.BASE_URL + Configure.REGISTRATION_URL
+        var url = Configure.BASE_URL + Configure.REGISTRATION_URL
 
-        Log.d("Responceis",url)
+        Log.d("Responceis", url)
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.POST,
@@ -974,15 +1130,15 @@ class MainActivity : AppCompatActivity() {
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
 
-                    Log.i( "Responceis", response.toString())
+                    Log.i("Responceis", response.toString())
 
                     val obj = JSONObject(response)
-                    val key =obj.get("key")
+                    val key = obj.get("key")
 
-                    Log.i( "Responceis", key.toString())
+                    Log.i("Responceis", key.toString())
 
-                    Utils.writeStringToPreferences(LOGIN_KEY,key.toString(),this@MainActivity)
-                    LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY,"",this@MainActivity)!!
+                    Utils.writeStringToPreferences(LOGIN_KEY, key.toString(), this@MainActivity)
+                    LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this@MainActivity)!!
 
 
                     putUserNameData()
@@ -993,11 +1149,16 @@ class MainActivity : AppCompatActivity() {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
                     if (error.networkResponse.statusCode == 400) {
-                        Toast.makeText(applicationContext,"A user is already registered with this e-mail address",
-                            Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "A user is already registered with this e-mail address",
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else {
-                        Toast.makeText(applicationContext,"Something Went Wrong ! Please try after some time",
-                            Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            applicationContext, "Something Went Wrong ! Please try after some time",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     progressDialog.dismiss()
 
@@ -1030,8 +1191,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    fun isValidPassword(password: String?) : Boolean {
+    fun isValidPassword(password: String?): Boolean {
         password?.let {
             val passwordPattern = "^(?=.*[0-9])(?=.*[a-z]).{4,}$"
             val passwordMatcher = Regex(passwordPattern)
@@ -1041,10 +1201,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadScreens() {
-        changeIconColor(ivHome,tvHome,"Home")
+        changeIconColor(ivHome, tvHome, "Home")
         if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
             loadHomeFrag(fragHome = HomeScreen())
-        }else {
+        } else {
             askGalleryPermissionLocation()
             llLogin.visibility = View.VISIBLE
             nsvSignUp.visibility = View.GONE
@@ -1085,8 +1245,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 
 
     fun loadSearchFrag(fragHome : SearchFragment) {

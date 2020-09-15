@@ -2,13 +2,16 @@ package com.ddsio.productionapp.sharesavari.OfferScreen
 
 import android.Manifest
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +28,7 @@ import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_going_date_and_time.*
 import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -41,6 +45,16 @@ class NumberOfPassenersToTake : AppCompatActivity() {
     var LOGIN_TOKEN = ""
     lateinit var progressDialog: ProgressDialog
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
+    }
+
+
+    var cbBookInstant = ""
+
+
+    var maxSeatCount = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number_of_passeners_to_take)
@@ -54,12 +68,31 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         request= Volley.newRequestQueue(this);
 
 
-        cvStopPoint.setOnClickListener {
-            val intent =  (Intent(this, ShowMapActivity::class.java))
-            intent.putExtra("typeis","stop")
-            startActivity(intent)
+//        cvStopPoint.setOnClickListener {
+//            val intent =  (Intent(this, ShowMapActivity::class.java))
+//            intent.putExtra("typeis","stop")
+//            startActivity(intent)
+//        }
 
+        rbBookInstantly.setOnClickListener {
+            radio_button_click(rbBookInstantly)
         }
+
+        rbMyself.setOnClickListener {
+            radio_button_click(rbMyself)
+        }
+
+
+
+
+        rbMax2Seat.setOnClickListener {
+            radio_button_click_seat(rbBookInstantly)
+        }
+
+        rbMax3Seat.setOnClickListener {
+            radio_button_click_seat(rbMyself)
+        }
+
 
         askGalleryPermissionLocation()
             Utils.checkConnection(this@NumberOfPassenersToTake,cv)
@@ -115,9 +148,11 @@ class NumberOfPassenersToTake : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
+                    totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
+                    tvTotalPrice.text = totalAmt.toString() + "₹"
+                }
 
-               totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
-                tvTotalPrice.text = totalAmt.toString() + "₹"
             }
 
         })
@@ -139,6 +174,24 @@ class NumberOfPassenersToTake : AppCompatActivity() {
             pojoWithData.slog = add.long
 
         }
+    }
+
+
+    fun radio_button_click(view: View){
+        // Get the clicked radio button instance
+        val radio: RadioButton = findViewById(radio_group.checkedRadioButtonId)
+
+        cbBookInstant = radio.text.toString()
+
+    }
+
+
+    fun radio_button_click_seat(view: View){
+        // Get the clicked radio button instance
+        val radio: RadioButton = findViewById(radio_groupSeat.checkedRadioButtonId)
+
+        maxSeatCount = radio.text.toString()
+
     }
 
 
@@ -195,17 +248,37 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         } else if (etCar.text.toString().isEmpty() || etCar.text.toString() == "") {
             Toast.makeText(this,"Please enter valid Car Name ",
                 Toast.LENGTH_LONG).show()
+        } else if (cbBookInstant.isEmpty() ||cbBookInstant == "") {
+            Toast.makeText(this,"Please select valid Booking Process ",
+                Toast.LENGTH_LONG).show()
+        }else if (maxSeatCount.isEmpty() ||maxSeatCount == "") {
+            Toast.makeText(this,"Please select valid Back Seat count ",
+                Toast.LENGTH_LONG).show()
+        } else if (etCarColor.text.toString().isEmpty() || etCarColor.text.toString() == "") {
+            Toast.makeText(this,"Please enter valid car color ",
+                Toast.LENGTH_LONG).show()
         } else {
             pojoWithData.price = etPrice.text.toString()
             pojoWithData.passenger = tvCount.text.toString()
             pojoWithData.carname = etCar.text.toString()
+            pojoWithData.slog = "0"
+            pojoWithData.slat = "0"
+            pojoWithData.carcolor = etCarColor.text.toString()
+                pojoWithData.stitle = etStopPoint.text.toString()
 
-            if (tvStop.text.toString().isEmpty() || tvStop.text.toString() == "StopPoint") {
-                pojoWithData.stitle = ""
-                pojoWithData.slog = "0"
-                pojoWithData.slat = "0"
-
+            if (cbPets.isChecked) {
+                pojoWithData.pets = true
+            } else {
+                pojoWithData.pets = false
             }
+
+
+            if (cbSmoking.isChecked) {
+                pojoWithData.smoking = true
+            } else {
+                pojoWithData.smoking = false
+            }
+
 
             hitOfferRideAPI()
         }
@@ -216,11 +289,22 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 
     private fun hitOfferRideAPI() {
 
-        if (cbBookInstant.isChecked) {
+        if (cbBookInstant == "Book Instantly") {
             pojoWithData.is_direct = true
         } else {
             pojoWithData.is_direct = false
         }
+
+
+
+        if (maxSeatCount == "Max 2 seat in back") {
+            pojoWithData.max_back_2 = true
+            pojoWithData.max_back_3 = false
+        } else {
+            pojoWithData.max_back_3 = true
+            pojoWithData.max_back_2 = false
+        }
+
 
         progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Wait a Sec....Creating your Ride")
@@ -316,16 +400,19 @@ class NumberOfPassenersToTake : AppCompatActivity() {
                 params["tdtime"] = pojoWithData.tdtime.toString()
                 params["is_direct"] = pojoWithData.is_direct.toString()
                 params["carname"] = pojoWithData.carname.toString()
+                params["carcolor"] = pojoWithData.carcolor.toString()
                 params["stitle"] = pojoWithData.stitle.toString()
                 params["slat"] = pojoWithData.slat.toString()
                 params["slog"] = pojoWithData.slog.toString()
-
+                params["pets"] = pojoWithData.pets.toString()
+                params["smoking"] = pojoWithData.smoking.toString()
+                params["max_back_2"] = pojoWithData.max_back_2.toString()
+                params["max_back_3"] = pojoWithData.max_back_3.toString()
                 return params
             }
         }
         request!!.add(jsonObjRequest)
 
     }
-
 
 }

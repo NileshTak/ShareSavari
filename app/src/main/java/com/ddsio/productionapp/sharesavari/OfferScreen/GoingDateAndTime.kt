@@ -3,6 +3,7 @@ package com.ddsio.productionapp.sharesavari.OfferScreen
 import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -22,6 +23,7 @@ import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_going_date_and_time.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_return_date_and_time.*
@@ -40,6 +42,12 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
 
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
     var formate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -202,6 +210,9 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
                 Toast.LENGTH_LONG).show()
         } else  if (etReachTime.text.toString().isEmpty() || etReachTime.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Reaching Time",
+                Toast.LENGTH_LONG).show()
+        }else  if (etReachDate.text.toString() < etSelectDate.text.toString() ) {
+            Toast.makeText(this,"Reaching Date should be greater then or equals to Leaving Date",
                 Toast.LENGTH_LONG).show()
         }  else {
             if (cvReturnRide.isChecked) {

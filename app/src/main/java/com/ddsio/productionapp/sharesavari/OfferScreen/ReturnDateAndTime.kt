@@ -138,7 +138,10 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
         } else  if (etSelectTimeReturn.text.toString().isEmpty() || etSelectTimeReturn.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Drop Time",
                 Toast.LENGTH_LONG).show()
-        }  else {
+        } else  if (pojoWithData.date.toString()  > etSelectDateReturn.text.toString() ) {
+            Toast.makeText(this,"Return Date should be greater then or equals to Leaving Date",
+                Toast.LENGTH_LONG).show()
+        } else {
             var int = Intent(this,
                 NumberOfPassenersToTake::class.java)
             val bundle =
@@ -152,6 +155,7 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
     }
 
     override fun onTimeSet(timePicker: TimePicker?, hour: Int, minute: Int) {
+
         etSelectTimeReturn.setText(" $hour : $minute")
 
         pojoWithData.rtime = "$hour:$minute"

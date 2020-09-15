@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="15dp"
     tools:context="com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag">
 
     <LinearLayout
+        android:id="@+id/llNoMsg"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_margin="10dp"
@@ -43,8 +46,7 @@
 
             <TextView
                 android:layout_marginStart="20dp"
-                android:text="Important development - a message from ShareSavari
-co-Founder."
+                android:text="No Messages Yet"
                 android:textSize="14sp"
                 fontPath="Comfortaa-Bold.ttf"
                 android:layout_centerVertical="true"
@@ -59,4 +61,38 @@ co-Founder."
     </LinearLayout>
 
 
-</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginBottom="30dp"
+        android:layout_height="wrap_content">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_latest_messages"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:padding="4dp"
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fabNewMsg"
+            app:borderWidth="0dp"
+            android:src="@drawable/ic_baseline_chevron_left_24_white"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabSize="normal"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="20dp"
+            android:rotation="180"
+            android:adjustViewBounds="true"
+            />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

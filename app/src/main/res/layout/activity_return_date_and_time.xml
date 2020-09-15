@@ -110,7 +110,7 @@
     <TextView
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
-        android:text="What time will you pick passengers up?"
+        android:text="What time will you return?"
         android:textSize="25sp"
         fontPath="Comfortaa-Bold.ttf"
         android:layout_centerVertical="true"

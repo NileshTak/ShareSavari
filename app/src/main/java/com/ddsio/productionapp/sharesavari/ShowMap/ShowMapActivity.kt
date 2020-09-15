@@ -66,9 +66,9 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
 
     var SLat = "0"
     var SLog = "0"
-
+    var gline = "0"
+    var gcity = "0"
     var type = ""
-
 
     override fun onMapReady(googleMap: GoogleMap) {
 
@@ -163,6 +163,8 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
 
                     var address = addressList!!.get(0)
                     var latLng = LatLng(address.latitude,address.longitude)
+
+
                     mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
                     mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10f))
 
@@ -259,6 +261,8 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
             pojo.type = type
             pojo.lat = SLat
             pojo.long = SLog
+            pojo.gline = gline
+            pojo.gcity = gcity
 
             Log.d("khsnkunkdjv",pojo.city + pojo.type + pojo.lat + pojo.long)
 
@@ -383,6 +387,8 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
                 if ( addresses.locality != null && addresses.locality.isNotEmpty() ) {
                     city = addresses.locality
                     tvAddSearch!!.setText(city)
+                    gline = addresses.adminArea
+                    gcity = addresses.locality
 
                 } else {
                                     tvAddSearch!!.setText(addresses.getAddressLine(0))
@@ -392,6 +398,8 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
                     SLat = addresses.latitude.toString()
                     SLog = addresses.longitude.toString()
                 }
+
+
 
             }
             if (addresses.getAddressLine(1) != null) {
@@ -419,6 +427,9 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
         var addresses: List<Address>? = null
         try {
             addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+            SLat = location.latitude.toString()
+            SLog = location.longitude.toString()
         } catch (e: IOException) {
             e.printStackTrace()
         }
