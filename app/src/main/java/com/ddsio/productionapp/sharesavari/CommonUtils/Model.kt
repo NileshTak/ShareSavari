@@ -100,7 +100,7 @@ class BookRidesPojo : ArrayList<BookRidesPojoItem>()
      var gline: String? = null
      var glog: String? = null
      var going: String? = null
-     var id: Int? = null
+     var id: String? = null
      var image: String? = null
      var is_return: Boolean? = null
      var lcity: String? = null
@@ -108,7 +108,7 @@ class BookRidesPojo : ArrayList<BookRidesPojoItem>()
      var llat: String? = null
      var lline: String? = null
      var llog: String? = null
-     var passenger: Int? = null
+     var passenger: String? = null
      var price: Int? = null
      var rdate: String? = null
      var rtime: String? = null

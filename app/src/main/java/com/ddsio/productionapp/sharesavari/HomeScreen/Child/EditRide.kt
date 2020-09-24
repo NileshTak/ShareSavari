@@ -25,10 +25,8 @@ import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
-import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
-import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
-import com.productionapp.amhimemekar.CommonUtils.Configure
-import com.productionapp.amhimemekar.CommonUtils.offerRideModel
+import com.google.gson.Gson
+import com.productionapp.amhimemekar.CommonUtils.*
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_edit_ride.*
 import kotlinx.android.synthetic.main.activity_edit_ride.etStopPoint
@@ -61,7 +59,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
     lateinit var progressDialog: ProgressDialog
-
+    var pets = ""
+    var smoking = ""
     var cbBookInstant = ""
 
     override fun attachBaseContext(newBase: Context) {
@@ -113,6 +112,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         pojoWithData.carcolor=   previousPojo.carcolor
         pojoWithData.max_back_2=   previousPojo.max_back_2
         pojoWithData.max_back_3=   previousPojo.max_back_3
+        pojoWithData.comment = previousPojo.comment
 
 
         request= Volley.newRequestQueue(this);
@@ -125,6 +125,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         etSelectDateReturnSave.setText(previousPojo.rdate.toString())
         etCarColorSave.setText(previousPojo.carcolor.toString())
 
+        etCommentSave.setText(previousPojo.comment.toString())
         etSelectTimeGoing.setText(previousPojo.time.toString())
         etReachingTime.setText(previousPojo.tdtime.toString())
         etSelectTimeReturnSave.setText(previousPojo.rtime.toString())
@@ -136,9 +137,22 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
         etCarSave.setText(previousPojo.carname.toString())
 
+        if (previousPojo.id.toString().isEmpty() || previousPojo.id.toString() == ""){
+            tvSave.text = "Publish"
+        } else {
+            tvSave.text = "Save"
+        }
+
+
+        if (previousPojo.max_back_2 == true) {
+            maxSeatCount =  "Max 2 seat in back"
+        } else {
+            maxSeatCount =  "Max 3 seat in back"
+        }
+
         var price = previousPojo.price
         var pass = previousPojo.passenger
-        count = previousPojo.passenger!!
+        count = previousPojo.passenger!!.toInt()
 
 
         var totalAMt = price!!.toInt() * pass!!.toInt()
@@ -332,13 +346,6 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
         })
 
-//        cvStopPointSave.setOnClickListener {
-//            val intent =  (Intent(this, ShowMapActivity::class.java))
-//            intent.putExtra("typeis","stop")
-//            startActivity(intent)
-//
-//        }
-
         rbBookInstantly.setOnClickListener {
             radio_button_click(rbBookInstantly)
         }
@@ -366,12 +373,84 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             }
         }
 
-
         btnSave.setOnClickListener {
             checkFields()
         }
+        getUserData()
     }
 
+
+
+    fun getUserData( ) {
+
+        progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Wait a Sec....Loading Details..")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+        val url = Configure.BASE_URL + Configure.GET_USER_DETAILS +USER_ID_KEY+"/"
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkj", response.toString())
+
+                    val gson = Gson()
+
+                    if (response != null ) {
+
+                        val userArray: FetchProfileData =
+                            gson.fromJson(response, FetchProfileData ::class.java)
+
+                        if (userArray != null) {
+
+                            pets = userArray.pets.toString()
+                            smoking = userArray.smoking.toString()
+
+
+                            Log.d("kjukj",pets +"        "+smoking)
+
+                        }
+                    }
+
+                    progressDialog.dismiss()
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(this@EditRide,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
 
     fun radio_button_click_seat(view: View){
         // Get the clicked radio button instance
@@ -477,6 +556,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
 
             pojoWithData.price = etPriceSave.text.toString()
+            pojoWithData.comment = etCommentSave.text.toString()
             pojoWithData.carcolor = etCarColorSave.text.toString()
             pojoWithData.passenger = tvCountSave.text.toString()
             pojoWithData.carname = etCarSave.text.toString()
@@ -491,14 +571,155 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             progressDialog.setCancelable(false)
             progressDialog.show()
 
-            UpdateRide(pojoWithData)
+            if (previousPojo.id.toString() != "" || previousPojo.id.toString().isNotEmpty()) {
+                UpdateRide(pojoWithData)
+            } else {
+
+                hitOfferRideAPI()
+            }
 
         }
+    }
+
+
+
+    private fun hitOfferRideAPI() {
+
+        if (cbBookInstant == "Book Instantly") {
+            pojoWithData.is_direct = true
+        } else {
+            pojoWithData.is_direct = false
+        }
+
+
+
+        if (maxSeatCount == "Max 2 seat in back") {
+            pojoWithData.max_back_2 = true
+            pojoWithData.max_back_3 = false
+        } else {
+            pojoWithData.max_back_3 = true
+            pojoWithData.max_back_2 = false
+        }
+
+
+        progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Wait a Sec....Creating your Ride")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+        pojoWithData.id =  ""
+        pojoWithData.username =  ""
+        pojoWithData.url =  ""
+        pojoWithData.image =  ""
+        pojoWithData.comment =  ""
+
+//        if ( pojoWithData.rdate == null || pojoWithData.rdate!!.isEmpty()) {
+//            pojoWithData.is_return = "false"
+//        } else {
+//            pojoWithData.is_return = "true"
+//        }
+
+        val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL
+        Log.d("jukjbkj", url.toString())
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkj", response.toString())
+                    Toast.makeText(this@EditRide,"Ride Offered Successfully...",
+                        Toast.LENGTH_LONG).show()
+
+                    val mainActivity =
+                        Intent(applicationContext, MainActivity::class.java)
+
+                    mainActivity.putExtra("type", "RideBooked")
+                    progressDialog.dismiss()
+                    startActivity(mainActivity)
+                    finish()
+
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("jukjbkj",  "Error: " + error.message)
+
+                    Toast.makeText(this@EditRide,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params["id"] =  pojoWithData.id.toString()
+                params["url"] = pojoWithData.url.toString()
+                params["username"] = pojoWithData.username.toString()
+                params["user"] =  pojoWithData.user.toString()
+                params["image"] = pojoWithData.image.toString()
+                params["leaving"] = pojoWithData.leaving.toString()
+                params["lline"] =  pojoWithData.lline.toString()
+                params["lcity"] = pojoWithData.lcity.toString()
+                params["llat"] = pojoWithData.llat.toString()
+                params["llog"] =  pojoWithData.llog.toString()
+                params["going"] = pojoWithData.going.toString()
+                params["glog"] = pojoWithData.glog.toString()
+                params["glat"] = pojoWithData.glat.toString()
+                params["gcity"] = pojoWithData.gcity.toString()
+                params["gline"] = pojoWithData.gline.toString()
+                params["date"] =  pojoWithData.date.toString()
+                params["time"] = pojoWithData.time.toString()
+                params["rdate"] = pojoWithData.rdate.toString()
+                params["rtime"] =  pojoWithData.rtime.toString()
+                params["price"] = pojoWithData.price.toString()
+                params["passenger"] = pojoWithData.passenger.toString()
+                params["comment"] = etCommentSave.text.toString()
+                params["is_return"] = pojoWithData.is_return.toString()
+                params["tddate"] = pojoWithData.tddate.toString()
+                params["tdtime"] = pojoWithData.tdtime.toString()
+                params["is_direct"] = pojoWithData.is_direct.toString()
+                params["carname"] = pojoWithData.carname.toString()
+                params["carcolor"] = pojoWithData.carcolor.toString()
+                params["stitle"] = pojoWithData.stitle.toString()
+                params["slat"] = pojoWithData.slat.toString()
+                params["slog"] = pojoWithData.slog.toString()
+                params["pets"] = pets
+                params["smoking"] = smoking
+                params["max_back_2"] = pojoWithData.max_back_2.toString()
+                params["max_back_3"] = pojoWithData.max_back_3.toString()
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
     }
 
     private fun UpdateRide(pojoWithData: offerRideModel) {
 
         if (cbBookInstant == "Book Instantly") {
+            pojoWithData.is_direct = true
+        } else {
+            pojoWithData.is_direct = false
+        }
+
+        if (rbBookInstantly.isChecked) {
             pojoWithData.is_direct = true
         } else {
             pojoWithData.is_direct = false
@@ -537,14 +758,14 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 //                        val employee: JSONObject = obj.getJSONObject("employee")
 
                         var ride = BookRidesPojoItem()
-                        ride.comment = obj.getString("comment")
+                        ride.comment =  obj.getString("comment")
                         ride.date= obj.getString("date")
                         ride.gcity= obj.getString("gcity")
                         ride.glat= obj.getString("glat")
                         ride.gline= obj.getString("gline")
                         ride.glog= obj.getString("glog")
                         ride.going= obj.getString("going")
-                        ride.id= obj.getInt("id")
+                        ride.id= obj.getString("id")
                         ride.image= obj.getString("image")
                         ride.is_return= obj.getBoolean("is_return")
                         ride.lcity= obj.getString("lcity")
@@ -552,7 +773,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                         ride.llat= obj.getString("llat")
                         ride.lline= obj.getString("lline")
                         ride.llog= obj.getString("llog")
-                        ride.passenger= obj.getInt("passenger")
+                        ride.passenger= obj.getInt("passenger").toString()
                         ride.price= obj.getInt("price")
                         ride.rdate= obj.getString("rdate")
                         ride.rtime= obj.getString("rtime")
@@ -565,7 +786,6 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                         ride.is_direct= obj.getBoolean("is_direct")
                         ride.pets= obj.getBoolean("pets")
                         ride.smoking= obj.getBoolean("smoking")
-
 
 
                         Log.d("juguiuih",ride.leaving.toString())
@@ -638,7 +858,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                 params["rtime"] =  pojoWithData.rtime.toString()
                 params["price"] = pojoWithData.price.toString()
                 params["passenger"] = pojoWithData.passenger.toString()
-                params["comment"] = pojoWithData.comment.toString()
+                params["comment"] = etCommentSave.text.toString()
                 params["is_return"] = pojoWithData.is_return.toString()
                 params["tddate"] = pojoWithData.tddate.toString()
                 params["tdtime"] = pojoWithData.tdtime.toString()
@@ -647,8 +867,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                 params["stitle"] = pojoWithData.stitle.toString()
                 params["slat"] = pojoWithData.slat.toString()
                 params["slog"] = pojoWithData.slog.toString()
-                params["pets"] = pojoWithData.pets.toString()
-                params["smoking"] = pojoWithData.smoking.toString()
+                params["pets"] = pets
+                params["smoking"] = smoking
                 params["carcolor"] = pojoWithData.carcolor.toString()
                 params["max_back_2"] = pojoWithData.max_back_2.toString()
                 params["max_back_3"] = pojoWithData.max_back_3.toString()

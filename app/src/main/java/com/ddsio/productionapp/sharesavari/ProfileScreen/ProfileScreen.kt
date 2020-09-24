@@ -33,7 +33,6 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.CircularProgress.CirclePr
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.VolleyProgressListener
 import com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues
 import com.ddsio.productionapp.sharesavari.MainActivity
-import com.ddsio.productionapp.sharesavari.ProfileScreen.EditProfile.EditProfile
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseException
@@ -78,6 +77,7 @@ class ProfileScreen : Fragment() {
     lateinit var smoking : String
 
 
+    var vari = "False"
     private var mResendToken: PhoneAuthProvider.ForceResendingToken? = null
 
     lateinit var mCallbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
@@ -151,7 +151,9 @@ lateinit var cbPetsP : CheckBox
 
 
         tvAlert.setOnClickListener {
-            Toast.makeText(activity,"Number not validated yet...",Toast.LENGTH_LONG).show()
+            if (vari == "False" ) {
+                Toast.makeText(activity,"Number not validated yet...",Toast.LENGTH_LONG).show()
+            }
         }
 
         btnVerify.setOnClickListener {
@@ -295,6 +297,7 @@ lateinit var cbPetsP : CheckBox
 
                     dialog_verifying.dismiss()
                     dialog_otp.dismiss()
+                    progressDialog.dismiss()
 //                    Toast.makeText(this@Authentication, "Incorrect OTP", Toast.LENGTH_SHORT).show()
                     Utils.showSnackMSG(lottieSelectImage,"Incorrect OTP")
 
@@ -307,6 +310,12 @@ lateinit var cbPetsP : CheckBox
     }
 
     private fun sendMobielVerifiedTrueAPI() {
+
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage("Wait a Sec....Loading Details..")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
 
         val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
 
@@ -321,11 +330,12 @@ lateinit var cbPetsP : CheckBox
 //
 //                    val userArray: UserDetailsModel =
 //                        gson.fromJson(response, UserDetailsModel ::class.java)
-
+                    progressDialog.dismiss()
                     dialog_otp.dismiss()
                     dialog_verifying.dismiss()
 
                     getUserData()
+
 
                     Utils.showSnackMSG(lottieSelectImage,"Mobile Number Verified Successfully")
 
@@ -484,8 +494,6 @@ lateinit var cbPetsP : CheckBox
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-
-
         val url = BASE_URL+ GET_USER_DETAILS+USER_ID_KEY+"/"
 //        val url = "https://ddsio.com/sharesawaari/rest/users/22/"
 
@@ -503,6 +511,7 @@ lateinit var cbPetsP : CheckBox
                     val userArray: FetchProfileData =
                         gson.fromJson(response, FetchProfileData ::class.java)
 
+                        vari = userArray.verification.toString()
                     if (userArray != null) {
                         val image = userArray.image
 
@@ -518,21 +527,21 @@ lateinit var cbPetsP : CheckBox
                             btnVerify.visibility = View.GONE
                         }
 
-//                        pets = userArray.pets.toString()
-//                        smoking = userArray.smoking.toString()
+                        pets = userArray.pets.toString()
+                        smoking = userArray.smoking.toString()
 
 
-//                        if (userArray.pets == "true") {
-//                            cbPetsP.isChecked = true
-//                        } else {
-//                            cbPetsP.isChecked = false
-//                        }
-//
-//                        if (userArray.smoking == "true") {
-//                            cbSmokingP.isChecked = true
-//                        } else {
-//                            cbSmokingP.isChecked = false
-//                        }
+                        if (userArray.pets == "True" ||userArray.pets == "true" ) {
+                            cbPetsP.isChecked = true
+                        } else {
+                            cbPetsP.isChecked = false
+                        }
+
+                        if (userArray.smoking == "True" || userArray.smoking == "true") {
+                            cbSmokingP.isChecked = true
+                        } else {
+                            cbSmokingP.isChecked = false
+                        }
 
 
                         if ( image != null ) {
@@ -690,9 +699,6 @@ lateinit var cbPetsP : CheckBox
 
 
     fun updateData( ) {
-
-
-
 
         if (cbPetsP.isChecked) {
             pets = "true"

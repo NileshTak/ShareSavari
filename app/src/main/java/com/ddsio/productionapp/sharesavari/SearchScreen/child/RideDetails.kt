@@ -165,10 +165,10 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 "(${pojoWithData.time})"
 
 
-
         tvFromFullAdd.text = "("+ pojoWithData.leaving+")"
         tvToFullAdd.text = "("+ pojoWithData.going+")"
         tvCarColor.text = "("+ pojoWithData.carcolor+")"
+        tvCom.text = pojoWithData.comment
         tvCar.text = pojoWithData.carname
         if (pojoWithData.stitle == null || pojoWithData.stitle == "") {
             llStopPoint.visibility = View.GONE

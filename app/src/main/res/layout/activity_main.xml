@@ -257,7 +257,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="10dp"
         android:elevation="2dp"
         android:visibility="gone"
         android:id="@+id/nsvSignUp"
@@ -770,7 +770,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:text="By continuing, you accept our ToS and Privacy Policy. This information is collected by COMUTO SA for the purposes of creating your account, managing your booking, use and improve our services and ensuring the security of our platform. You have rights on your personal data and can exercise them by contacting BlaBlaCar through our contact form. You can learn more about your rights and how we handle your personal data in our Privacy Policy."
+                android:text="By continuing, you accept our ToS and Privacy Policy. This information is collected by COMUTO SA for the purposes of creating your account, managing your booking, use and improve our services and ensuring the security of our platform. You have rights on your personal data and can exercise them by contacting Share Sawaari through our contact form. You can learn more about your rights and how we handle your personal data in our Privacy Policy."
                 android:textColor="@color/textColorHead"
                 android:gravity="center"
                 android:textStyle="bold"
@@ -814,6 +814,7 @@
         android:layout_height="match_parent"/>
 
     <LinearLayout
+        android:id="@+id/llNav"
         android:weightSum="5"
         android:background="@drawable/bg_dialog"
         android:layout_alignParentBottom="true"

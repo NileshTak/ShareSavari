@@ -37,15 +37,12 @@ import com.ddsio.productionapp.sharesavari.ProfileScreen.ProfileScreen
 import com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.letsbuildthatapp.kotlinmessenger.models.User
-import com.productionapp.amhimemekar.CommonUtils.Configure
+import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
-import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.format
 import id.zelory.compressor.constraint.quality
@@ -53,7 +50,6 @@ import id.zelory.compressor.constraint.resolution
 import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.convid_poster_layout.view.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
@@ -68,6 +64,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.pow
 
@@ -166,8 +163,6 @@ class MainActivity : AppCompatActivity() {
         LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this)!!
 
 
-
-
         Handler().postDelayed({
             Utils.checkConnection(this@MainActivity, frameContainer)
             if (!Utils.CheckGpsStatus(this@MainActivity)) {
@@ -181,9 +176,11 @@ class MainActivity : AppCompatActivity() {
         if (type == "SignUp") {
             nsvSignUp.visibility = View.VISIBLE
             llLogin.visibility = View.GONE
+            llNav.visibility = View.GONE
             frame.visibility = View.GONE
         } else if (type == "LogIn") {
             llLogin.visibility = View.VISIBLE
+            llNav.visibility = View.GONE
             nsvSignUp.visibility = View.GONE
             frame.visibility = View.GONE
         } else {
@@ -805,6 +802,63 @@ class MainActivity : AppCompatActivity() {
                         this@MainActivity
                     )
 
+                    getData(userid)
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis", "Error: " + error.message)
+
+                    Toast.makeText(
+                        this@MainActivity, "Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token " + LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
+    private fun getData(userid: Int) {
+        val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS +"?user=${userid}"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkjdb", response.toString())
+
+                    val gson = Gson()
+
+                    val userArray: List<FetchProfileData> = gson.fromJson(response , Array<FetchProfileData>::class.java).toList()
+
+                    Utils.writeStringToPreferences(Configure.USER_UPDATE_ID, userArray.get(0)!!.id.toString(), this@MainActivity)
+
                     Toast.makeText(
                         applicationContext, "Successfully Logged In...",
                         Toast.LENGTH_LONG
@@ -812,8 +866,6 @@ class MainActivity : AppCompatActivity() {
                     loadScreens()
                     showConvidPoster()
                     progressDialog.dismiss()
-
-
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
@@ -1201,6 +1253,7 @@ class MainActivity : AppCompatActivity() {
     private fun loadScreens() {
         changeIconColor(ivHome, tvHome, "Home")
         if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
+            llNav.visibility = View.VISIBLE
             loadHomeFrag(fragHome = HomeScreen())
         } else {
             askGalleryPermissionLocation()
