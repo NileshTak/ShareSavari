@@ -13,10 +13,12 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
+        fontPath="Comfortaa-Regular.ttf"
+        tools:ignore="MissingPrefix"
         android:text="This is my message that will wrap into multiple lines and keep on going"
         android:maxWidth="240dp"
         android:background="@drawable/rounded_edittext_register_login"
-        android:padding="16dp"
+        android:padding="12dp"
         app:layout_constraintStart_toEndOf="@+id/imageview_chat_from_row"
         app:layout_constraintTop_toTopOf="@+id/imageview_chat_from_row" />
 
@@ -28,8 +30,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:civ_border_width="2dp"
+        app:civ_border_color="@color/md_white_1000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        android:src="@drawable/ic_baseline_group_24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

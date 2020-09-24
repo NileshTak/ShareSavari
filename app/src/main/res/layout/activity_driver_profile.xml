@@ -111,7 +111,6 @@
                     android:textSize="18sp"
                     android:layout_gravity="center_vertical"
                     fontPath="Comfortaa-Regular.ttf"
-                    android:textAlignment="center"
                     tools:ignore="MissingPrefix"  />
 
 

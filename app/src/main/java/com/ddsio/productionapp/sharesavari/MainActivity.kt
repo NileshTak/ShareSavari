@@ -583,7 +583,6 @@ class MainActivity : AppCompatActivity() {
                         this@MainActivity
                     )
 
-
                     uploadImage(userid)
 
                 }
@@ -1139,7 +1138,6 @@ class MainActivity : AppCompatActivity() {
 
                     Utils.writeStringToPreferences(LOGIN_KEY, key.toString(), this@MainActivity)
                     LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this@MainActivity)!!
-
 
                     putUserNameData()
 

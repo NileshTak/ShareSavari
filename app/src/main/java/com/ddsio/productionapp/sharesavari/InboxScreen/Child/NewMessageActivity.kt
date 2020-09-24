@@ -1,5 +1,6 @@
 package com.ddsio.productionapp.sharesavari.InboxScreen.Child
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,10 +15,15 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_new_message.*
 import kotlinx.android.synthetic.main.user_row_new_message.view.*
 
 class NewMessageActivity : AppCompatActivity() {
+
+  override fun attachBaseContext(newBase: Context) {
+    super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -89,10 +95,3 @@ class UserItem(val user: User): Item<ViewHolder>() {
   }
 }
 
-// this is super tedious
-
-//class CustomAdapter: RecyclerView.Adapter<ViewHolder> {
-//  override fun onBindViewHolder(p0:, p1: Int) {
-//    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-//  }
-//}

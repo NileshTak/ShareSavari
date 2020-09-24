@@ -15,10 +15,13 @@
         android:layout_marginRight="8dp"
         android:background="@drawable/rounded_edittext_register_login"
         android:maxWidth="240dp"
-        android:padding="16dp"
+        fontPath="Comfortaa-Regular.ttf"
+        tools:ignore="MissingPrefix"
+        android:padding="12dp"
         android:text="This is my message that will wrap into multiple lines and keep on going"
         app:layout_constraintEnd_toStartOf="@+id/imageview_chat_to_row"
-        app:layout_constraintTop_toTopOf="@+id/imageview_chat_to_row" />
+        app:layout_constraintTop_toTopOf="@+id/imageview_chat_to_row"
+         />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageview_chat_to_row"
@@ -28,9 +31,9 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         app:civ_border_width="2dp"
-        app:civ_border_color="@android:color/black"
+        app:civ_border_color="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        android:src="@drawable/ic_baseline_group_24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

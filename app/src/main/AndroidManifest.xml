@@ -36,16 +36,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AmitRequest">
-
-        </activity>
+        <activity android:name=".ProfileScreen.EditProfile.EditProfile"></activity>
+        <activity android:name=".AmitRequest"></activity>
         <activity android:name=".HomeScreen.Child.EditRide" />
         <activity android:name=".SearchScreen.child.BookedSuccess" />
         <activity android:name=".SearchScreen.child.DriverProfile" />
-
-
-        <activity android:name=".InboxScreen.Child.NewMessageActivity"/>
-        <activity android:name=".InboxScreen.Child.ChatLogActivity"/>
+        <activity android:name=".InboxScreen.Child.NewMessageActivity" />
+        <activity android:name=".InboxScreen.Child.ChatLogActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"

@@ -26,6 +26,8 @@ import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.HomeScreen.Child.EditRide
+import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
+import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
 import com.ddsio.productionapp.sharesavari.Intro.IntroActivity
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
@@ -39,11 +41,15 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
+import com.letsbuildthatapp.kotlinmessenger.models.ChatMessage
+import com.letsbuildthatapp.kotlinmessenger.models.User
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_chat_log.*
 import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_ride_detail.*
 import kotlinx.android.synthetic.main.activity_ride_detail.ivCloseScreen
@@ -792,17 +798,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     val userArray :bookrideItem =
                         gson.fromJson(response, bookrideItem ::class.java)
 
-                    progressDialog.dismiss()
-                    Toast.makeText(this@RideDetails,"Ride Booked Successfully.",Toast.LENGTH_LONG).show()
-
-                    var int = Intent(this@RideDetails,
-                        BookedSuccess::class.java)
-                    val bundle =
-                        ActivityOptionsCompat.makeCustomAnimation(
-                            this@RideDetails ,
-                            R.anim.fade_in, R.anim.fade_out
-                        ).toBundle()
-                    startActivity(int,bundle)
+                    sendMessage(customers)
 
                 }
             }, object : Response.ErrorListener {
@@ -843,6 +839,67 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             }
         }
         request!!.add(jsonObjRequest)
+    }
+
+    private fun sendMessage(customers: BookRidesPojoItem) {
+
+        var text = ""
+
+        if (customers.is_direct == true) {
+            text = "Ride from ${customers.leaving} to ${customers.going} has been booked by me. " +
+                    "Please provide me more details regarding that."
+        } else {
+            text = "Hello Sir, I am interested to book your Ride from ${customers.leaving} to ${customers.going}. " +
+                    "Please provide me more details regarding that."
+        }
+
+
+        val fromId = USER_ID_KEY
+        val toId = customers.user.toString()
+
+        if (fromId == null) return
+
+        val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()
+
+        val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
+
+        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+
+        reference.setValue(chatMessage)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+                Toast.makeText(this@RideDetails,"Ride Booked Successfully.",Toast.LENGTH_LONG).show()
+
+                var int = Intent(this@RideDetails,
+                    BookedSuccess::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        this@RideDetails ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                startActivity(int,bundle)
+            }
+            .addOnFailureListener {
+                progressDialog.dismiss()
+                Toast.makeText(this@RideDetails,"Ride Booked Successfully.",Toast.LENGTH_LONG).show()
+
+                var int = Intent(this@RideDetails,
+                    BookedSuccess::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        this@RideDetails ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                startActivity(int,bundle)
+            }
+
+        toReference.setValue(chatMessage)
+
+        val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")
+        latestMessageRef.setValue(chatMessage)
+
+        val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
+        latestMessageToRef.setValue(chatMessage)
     }
 
 

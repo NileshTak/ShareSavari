@@ -32,6 +32,8 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.*
 import com.ddsio.productionapp.sharesavari.CommonUtils.CircularProgress.CircleProgressBar
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.VolleyProgressListener
 import com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues
+import com.ddsio.productionapp.sharesavari.MainActivity
+import com.ddsio.productionapp.sharesavari.ProfileScreen.EditProfile.EditProfile
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseException
@@ -47,11 +49,16 @@ import com.productionapp.amhimemekar.CommonUtils.FetchProfileData
 import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
 import de.hdodenhof.circleimageview.CircleImageView
 import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.activity_authentication.view.parentAuth
 import kotlinx.android.synthetic.main.activity_authentication.view.pinView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
 import kotlinx.android.synthetic.main.fragment_profile_screen.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -67,12 +74,17 @@ class ProfileScreen : Fragment() {
     lateinit var dialog_otp: AlertDialog
     lateinit var firebaseAuth: FirebaseAuth
 
+    lateinit var pets : String
+    lateinit var smoking : String
+
+
     private var mResendToken: PhoneAuthProvider.ForceResendingToken? = null
 
     lateinit var mCallbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     lateinit var mAuth: FirebaseAuth
     lateinit var cpv : CircleProgressBar
-
+lateinit var cbPetsP : CheckBox
+    lateinit var cbSmokingP : CheckBox
 
 
     var GALLERY_REQUEST = 1666
@@ -94,8 +106,6 @@ class ProfileScreen : Fragment() {
 
     lateinit var btnVerify : Button
 
-    private var actualImage: File? = null
-
       var resultUri : Uri? = null
 
     lateinit var USER_ID_KEY : String
@@ -106,6 +116,9 @@ class ProfileScreen : Fragment() {
     lateinit var tvAlert : ImageView
     lateinit var ivVerified : ImageView
     lateinit var cvBio : CardView
+    var ADHARB_REQUEST = 1777
+    private var actualProfImage: File? = null
+    lateinit var ivEdit : ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,7 +143,10 @@ class ProfileScreen : Fragment() {
         tvAlert = view.findViewById<ImageView>(R.id.tvAlert)
         ivVerified = view.findViewById<ImageView>(R.id.ivVerified)
         cvBio = view.findViewById<CardView>(R.id.cvBio)
+        ivEdit = view.findViewById<ImageView>(R.id.ivEdit)
         btnVerify = view.findViewById<Button>(R.id.btnVerify)
+        cbPetsP =view.findViewById<CheckBox>(R.id.cbPetsP)
+        cbSmokingP =view.findViewById<CheckBox>(R.id.cbSmokingP)
 
 
 
@@ -139,9 +155,12 @@ class ProfileScreen : Fragment() {
         }
 
         btnVerify.setOnClickListener {
-
             sendCode()
+        }
 
+
+        ivEdit.setOnClickListener {
+            askCameraPermission(ADHARB_REQUEST)
         }
 
         ivLogout.setOnClickListener {
@@ -149,7 +168,6 @@ class ProfileScreen : Fragment() {
             val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
 
             val editor = preferences.edit()
-
 
             preferences.getString(Configure.LOGIN_KEY,"")
             editor.clear()
@@ -172,7 +190,16 @@ class ProfileScreen : Fragment() {
         }
 
         cvSave.setOnClickListener {
-            compressImage()
+            if (actualProfImage != null) {
+                compressImage()
+            } else {
+                progressDialog = ProgressDialog(activity)
+                progressDialog.setMessage("Wait a Sec....Uploading Files")
+                progressDialog.setCancelable(false)
+                progressDialog.show()
+                updateData( )
+            }
+
         }
 
         lottieSelectImage.setOnClickListener {
@@ -212,9 +239,47 @@ class ProfileScreen : Fragment() {
         }
 
 
-
         return view
     }
+
+
+
+    private fun askCameraPermission(RequestType: Int) {
+        askPermission(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            startActivityForResult(intent, RequestType)
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(activity!!)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { dialog, which ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+    }
+
 
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
@@ -293,7 +358,6 @@ class ProfileScreen : Fragment() {
                     HashMap()
                 params["user"] = USER_ID_KEY
                 params["mobile_status"] = "true"
-
                 return params
             }
         }
@@ -304,12 +368,31 @@ class ProfileScreen : Fragment() {
     }
 
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == AppCompatActivity.RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(activity, "null", Toast.LENGTH_LONG).show()
+                return
+            }
+            try {
+                if (requestCode == ADHARB_REQUEST) {
+                    actualProfImage = FileUtil.from( activity!!, data.data!!)?.also {
+                        ivProf.setImageBitmap(loadBitmap(it))
+                }
+                }
+
+            } catch (e: IOException) {
+                Toast.makeText(activity, "failed to read", Toast.LENGTH_LONG).show()
+                e.printStackTrace()
+            }
+        }
+    }
+
+
     private fun sendCode()
     {
         val phoneNumber = "+91" +tvMN!!.text.toString()
-
-//        val phoneNumber = "+918446613467"
-
 
         createOTPEnterDialog(phoneNumber)
 
@@ -402,9 +485,9 @@ class ProfileScreen : Fragment() {
         progressDialog.show()
 
 
+
         val url = BASE_URL+ GET_USER_DETAILS+USER_ID_KEY+"/"
 //        val url = "https://ddsio.com/sharesawaari/rest/users/22/"
-
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
@@ -426,11 +509,6 @@ class ProfileScreen : Fragment() {
                         lottieSelectImage.visibility= View.GONE
                         rlParent.visibility= View.VISIBLE
 
-                        if (userArray.bio == null ||userArray.bio.isEmpty() || userArray.bio == "") {
-                            cvBio.visibility = View.GONE
-                        }
-
-
                         if (userArray.verification == "False") {
                             tvAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
                             ivVerified.setImageDrawable(resources.getDrawable(R.drawable.alert))
@@ -440,6 +518,22 @@ class ProfileScreen : Fragment() {
                             btnVerify.visibility = View.GONE
                         }
 
+//                        pets = userArray.pets.toString()
+//                        smoking = userArray.smoking.toString()
+
+
+//                        if (userArray.pets == "true") {
+//                            cbPetsP.isChecked = true
+//                        } else {
+//                            cbPetsP.isChecked = false
+//                        }
+//
+//                        if (userArray.smoking == "true") {
+//                            cbSmokingP.isChecked = true
+//                        } else {
+//                            cbSmokingP.isChecked = false
+//                        }
+
 
                         if ( image != null ) {
                             Glide.with(activity!!).load(image).into(ivProf)
@@ -447,7 +541,7 @@ class ProfileScreen : Fragment() {
 
                         tvFN.text = userArray.first_name
                         tvLN.text = userArray.last_name
-                        tvBio.text = userArray.bio
+                        tvBio.setText(userArray.bio)
                         tvDate.text = userArray.birthdate
                         tvEMail.text = userArray.email
                         tvMN.text = userArray.mobile
@@ -462,8 +556,6 @@ class ProfileScreen : Fragment() {
                         }
 
                     }
-
-
                     }
 
                     progressDialog.dismiss()
@@ -505,61 +597,22 @@ class ProfileScreen : Fragment() {
     }
 
 
-    private fun convertUriToFile(data: Uri? ) {
-        var bm: Bitmap? = null
 
-        if (data != null) {
-            try {
+    fun uploadImage(path: File ) {
 
-                var dataF = getImageUri(activity!!.applicationContext,bitmap)
 
-                bm = MediaStore.Images.Media.getBitmap(activity!!.getContentResolver(), dataF)
-
-                val filesDir = Environment.getExternalStorageDirectory()
-
-                val imageFile = File(filesDir, "img" + ".jpg")
-
-                val os: OutputStream
-                try {
-                    os = FileOutputStream(imageFile)
-                    bm.compress(Bitmap.CompressFormat.JPEG, 100, os)
-                    os.flush()
-                    os.close()
-                } catch (e: java.lang.Exception) {
-                    Log.e(javaClass.simpleName, "Error writing bitmap", e)
-                }
-
-//                if (temp == null) {
-                uploadImage(imageFile ,USER_ID_KEY)
-//                } else {
-//                    convertTempURI(temp, imageFile, data)
-//                }
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+        if (cbPetsP.isChecked) {
+            pets = "true"
+        } else {
+            pets = "false"
         }
-    }
 
+        if (cbSmokingP.isChecked) {
+            smoking = "true"
+        } else {
+            smoking = "false"
+        }
 
-    fun getImageUri( inContext : Context, inImage : Bitmap) : Uri {
-        var bytes = ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        var tsLong = System.currentTimeMillis()/1000;
-        var path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, tsLong.toString(), null);
-        return Uri.parse(path);
-    }
-
-//    @Subscribe
-//    fun callAPI(resCode: String) {
-//        Log.d("proceddod","done")
-//        if (resCode == "200"){
-//            refreshScene()
-//        }
-//    }
-
-
-    fun uploadImage(path: File , pk: String) {
 
         val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
 //        val url = "https://ddsio.com/sharesawaari/rest/user/details/11/"
@@ -579,8 +632,9 @@ class ProfileScreen : Fragment() {
                     Log.i( "Responceis", ID.toString())
                     Toast.makeText(activity,"Successfully Updated",Toast.LENGTH_LONG).show()
                     Utils.writeStringToPreferences(Configure.USER_UPDATE_ID,ID.toString(),activity)
+                    progressDialog.dismiss()
+                    getUserData()
 
-                progressDialog.dismiss()
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
@@ -597,19 +651,19 @@ class ProfileScreen : Fragment() {
             VolleyProgressListener { }) {
             override fun getHeaders(): Map<String, String>? {
                 var params = java.util.HashMap<String, String>()
-                params.put("Content-Type", "application/json; charset=UTF-8");
+//                params.put("Content-Type", "application/json; charset=UTF-8");
                 params.put("Authorization", "Token " + LOGIN_TOKEN!!);
                 return params;
             }
 
             override fun getParams(): Map<String, String> {
                 val params= HashMap<String, String>()
-                params.put("user",pk.toString())
-                params.put("mobile","8446613467")
-                params.put("mobile_status","false")
-                params.put("bio","j")
-                params.put("birthdate","2020-8-10")
-                params.put("gender","1")
+
+                params.put("bio",tvBio.text.toString())
+                params.put("user",USER_ID_KEY)
+                params.put("pets",pets.toString())
+                params.put("smoking",smoking.toString())
+
                 return params
             }
 
@@ -619,9 +673,6 @@ class ProfileScreen : Fragment() {
                 val mimeType =
                     URLConnection.guessContentTypeFromName(path.name)
                 params["profile_image"] = DataPart(path.name, Utils.fileToBytes(path), mimeType)
-                params["adhar_image"] = DataPart(path.name, Utils.fileToBytes(path), mimeType)
-
-
                 return params
             }
 
@@ -637,6 +688,79 @@ class ProfileScreen : Fragment() {
         VolleySingleton.getInstance(activity).addToRequestQueue(multipartRequest, "POST_COMMENTS")
     }
 
+
+    fun updateData( ) {
+
+
+
+
+        if (cbPetsP.isChecked) {
+            pets = "true"
+        } else {
+            pets = "false"
+        }
+
+        if (cbSmokingP.isChecked) {
+            smoking = "true"
+        } else {
+            smoking = "false"
+        }
+
+
+        val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.PUT,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkj", response.toString())
+                    Toast.makeText(activity,"Successfully Updated",Toast.LENGTH_LONG).show()
+                    progressDialog.dismiss()
+                    getUserData()
+
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("jukjbkj",  "Error: " + error.message)
+
+                    Toast.makeText(activity,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                params.put("bio",tvBio.text.toString())
+                params.put("user",USER_ID_KEY)
+                params.put("pets",pets.toString())
+                params.put("smoking",smoking.toString())
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
 
 
 
@@ -700,7 +824,7 @@ class ProfileScreen : Fragment() {
     }
 
     private fun compressImage() {
-        actualImage?.let { imageFile ->
+        actualProfImage?.let { imageFile ->
             lifecycleScope.launch {
                 // Default compression
 
@@ -710,7 +834,12 @@ class ProfileScreen : Fragment() {
                 progressDialog.setCancelable(false)
                 progressDialog.show()
 
-                compressedImage = Compressor.compress( activity!!, imageFile)
+                compressedImage = Compressor.compress( activity!!, imageFile){
+                    size(100_000)
+                    resolution(600, 600)
+                    quality(60)
+                    format(Bitmap.CompressFormat.JPEG)
+                }
                 setCompressedImage()
             }
         } ?:
@@ -718,25 +847,7 @@ class ProfileScreen : Fragment() {
     }
 
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == GALLERY_REQUEST && resultCode == AppCompatActivity.RESULT_OK) {
-            if (data == null) {
-                Toast.makeText(activity, "null", Toast.LENGTH_LONG).show()
-                return
-            }
-            try {
-                actualImage = FileUtil.from(activity!!, data.data!!)?.also {
-                    lottieSelectImage.visibility= View.GONE
-                    rlParent.visibility= View.VISIBLE
-                    ivProf.setImageBitmap(loadBitmap(it))
-                }
-            } catch (e: IOException) {
-                Toast.makeText(activity, "failed to read", Toast.LENGTH_LONG).show()
-                e.printStackTrace()
-            }
-        }
-    }
+
 
     private fun setCompressedImage() {
         compressedImage?.let {
@@ -747,7 +858,7 @@ class ProfileScreen : Fragment() {
             destinationURL = uri.toString()
 
 
-                uploadImage(compressedImage!!,USER_ID_KEY)
+                uploadImage(compressedImage!! )
 //                val uri = Uri.fromFile(compressedImage)
 //                convertUriToFile(uri)
 

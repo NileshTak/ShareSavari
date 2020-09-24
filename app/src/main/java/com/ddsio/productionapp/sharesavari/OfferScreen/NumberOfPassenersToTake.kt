@@ -334,6 +334,7 @@ class NumberOfPassenersToTake : AppCompatActivity() {
                     Log.d("jukjbkj", response.toString())
                     Toast.makeText(this@NumberOfPassenersToTake,"Ride Offered Successfully...",
                         Toast.LENGTH_LONG).show()
+
                     val mainActivity =
                         Intent(applicationContext, MainActivity::class.java)
 
@@ -341,7 +342,6 @@ class NumberOfPassenersToTake : AppCompatActivity() {
                     progressDialog.dismiss()
                     startActivity(mainActivity)
                     finish()
-
 
 
                 }

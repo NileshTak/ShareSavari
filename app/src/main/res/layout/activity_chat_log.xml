@@ -61,8 +61,8 @@
         android:layout_width="match_parent"
         android:layout_below="@+id/ll"
         android:layout_height="match_parent"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="6dp"
         android:layout_marginBottom="60dp"
-        android:background="@android:color/holo_green_light"
+        android:background="@android:color/white"
       />
 </RelativeLayout>

@@ -74,7 +74,9 @@ data class FetchProfileData(
     val last_name: String,
     val mobile: String,
     val url: String,
-    val verification: String
+    val verification: String,
+    val pets: String,
+    val smoking: String
 )
 
 

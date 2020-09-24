@@ -1,5 +1,6 @@
 package com.ddsio.productionapp.sharesavari.InboxScreen.Fragments
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -36,6 +37,8 @@ class MessagesFrag : Fragment() {
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
 
+    lateinit var progressDialog: ProgressDialog
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,6 +63,11 @@ class MessagesFrag : Fragment() {
             val intent = Intent(activity, NewMessageActivity::class.java)
             startActivity(intent)
         }
+
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage("Wait a Sec....Loading Chats")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
 
 
         // set item click listener on your adapter
@@ -97,6 +105,7 @@ class MessagesFrag : Fragment() {
         latestMessagesMap.values.forEach {
             adapter.add(LatestMessageRow(it))
         }
+        progressDialog.dismiss()
     }
 
     private fun listenForLatestMessages() {
@@ -106,6 +115,7 @@ class MessagesFrag : Fragment() {
                 val chatMessage = p0.getValue(ChatMessage::class.java) ?: return
                 latestMessagesMap[p0.key!!] = chatMessage
                 refreshRecyclerViewMessages()
+                progressDialog.dismiss()
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
@@ -121,7 +131,7 @@ class MessagesFrag : Fragment() {
 
             }
             override fun onCancelled(p0: DatabaseError) {
-
+                progressDialog.dismiss()
             }
         })
     }
@@ -143,10 +153,11 @@ class MessagesFrag : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
                 currentUser = p0.getValue(User::class.java)
                 Log.d("LatestMessages", "Current user ${currentUser?.profileImageUrl}")
+                progressDialog.dismiss()
             }
 
             override fun onCancelled(p0: DatabaseError) {
-
+                progressDialog.dismiss()
             }
         })
     }

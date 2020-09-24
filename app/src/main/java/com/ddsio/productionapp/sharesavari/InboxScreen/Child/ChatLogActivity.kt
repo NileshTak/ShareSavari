@@ -1,5 +1,6 @@
 package com.ddsio.productionapp.sharesavari.InboxScreen.Child
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_chat_log.*
 
 class ChatLogActivity : AppCompatActivity() {
@@ -31,6 +33,10 @@ class ChatLogActivity : AppCompatActivity() {
   val adapter = GroupAdapter<ViewHolder>()
 
   var toUser: User? = null
+
+  override fun attachBaseContext(newBase: Context) {
+    super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
