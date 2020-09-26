@@ -27,6 +27,7 @@ import com.android.volley.toolbox.Volley
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
+import com.ddsio.productionapp.sharesavari.SearchScreen.child.SerachResult
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
@@ -84,7 +85,7 @@ class SearchFragment : Fragment()  {
         tvPassenger = view.findViewById<TextView>(R.id.tvPassenger)
         tvDate = view.findViewById<TextView>(R.id.tvDate)
         btnSearch = view.findViewById<Button>(R.id.btnSearch)
-        rvRides = view.findViewById<RecyclerView>(R.id.rvRides)
+//        rvRides = view.findViewById<RecyclerView>(R.id.rvRides)
 
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",activity)!!
@@ -94,11 +95,9 @@ class SearchFragment : Fragment()  {
         askGalleryPermissionLocation()
 
         cvFromLocation.setOnClickListener {
-
             val intent =  (Intent(activity, ShowMapActivity::class.java))
             intent.putExtra("typeis","from")
             startActivity(intent)
-
         }
 
         tvDate.setOnClickListener {
@@ -183,7 +182,8 @@ class SearchFragment : Fragment()  {
 
                 dateAPi = selectedDateFinal
 
-                showTimeDialog()
+//                showTimeDialog()
+                tvDate.setText(selectedDateFinal)
             },
             now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
         )
@@ -233,8 +233,19 @@ class SearchFragment : Fragment()  {
             Toast.makeText(activity,"Please Enter Correct Going Address",
                 Toast.LENGTH_LONG).show()
             progressDialog.dismiss()
-        } else {
-            hitFindRideAPI()
+        }  else if ( passengerCount == 0) {
+            Toast.makeText(activity,"Passesenger Count must be more then 0",
+                Toast.LENGTH_LONG).show()
+            progressDialog.dismiss()
+        }else {
+//            hitFindRideAPI()
+            val intent = Intent(activity, SerachResult::class.java)
+            intent.putExtra("from",tvToAdd.text.toString())
+            intent.putExtra("to",tvFromAdd.text.toString())
+            intent.putExtra("date",dateAPi)
+            intent.putExtra("passenger",passengerCount.toString())
+            progressDialog.dismiss()
+            startActivity(intent)
         }
     }
 
@@ -275,7 +286,7 @@ class SearchFragment : Fragment()  {
     private fun hitFindRideAPI() {
         val adapter = GroupAdapter<ViewHolder>()
 
-            val url = BASE_URL+ OFFER_RIDE_URL+"?gcity="+tvToAdd.text.toString()+"&lcity="+tvFromAdd.text.toString()+"&passenger="+passengerCount+"&date="+dateAPi
+            val url = BASE_URL+ OFFER_RIDE_URL+"?gcity="+tvToAdd.text.toString()+"&lcity="+tvFromAdd.text.toString()+"&date="+dateAPi
 
         Log.d("datlmkm",url)
 
@@ -293,13 +304,16 @@ class SearchFragment : Fragment()  {
 
                         if (userArray.size == 0) {
                             progressDialog.dismiss()
+                            Toast.makeText(activity,"No Ride Found",
+                                Toast.LENGTH_LONG).show()
+
                         } else{
 
                             for (rides in userArray) {
                                 if (rides != null) {
                                     if (rides.user.toString() != USER_ID_KEY) {
 
-                                        adapter.add(ridesClass(rides))
+//                                        adapter.add(ridesClass(rides))
                                     }
                                 }
                                 runAnimation(rvRides,2)
@@ -380,141 +394,4 @@ class SearchFragment : Fragment()  {
         EventBus.getDefault().unregister(this)
     }
 
-
-    inner class ridesClass(var customers: BookRidesPojoItem) : Item<ViewHolder>() {
-        override fun getLayout(): Int {
-            return R.layout.custom_show_list_rides
-        }
-
-        override fun bind(viewHolder: ViewHolder, position: Int) {
-
-//            viewHolder.itemView.tvFromAdd.text = customers.leaving
-//            viewHolder.itemView.tvToAdd.text = customers.going
-//            viewHolder.itemView.tvDate.text = customers.date +"  ("+customers.time+")"
-//            viewHolder.itemView.tvRDate.text = customers.rdate +"  ("+customers.rtime+")"
-//            viewHolder.itemView.tvComment.text = customers.comment
-//            viewHolder.itemView.tvOfferedby.text = customers.username
-//            viewHolder.itemView.tvPass.text = customers.passenger.toString()
-//            viewHolder.itemView.tvPrice.text = customers.price.toString()
-//            viewHolder.itemView.tvReturn.text = customers.is_return.toString()
-
-                viewHolder.itemView.tvFromCity.text = customers.lcity
-                viewHolder.itemView.tvToCity.text = customers.gcity
-            viewHolder.itemView.tvName.text = customers.username
-            viewHolder.itemView.tvRate.text = "₹ "+customers.price.toString()
-
-            viewHolder.itemView.rvRating.visibility = View.VISIBLE
-
-            getRating(customers,viewHolder.itemView.tvRating)
-
-            Log.d("jukjbkjf",customers.user.toString())
-
-            if (customers.is_direct == true) {
-                viewHolder.itemView.ivDirect.visibility = View.VISIBLE
-            } else {
-                viewHolder.itemView.ivDirect.visibility = View.GONE
-            }
-
-            viewHolder.itemView.setOnClickListener {
-
-                Log.d("jukjbkjf",customers.id.toString())
-
-                var int = Intent( viewHolder.itemView.tvFromCity.context,
-                    RideDetails::class.java)
-                val bundle =
-                    ActivityOptionsCompat.makeCustomAnimation(
-                        viewHolder.itemView.tvFromCity.context ,
-                        R.anim.fade_in, R.anim.fade_out
-                    ).toBundle()
-                int.putExtra("pojoWithData",customers)
-                int.putExtra("screen","search")
-                int.putExtra("IDToCancel","0")
-                startActivity(int,bundle)
-            }
-
-
-
-        }
-    }
-
-
-
-    private fun getRating(
-        customers: BookRidesPojoItem,
-        tvRating: TextView
-    ) {
-
-        var rating = 0
-        var userRatedCount = 0
-
-        val url = BASE_URL+ Configure.RATING
-        val jsonObjRequest: StringRequest = object : StringRequest(
-            Method.GET,
-            url,
-            object : Response.Listener<String?> {
-                override fun onResponse(response: String?) {
-                    Log.d("driverprofRate", response.toString())
-                    val gson = Gson()
-
-                    val userArray: ArrayList<RatingModelItem> =
-                        gson.fromJson(response, RatingModel ::class.java)
-
-                    if (userArray != null) {
-
-                        for (i in 0..userArray.size-1) {
-
-                            if (userArray.get(i).driver == customers.user) {
-                                if (userArray.get(i).points != null) {
-
-                                    rating = rating + userArray.get(i).points
-                                    userRatedCount = userRatedCount + 1
-                                }
-                            }
-                        }
-
-                        Log.d("dtsbjnkd",rating.toString())
-
-
-                        if (userRatedCount != 0 && userRatedCount != null) {
-                            var sum = userRatedCount * 5
-                            var finalRating = (rating * 5) / sum
-                          tvRating.text = finalRating.toString()+"/5 ratings"
-
-                        }
-
-                    }
-
-
-                }
-            }, object : Response.ErrorListener {
-                override fun onErrorResponse(error: VolleyError) {
-                    VolleyLog.d("volley", "Error: " + error.message)
-                    error.printStackTrace()
-                    Log.e("Responceis",  "Error: " + error.message)
- 
-                }
-            }) {
-
-
-            override fun getHeaders(): MutableMap<String, String> {
-
-                Log.d("jukjbkj", LOGIN_TOKEN.toString())
-
-                var params = java.util.HashMap<String, String>()
-//                params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
-                return params;
-            }
-
-            @Throws(AuthFailureError::class)
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> =
-                    HashMap()
-                return params
-            }
-        }
-        request!!.add(jsonObjRequest)
-
-
-    }
 }

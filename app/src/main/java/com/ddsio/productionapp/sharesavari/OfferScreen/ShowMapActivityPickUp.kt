@@ -242,7 +242,10 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
         if (tvAddSearchPickUp.text.toString().isEmpty() || tvAddSearchPickUp.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct PickUp Address",
                 Toast.LENGTH_LONG).show()
-        }  else {
+        } else if (svSearchViewPickup.query.toString().isEmpty() || svSearchViewPickup.query.toString() == "") {
+            Toast.makeText(this,"Please Select Correct PickUp Address",
+                Toast.LENGTH_LONG).show()
+        } else {
             pojoWithData.user = USER_ID_KEY
             pojoWithData.leaving =  tvAddSearchPickUp.text.toString()
 

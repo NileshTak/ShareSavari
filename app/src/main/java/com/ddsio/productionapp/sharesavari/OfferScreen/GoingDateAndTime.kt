@@ -133,7 +133,6 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
 
 
         fabNext.setOnClickListener {
-
           checkFields()
         }
 

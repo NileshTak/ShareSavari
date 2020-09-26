@@ -7,9 +7,6 @@
     android:orientation="vertical"
     tools:context="com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment">
 
-
-
-
     <TextView
         android:id="@+id/tvTotalAmtOrder"
         android:text="Find a ride"
@@ -128,7 +125,7 @@
 
             <TextView
                 android:id="@+id/tvDate"
-                android:text="Today, 10:00"
+                android:text="Today"
                 android:textSize="16sp"
                 fontPath="Comfortaa-Bold.ttf"
                 android:layout_marginTop="20dp"
@@ -165,16 +162,6 @@
 
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvRides"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:padding="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 

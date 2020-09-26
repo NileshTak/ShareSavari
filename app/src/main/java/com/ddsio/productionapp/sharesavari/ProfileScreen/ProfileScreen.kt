@@ -76,6 +76,7 @@ class ProfileScreen : Fragment() {
     lateinit var pets : String
     lateinit var smoking : String
 
+    lateinit var fetchProfileData : FetchProfileData
 
     var vari = "False"
     private var mResendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -368,6 +369,9 @@ lateinit var cbPetsP : CheckBox
                     HashMap()
                 params["user"] = USER_ID_KEY
                 params["mobile_status"] = "true"
+                params.put("bio",fetchProfileData.bio)
+                params.put("pets",fetchProfileData.pets)
+                params.put("smoking",fetchProfileData.smoking)
                 return params
             }
         }
@@ -510,6 +514,8 @@ lateinit var cbPetsP : CheckBox
 
                     val userArray: FetchProfileData =
                         gson.fromJson(response, FetchProfileData ::class.java)
+
+                        fetchProfileData = userArray
 
                         vari = userArray.verification.toString()
                     if (userArray != null) {
@@ -671,6 +677,7 @@ lateinit var cbPetsP : CheckBox
                 params.put("bio",tvBio.text.toString())
                 params.put("user",USER_ID_KEY)
                 params.put("pets",pets.toString())
+                params["mobile_status"] = fetchProfileData.verification
                 params.put("smoking",smoking.toString())
 
                 return params

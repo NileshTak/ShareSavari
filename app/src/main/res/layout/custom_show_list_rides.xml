@@ -156,7 +156,7 @@
 
                 <TextView
                     android:id="@+id/tvRating"
-                    android:text="Loading"
+                    android:text="0/5 ratings"
                     android:textSize="18sp"
                     fontPath="Comfortaa-Bold.ttf"
                     android:layout_marginStart="5dp"

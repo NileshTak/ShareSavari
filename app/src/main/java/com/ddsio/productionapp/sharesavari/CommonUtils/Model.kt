@@ -146,10 +146,10 @@ data class bookrideItem(
 
 class RatingModel : ArrayList<RatingModelItem>()
 
-
 data class RatingModelItem(
     val driver: Int,
     val id: Int,
     val passenger: Int,
-    val points: Int
+    val points: Int,
+    val comment : String
 )

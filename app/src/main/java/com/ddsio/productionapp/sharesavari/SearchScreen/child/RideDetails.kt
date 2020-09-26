@@ -254,6 +254,13 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             onBackPressed()
         }
 
+        rvCoPas.setOnClickListener {
+            var int = Intent(this,
+                CoPasList::class.java)
+            int.putExtra("pojoWithData",pojoWithData)
+            startActivity(int,bundle)
+
+        }
 
         rlProfile.setOnClickListener {
             var int = Intent(this,

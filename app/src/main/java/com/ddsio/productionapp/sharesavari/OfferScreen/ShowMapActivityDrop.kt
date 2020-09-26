@@ -268,6 +268,9 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
         if (tvAddSearchDrop.text.toString().isEmpty() || tvAddSearchDrop.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Drop Address",
                 Toast.LENGTH_LONG).show()
+        } else if (svAddSearchDrop.query.toString().isEmpty() || svAddSearchDrop.query.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Drop Address",
+                Toast.LENGTH_LONG).show()
         }  else {
             pojoWithData.going =  tvAddSearchDrop.text.toString()
 

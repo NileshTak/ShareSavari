@@ -1,10 +1,12 @@
 package com.ddsio.productionapp.sharesavari.SearchScreen.child
 
 import android.app.ProgressDialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -15,15 +17,15 @@ import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.google.gson.Gson
-import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
-import com.productionapp.amhimemekar.CommonUtils.Configure
+import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.COMPLAINT
 import com.productionapp.amhimemekar.CommonUtils.Configure.GET_USER_DETAILS
+import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
-import com.productionapp.amhimemekar.CommonUtils.FetchProfileData
 import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_driver_profile.ivCloseScreen
+import kotlinx.android.synthetic.main.activity_ride_detail.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
 import kotlin.math.roundToInt
 
@@ -35,6 +37,8 @@ class DriverProfile : AppCompatActivity() {
     var LOGIN_TOKEN = ""
     var request: RequestQueue? = null
     lateinit var dialog_otp: AlertDialog
+    lateinit var ratingB : RatingBar
+    lateinit var btnSubmitB : Button
     var USER_UPDATE_ID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +52,8 @@ class DriverProfile : AppCompatActivity() {
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",this)!!
         request= Volley.newRequestQueue(this);
-
+        ratingB = findViewById<RatingBar>(R.id.rating)
+        btnSubmitB = findViewById<Button>(R.id.btnSubmit)
 
         ivCloseScreen.setOnClickListener {
             onBackPressed()
@@ -64,18 +69,33 @@ class DriverProfile : AppCompatActivity() {
 
 //        tvName.text = pojoWithData.username
 
-        rating.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener{
+
+        ratingB.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener{
             override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
                  if (p0!!.rating > 0 ) {
-                     btnSubmit.visibility = View.VISIBLE
+                     btnSubmitB.visibility = View.VISIBLE
                  } else {
-                     btnSubmit.visibility = View.GONE
+                     btnSubmitB.visibility = View.GONE
                  }
             }
         })
 
-        btnSubmit.setOnClickListener {
-            submitRating()
+
+        btnSubmitB.setOnClickListener {
+            showRestPassDialog()
+        }
+
+        rvReview.setOnClickListener {
+            var int = Intent(this,
+                ReviewsList::class.java)
+            int.putExtra("driverid",pojoWithData.user.toString())
+            startActivity(int,bundle)
+        }
+
+        if (USER_ID_KEY == pojoWithData.user.toString()) {
+            rvRating.visibility = View.GONE
+        } else {
+            rvRating.visibility = View.VISIBLE
         }
 
 
@@ -113,6 +133,97 @@ class DriverProfile : AppCompatActivity() {
         }
 
     }
+
+
+
+    private fun showRestPassDialog() {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.rating, null)
+
+        alertLayout.cvReset!!.setOnClickListener {
+            val verificationCode = alertLayout.loginetEmail!!.text!!.toString()
+            if (verificationCode.isEmpty()) {
+//                Toast.makeText(this@Authentication, "Enter verification code", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter Valid Email Address", Toast.LENGTH_LONG).show()
+
+            } else {
+                submitRating(verificationCode)
+                dialog_otp.dismiss()
+            }
+        }
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        dialog_otp = showOTP.create()
+        dialog_otp.show()
+
+        alertLayout.ivCloseReset.setOnClickListener {
+            dialog_otp.dismiss()
+        }
+
+    }
+
+
+
+
+    private fun getRating() {
+        val url = BASE_URL+ RATING +"?passenger=" + USER_ID_KEY
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("driverprofRate", response.toString())
+                    val gson = Gson()
+
+                    val userArray: ArrayList<RatingModelItem> =
+                        gson.fromJson(response, RatingModel ::class.java)
+
+                    if (userArray != null) {
+
+                        for (i in 0..userArray.size - 1) {
+
+                            if (userArray.get(i).driver.toString() == pojoWithData.user.toString()) {
+                                btnSubmitB.isEnabled = false
+                                ratingB.isEnabled = false
+                                ratingB.rating = userArray.get(i).points.toFloat()
+                            }
+                        }
+                    }
+                    progressDialog.dismiss()
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    progressDialog.dismiss()
+                }
+            }) {
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    java.util.HashMap()
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
+
+
 
     private fun submitComplaint(verificationCode: String) {
         progressDialog = ProgressDialog(this)
@@ -173,12 +284,11 @@ class DriverProfile : AppCompatActivity() {
 
     }
 
-    private fun submitRating() {
+    private fun submitRating(verificationCode: String) {
         progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Wait a Sec.... ")
         progressDialog.setCancelable(false)
         progressDialog.show()
-
 
         val url = BASE_URL+ RATING
         val jsonObjRequest: StringRequest = object : StringRequest(
@@ -191,6 +301,8 @@ class DriverProfile : AppCompatActivity() {
                     Toast.makeText(this@DriverProfile,"Rated Successfully...",
                         Toast.LENGTH_LONG).show()
 
+                    btnSubmitB.isEnabled = false
+                    ratingB.isEnabled = false
                     progressDialog.dismiss()
                 }
             }, object : Response.ErrorListener {
@@ -224,12 +336,12 @@ class DriverProfile : AppCompatActivity() {
                 params["driver"] = pojoWithData.user.toString()
                 params["passenger"] = USER_ID_KEY
                 params["points"] = rating.rating.roundToInt().toString()
+                params["comment"] = verificationCode
 
                 return params
             }
         }
         request!!.add(jsonObjRequest)
-
     }
 
 
@@ -263,6 +375,13 @@ class DriverProfile : AppCompatActivity() {
                             val image = userArray.image
 
                             tvName.text =  userArray.first_name
+                            if (userArray.bio == "" || userArray.bio.isEmpty()) {
+                                tvDetail.text = "No Bio"
+                            } else {
+                                tvDetail.text = userArray.bio
+                            }
+
+                            hitFindOfferedRideAPI()
 
                             if (userArray.verification == "False") {
                                 ivAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
@@ -311,4 +430,60 @@ class DriverProfile : AppCompatActivity() {
         request!!.add(jsonObjRequest)
 
     }
+
+
+    private fun hitFindOfferedRideAPI() {
+
+        val url = BASE_URL+ OFFER_RIDE_URL+"?user=${USER_ID_KEY}"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                    val gson = Gson()
+
+                    val userArray: ArrayList<BookRidesPojoItem> =
+                        gson.fromJson(response, BookRidesPojo ::class.java)
+
+                    getRating()
+
+                    tvRidesCount.text = " ${userArray.size} rides puslished"
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(this@DriverProfile,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
 }

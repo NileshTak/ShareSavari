@@ -36,8 +36,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProfileScreen.EditProfile.EditProfile"></activity>
-        <activity android:name=".AmitRequest"></activity>
+        <activity android:name=".SearchScreen.child.ReviewsList"/>
+        <activity android:name=".SearchScreen.child.CoPasList" />
+        <activity android:name=".SearchScreen.child.SerachResult" />
+        <activity android:name=".AmitRequest" />
         <activity android:name=".HomeScreen.Child.EditRide" />
         <activity android:name=".SearchScreen.child.BookedSuccess" />
         <activity android:name=".SearchScreen.child.DriverProfile" />
