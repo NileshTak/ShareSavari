@@ -120,6 +120,7 @@ lateinit var cbPetsP : CheckBox
     var ADHARB_REQUEST = 1777
     private var actualProfImage: File? = null
     lateinit var ivEdit : ImageView
+    lateinit var ivEditB : ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -145,6 +146,7 @@ lateinit var cbPetsP : CheckBox
         ivVerified = view.findViewById<ImageView>(R.id.ivVerified)
         cvBio = view.findViewById<CardView>(R.id.cvBio)
         ivEdit = view.findViewById<ImageView>(R.id.ivEdit)
+        ivEditB = view.findViewById<ImageView>(R.id.ivEditB)
         btnVerify = view.findViewById<Button>(R.id.btnVerify)
         cbPetsP =view.findViewById<CheckBox>(R.id.cbPetsP)
         cbSmokingP =view.findViewById<CheckBox>(R.id.cbSmokingP)
@@ -164,6 +166,13 @@ lateinit var cbPetsP : CheckBox
 
         ivEdit.setOnClickListener {
             askCameraPermission(ADHARB_REQUEST)
+
+        }
+
+        ivEditB.setOnClickListener {
+            etBio.visibility = View.VISIBLE
+            tvBio.visibility = View.GONE
+            cvSave.visibility = View.VISIBLE
         }
 
         ivLogout.setOnClickListener {
@@ -253,6 +262,7 @@ lateinit var cbPetsP : CheckBox
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) {
+            cvSave.visibility = View.VISIBLE
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, RequestType)
@@ -334,6 +344,9 @@ lateinit var cbPetsP : CheckBox
                     progressDialog.dismiss()
                     dialog_otp.dismiss()
                     dialog_verifying.dismiss()
+                    etBio.visibility = View.GONE
+                    tvBio.visibility = View.VISIBLE
+                    cvSave.visibility = View.GONE
 
                     getUserData()
 
@@ -370,8 +383,8 @@ lateinit var cbPetsP : CheckBox
                 params["user"] = USER_ID_KEY
                 params["mobile_status"] = "true"
                 params.put("bio",fetchProfileData.bio)
-                params.put("pets",fetchProfileData.pets)
-                params.put("smoking",fetchProfileData.smoking)
+//                params.put("pets",fetchProfileData.pets)
+//                params.put("smoking",fetchProfileData.smoking)
                 return params
             }
         }
@@ -537,26 +550,28 @@ lateinit var cbPetsP : CheckBox
                         smoking = userArray.smoking.toString()
 
 
-                        if (userArray.pets == "True" ||userArray.pets == "true" ) {
-                            cbPetsP.isChecked = true
-                        } else {
-                            cbPetsP.isChecked = false
-                        }
-
-                        if (userArray.smoking == "True" || userArray.smoking == "true") {
-                            cbSmokingP.isChecked = true
-                        } else {
-                            cbSmokingP.isChecked = false
-                        }
+//                        if (userArray.pets == "True" ||userArray.pets == "true" ) {
+//                            cbPetsP.isChecked = true
+//                        } else {
+//                            cbPetsP.isChecked = false
+//                        }
+//
+//                        if (userArray.smoking == "True" || userArray.smoking == "true") {
+//                            cbSmokingP.isChecked = true
+//                        } else {
+//                            cbSmokingP.isChecked = false
+//                        }
 
 
                         if ( image != null ) {
                             Glide.with(activity!!).load(image).into(ivProf)
                         }
 
+                        tvBio.visibility = View.VISIBLE
                         tvFN.text = userArray.first_name
                         tvLN.text = userArray.last_name
                         tvBio.setText(userArray.bio)
+                        etBio.setText(userArray.bio)
                         tvDate.text = userArray.birthdate
                         tvEMail.text = userArray.email
                         tvMN.text = userArray.mobile
@@ -569,7 +584,6 @@ lateinit var cbPetsP : CheckBox
                         } else {
                             tvGender.text = "Other"
                         }
-
                     }
                     }
 
@@ -616,17 +630,17 @@ lateinit var cbPetsP : CheckBox
     fun uploadImage(path: File ) {
 
 
-        if (cbPetsP.isChecked) {
-            pets = "true"
-        } else {
-            pets = "false"
-        }
-
-        if (cbSmokingP.isChecked) {
-            smoking = "true"
-        } else {
-            smoking = "false"
-        }
+//        if (cbPetsP.isChecked) {
+//            pets = "true"
+//        } else {
+//            pets = "false"
+//        }
+//
+//        if (cbSmokingP.isChecked) {
+//            smoking = "true"
+//        } else {
+//            smoking = "false"
+//        }
 
 
         val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
@@ -649,6 +663,8 @@ lateinit var cbPetsP : CheckBox
                     Utils.writeStringToPreferences(Configure.USER_UPDATE_ID,ID.toString(),activity)
                     progressDialog.dismiss()
                     getUserData()
+                    etBio.visibility = View.GONE
+                    cvSave.visibility = View.GONE
 
                 } catch (e: JSONException) {
                     e.printStackTrace()
@@ -674,11 +690,11 @@ lateinit var cbPetsP : CheckBox
             override fun getParams(): Map<String, String> {
                 val params= HashMap<String, String>()
 
-                params.put("bio",tvBio.text.toString())
+                params.put("bio",etBio.text.toString())
                 params.put("user",USER_ID_KEY)
-                params.put("pets",pets.toString())
+//                params.put("pets",pets.toString())
                 params["mobile_status"] = fetchProfileData.verification
-                params.put("smoking",smoking.toString())
+//                params.put("smoking",smoking.toString())
 
                 return params
             }
@@ -730,6 +746,8 @@ lateinit var cbPetsP : CheckBox
                     Log.d("jukjbkj", response.toString())
                     Toast.makeText(activity,"Successfully Updated",Toast.LENGTH_LONG).show()
                     progressDialog.dismiss()
+                    etBio.visibility = View.GONE
+                    cvSave.visibility = View.GONE
                     getUserData()
 
 
@@ -763,10 +781,10 @@ lateinit var cbPetsP : CheckBox
                 val params: MutableMap<String, String> =
                     HashMap()
 
-                params.put("bio",tvBio.text.toString())
+                params.put("bio",etBio.text.toString())
                 params.put("user",USER_ID_KEY)
-                params.put("pets",pets.toString())
-                params.put("smoking",smoking.toString())
+//                params.put("pets",pets.toString())
+//                params.put("smoking",smoking.toString())
 
                 return params
             }
@@ -876,7 +894,7 @@ lateinit var cbPetsP : CheckBox
 //                convertUriToFile(uri)
 
 
-            Toast.makeText(activity, "Compressed image save in " + it.path, Toast.LENGTH_LONG).show()
+//            Toast.makeText(activity, "Compressed image save in " + it.path, Toast.LENGTH_LONG).show()
             Log.d("Compressor", "Compressed image save in " + it.path)
         } ?:
         Toast.makeText(activity, "File not Found " , Toast.LENGTH_LONG).show()

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OfferScreen.MaxSeat">
+
+    <LinearLayout
+        android:id="@+id/llTop"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginBottom="10dp"
+        android:layout_height="60dp">
+
+        <ImageView
+            android:id="@+id/ivBacR"
+            android:layout_width="40dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/ic_baseline_chevron_left_24_white"
+            android:tint="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:layout_height="40dp"/>
+
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_below="@+id/llTop"
+        android:id="@+id/radio_groupSeatF"
+        android:layout_width="match_parent"
+        android:layout_margin="20dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/md_white_1000"
+        android:background="#dbeceb" >
+
+
+        <RadioButton
+            android:id="@+id/rbMax2SeatF"
+            android:layout_width="wrap_content"
+            android:textSize="25sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingPrefix"
+            android:text="Max 2 seat in back" />
+
+        <RadioButton
+            android:id="@+id/rbMax3SeatF"
+            android:layout_width="wrap_content"
+            android:textSize="25sp"
+            fontPath="Comfortaa-Bold.ttf"
+            android:layout_height="wrap_content"
+            android:text="Max 3 seat in back"
+            tools:ignore="MissingPrefix" />
+
+    </RadioGroup>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fabNextMax"
+        app:borderWidth="0dp"
+        android:src="@drawable/ic_baseline_chevron_left_24_white"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="normal"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:rotation="180"
+        android:layout_margin="30dp"
+        android:layout_marginBottom="30dp"
+        android:adjustViewBounds="true"
+        />
+</RelativeLayout>

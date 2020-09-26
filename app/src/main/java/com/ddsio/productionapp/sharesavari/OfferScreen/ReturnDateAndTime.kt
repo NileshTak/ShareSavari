@@ -2,6 +2,7 @@ package com.ddsio.productionapp.sharesavari.OfferScreen
 
 import android.Manifest
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -44,15 +45,11 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
         var cv = findViewById<FloatingActionButton>(R.id.fabNextReturn)
 
-
-
         askGalleryPermissionLocation()
             Utils.checkConnection(this@ReturnDateAndTime,cv)
             if (!Utils.CheckGpsStatus(this@ReturnDateAndTime)) {
                 Utils.enableGPS(this@ReturnDateAndTime)
             }
-
-
 
         etSelectDateReturn.setOnClickListener {
             datePicker()
@@ -67,7 +64,31 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
         })
 
 
+        etReachBDate.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(p0: View?, p1: Boolean) {
+                if (p1 == true) {
+                    datePickerReach()
+                }
+            }
+        })
 
+
+        etReachBDate.setOnClickListener {
+            datePickerReach()
+        }
+
+        etReachBTime.setOnClickListener {
+            shoeReachTimeDialog()
+        }
+
+
+        etReachBTime.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(p0: View?, p1: Boolean) {
+                if (p1 == true) {
+                    shoeReachTimeDialog()
+                }
+            }
+        })
 
         ivBackReturn.setOnClickListener {
             onBackPressed()
@@ -95,6 +116,46 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
 
     }
 
+    private fun shoeReachTimeDialog() {
+        val c = Calendar.getInstance()
+        var mHour = c[Calendar.HOUR_OF_DAY]
+        var mMinute = c[Calendar.MINUTE]
+
+        // Launch Time Picker Dialog
+
+        val timePickerDialog = TimePickerDialog(
+            this,
+            object : TimePickerDialog.OnTimeSetListener  {
+                override fun onTimeSet(
+                    view: TimePicker?, hourOfDay: Int,
+                    minute: Int
+                ) {
+                    etReachBTime.setText("$hourOfDay : $minute")
+
+                    pojoWithData.brtime = "$hourOfDay:$minute"
+                }
+            }, mHour, mMinute, false
+        )
+        timePickerDialog.show()
+    }
+
+
+    private fun datePickerReach() {
+        val now = Calendar.getInstance()
+        datePickerdialog = DatePickerDialog(
+            this@ReturnDateAndTime, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, month)
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                val date = formate.format(selectedDate.time)
+                etReachBDate.setText(date)
+                pojoWithData.brdate = date
+            },
+            now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerdialog.show()
+    }
 
     private fun askGalleryPermissionLocation() {
         askPermission(
@@ -138,12 +199,21 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
         } else  if (etSelectTimeReturn.text.toString().isEmpty() || etSelectTimeReturn.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Drop Time",
                 Toast.LENGTH_LONG).show()
-        } else  if (pojoWithData.date.toString()  > etSelectDateReturn.text.toString() ) {
+        }else if (etReachBDate.text.toString().isEmpty() || etReachBDate.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Reaching Date ",
+                Toast.LENGTH_LONG).show()
+        } else  if (etReachBTime.text.toString().isEmpty() || etReachBTime.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Reaching Time",
+                Toast.LENGTH_LONG).show()
+        } else  if (etReachBDate.text.toString() < etSelectDateReturn.text.toString() ) {
+            Toast.makeText(this,"Reaching Date should be greater then or equals to Leaving Date",
+                Toast.LENGTH_LONG).show()
+        }else  if  (pojoWithData.date.toString()  > etSelectDateReturn.text.toString() ) {
             Toast.makeText(this,"Return Date should be greater then or equals to Leaving Date",
                 Toast.LENGTH_LONG).show()
         } else {
             var int = Intent(this,
-                NumberOfPassenersToTake::class.java)
+                MaxSeat::class.java)
             val bundle =
                 ActivityOptionsCompat.makeCustomAnimation(
                     this ,

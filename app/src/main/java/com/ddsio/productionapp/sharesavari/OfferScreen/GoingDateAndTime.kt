@@ -232,7 +232,7 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
                 pojoWithData.is_return = "false"
 
                 var int = Intent(this,
-                    NumberOfPassenersToTake::class.java)
+                    MaxSeat::class.java)
                 val bundle =
                     ActivityOptionsCompat.makeCustomAnimation(
                         this ,

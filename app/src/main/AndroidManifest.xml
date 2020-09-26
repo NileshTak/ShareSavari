@@ -36,7 +36,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SearchScreen.child.ReviewsList"/>
+        <activity android:name=".OfferScreen.SmokingandBooking"></activity>
+        <activity android:name=".OfferScreen.Hault" />
+        <activity android:name=".OfferScreen.PassengerCount" />
+        <activity android:name=".OfferScreen.MaxSeat" />
+        <activity android:name=".SearchScreen.child.ReviewsList" />
         <activity android:name=".SearchScreen.child.CoPasList" />
         <activity android:name=".SearchScreen.child.SerachResult" />
         <activity android:name=".AmitRequest" />

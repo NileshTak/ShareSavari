@@ -107,23 +107,24 @@
             <RelativeLayout
                 android:visibility="gone"
                 android:id="@+id/rvRating"
+                android:layout_marginStart="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/ivuser"
-                    android:layout_width="25dp"
+                    android:layout_width="35dp"
                     android:layout_centerVertical="true"
                     android:tint="@color/colorPrimaryDark"
                     android:layout_marginBottom="5dp"
                      android:src="@drawable/ic_baseline_person_outline_24"
-                    android:layout_height="25dp"/>
+                    android:layout_height="35dp"/>
 
                 <TextView
                     android:id="@+id/tvName"
                     android:text="Date..."
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     fontPath="Comfortaa-Bold.ttf"
                     android:layout_marginStart="5dp"
                     android:textStyle="bold"
@@ -157,7 +158,7 @@
                 <TextView
                     android:id="@+id/tvRating"
                     android:text="0/5 ratings"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     fontPath="Comfortaa-Bold.ttf"
                     android:layout_marginStart="5dp"
                     android:textStyle="bold"

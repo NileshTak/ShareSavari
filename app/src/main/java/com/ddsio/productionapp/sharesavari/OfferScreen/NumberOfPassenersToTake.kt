@@ -39,11 +39,11 @@ import org.greenrobot.eventbus.Subscribe
 
 class NumberOfPassenersToTake : AppCompatActivity() {
 
-    var count = 1
+
     var request: RequestQueue? = null
     lateinit var pojoWithData : offerRideModel
     lateinit var previousPojo : BookRidesPojoItem
-    var totalAmt = 0
+
 
     var LOGIN_TOKEN = ""
     lateinit var progressDialog: ProgressDialog
@@ -52,19 +52,16 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-
-    var cbBookInstant = ""
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
-    var maxSeatCount = ""
+//    var maxSeatCount = ""
 
-    var pets = ""
-    var smoking = ""
+//    var pets = ""
+//    var smoking = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number_of_passeners_to_take)
-        var cv = findViewById<CardView>(R.id.cvMinus)
 
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
@@ -81,144 +78,28 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 //            startActivity(intent)
 //        }
 
-        rbBookInstantly.setOnClickListener {
-            radio_button_click(rbBookInstantly)
-        }
-
-        rbMyself.setOnClickListener {
-            radio_button_click(rbMyself)
-        }
-
-
-
-
-        rbMax2Seat.setOnClickListener {
-            radio_button_click_seat(rbBookInstantly)
-        }
-
-        rbMax3Seat.setOnClickListener {
-            radio_button_click_seat(rbMyself)
-        }
-
         cvRecheck.setOnClickListener {
-
             checkFieldsRecheck()
-
-
         }
-
 
         askGalleryPermissionLocation()
-            Utils.checkConnection(this@NumberOfPassenersToTake,cv)
+            Utils.checkConnection(this@NumberOfPassenersToTake,cvRecheck)
             if (!Utils.CheckGpsStatus(this@NumberOfPassenersToTake)) {
                 Utils.enableGPS(this@NumberOfPassenersToTake)
             }
-
-
-
-        tvTotalPrice.text =  "0₹"
-
-        tvCount.setText(count.toString())
-
-
-        cvMinus.setOnClickListener {
-            if (count != 0) {
-                count--
-                tvCount.setText(count.toString())
-
-                if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
-                    totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
-                    tvTotalPrice.text = totalAmt.toString() + "₹"
-                }
-
-            }
-        }
 
 
         ivBacknumber.setOnClickListener {
             onBackPressed()
         }
 
-        cvAdd.setOnClickListener {
-            count++
-            tvCount.setText(count.toString())
-
-            if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
-                totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
-                tvTotalPrice.text = totalAmt.toString() + "₹"
-            }
-        }
-
-        etPrice.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
-                    totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
-                    tvTotalPrice.text = totalAmt.toString() + "₹"
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
-                    totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
-                    tvTotalPrice.text = totalAmt.toString() + "₹"
-                }
-
-            }
-
-        })
-
         fabFinish.setOnClickListener {
 
           checkFields()
         }
-        getUserData()
+//        getUserData()
     }
 
-    @Subscribe
-    fun OnAddSelected(add : BookRideScreenFetchCity?) {
-
-        Log.d("CITYIS",add!!.city.toString() +"jubhjbjbj")
-        if (add!!.type == "stop") {
-            tvStop.text = add!!.city
-            pojoWithData.stitle = add!!.city
-            pojoWithData.slat = add.lat
-            pojoWithData.slog = add.long
-
-        }
-    }
-
-
-    fun radio_button_click(view: View){
-        // Get the clicked radio button instance
-        val radio: RadioButton = findViewById(radio_group.checkedRadioButtonId)
-
-        cbBookInstant = radio.text.toString()
-
-    }
-
-
-    fun radio_button_click_seat(view: View){
-        // Get the clicked radio button instance
-        val radio: RadioButton = findViewById(radio_groupSeat.checkedRadioButtonId)
-
-        maxSeatCount = radio.text.toString()
-
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        if (!EventBus.getDefault().isRegistered(this@NumberOfPassenersToTake)) EventBus.getDefault().register(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this@NumberOfPassenersToTake)
-    }
 
 
     private fun askGalleryPermissionLocation() {
@@ -257,118 +138,39 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 
     private fun checkFields() {
 
-        if (etPrice.text.toString().isEmpty() || etPrice.text.toString() == "") {
-            Toast.makeText(this,"Please Select Correct Riding Price for per Passenger ",
-                Toast.LENGTH_LONG).show()
-        } else if (etCar.text.toString().isEmpty() || etCar.text.toString() == "") {
-            Toast.makeText(this,"Please enter valid Car Name ",
-                Toast.LENGTH_LONG).show()
-        } else if (cbBookInstant.isEmpty() ||cbBookInstant == "") {
-            Toast.makeText(this,"Please select valid Booking Process ",
-                Toast.LENGTH_LONG).show()
-        }else if (maxSeatCount.isEmpty() ||maxSeatCount == "") {
-            Toast.makeText(this,"Please select valid Back Seat count ",
-                Toast.LENGTH_LONG).show()
-        } else if (etCarColor.text.toString().isEmpty() || etCarColor.text.toString() == "") {
-            Toast.makeText(this,"Please enter valid car color ",
-                Toast.LENGTH_LONG).show()
-        }  else {
-            pojoWithData.price = etPrice.text.toString()
             pojoWithData.comment = etComment.text.toString()
-            pojoWithData.passenger = tvCount.text.toString()
-            pojoWithData.carname = etCar.text.toString()
-            pojoWithData.slog = "0"
-            pojoWithData.slat = "0"
-            pojoWithData.carcolor = etCarColor.text.toString()
-                pojoWithData.stitle = etStopPoint.text.toString()
-
-            if (cbPets.isChecked) {
-                pojoWithData.pets = true
-            } else {
-                pojoWithData.pets = false
-            }
-
-
-            if (cbSmoking.isChecked) {
-                pojoWithData.smoking = true
-            } else {
-                pojoWithData.smoking = false
-            }
-
 
             hitOfferRideAPI()
-        }
+
     }
 
 
     private fun checkFieldsRecheck() {
 
-        if (etPrice.text.toString().isEmpty() || etPrice.text.toString() == "") {
-            Toast.makeText(this,"Please Select Correct Riding Price for per Passenger ",
-                Toast.LENGTH_LONG).show()
-        } else if (etCar.text.toString().isEmpty() || etCar.text.toString() == "") {
-            Toast.makeText(this,"Please enter valid Car Name ",
-                Toast.LENGTH_LONG).show()
-        } else if (cbBookInstant.isEmpty() ||cbBookInstant == "") {
-            Toast.makeText(this,"Please select valid Booking Process ",
-                Toast.LENGTH_LONG).show()
-        }else if (maxSeatCount.isEmpty() ||maxSeatCount == "") {
-            Toast.makeText(this,"Please select valid Back Seat count ",
-                Toast.LENGTH_LONG).show()
-        } else if (etCarColor.text.toString().isEmpty() || etCarColor.text.toString() == "") {
-            Toast.makeText(this,"Please enter valid car color ",
-                Toast.LENGTH_LONG).show()
-        }  else {
-            pojoWithData.price = etPrice.text.toString()
             pojoWithData.comment = etComment.text.toString()
-            pojoWithData.passenger = tvCount.text.toString()
-            pojoWithData.carname = etCar.text.toString()
-            pojoWithData.slog = "0"
-            pojoWithData.slat = "0"
-            pojoWithData.carcolor = etCarColor.text.toString()
-            pojoWithData.stitle = etStopPoint.text.toString()
 
-            if (cbPets.isChecked) {
-                pojoWithData.pets = true
-            } else {
-                pojoWithData.pets = false
-            }
-
-
-            if (cbSmoking.isChecked) {
-                pojoWithData.smoking = true
-            } else {
-                pojoWithData.smoking = false
-            }
 
          moveToRecheck()
-        }
+
     }
 
 
     private fun moveToRecheck() {
-        if (cbBookInstant == "Book Instantly") {
-            pojoWithData.is_direct = true
-        } else {
-            pojoWithData.is_direct = false
-        }
 
 
-
-        if (maxSeatCount == "Max 2 seat in back") {
-            pojoWithData.max_back_2 = true
-            pojoWithData.max_back_3 = false
-        } else {
-            pojoWithData.max_back_3 = true
-            pojoWithData.max_back_2 = false
-        }
+//        if (maxSeatCount == "Max 2 seat in back") {
+//            pojoWithData.max_back_2 = true
+//            pojoWithData.max_back_3 = false
+//        } else {
+//            pojoWithData.max_back_3 = true
+//            pojoWithData.max_back_2 = false
+//        }
 
         pojoWithData.id =  ""
         pojoWithData.username =  ""
         pojoWithData.url =  ""
         pojoWithData.image =  ""
         pojoWithData.comment =  etComment.text.toString()
-
 
 
         previousPojo.comment = pojoWithData.comment
@@ -406,7 +208,6 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         previousPojo.max_back_3=   pojoWithData.max_back_3
 
 
-
         var int = Intent(this,
             EditRide::class.java)
         val bundle =
@@ -420,23 +221,6 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 
 
     private fun hitOfferRideAPI() {
-
-        if (cbBookInstant == "Book Instantly") {
-            pojoWithData.is_direct = true
-        } else {
-            pojoWithData.is_direct = false
-        }
-
-
-
-        if (maxSeatCount == "Max 2 seat in back") {
-            pojoWithData.max_back_2 = true
-            pojoWithData.max_back_3 = false
-        } else {
-            pojoWithData.max_back_3 = true
-            pojoWithData.max_back_2 = false
-        }
-
 
         progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Wait a Sec....Creating your Ride")
@@ -530,80 +314,12 @@ class NumberOfPassenersToTake : AppCompatActivity() {
                 params["stitle"] = pojoWithData.stitle.toString()
                 params["slat"] = pojoWithData.slat.toString()
                 params["slog"] = pojoWithData.slog.toString()
-                params["pets"] = pets
-                params["smoking"] = smoking
+                params["pets"] = pojoWithData.pets.toString()
+                params["smoking"] = pojoWithData.smoking.toString()
                 params["max_back_2"] = pojoWithData.max_back_2.toString()
                 params["max_back_3"] = pojoWithData.max_back_3.toString()
-                return params
-            }
-        }
-        request!!.add(jsonObjRequest)
-
-    }
-
-
-
-    fun getUserData( ) {
-
-        progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("Wait a Sec....Loading Details..")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-
-        val url = BASE_URL+ GET_USER_DETAILS+USER_ID_KEY+"/"
-        val jsonObjRequest: StringRequest = object : StringRequest(
-            Method.GET,
-            url,
-            object : Response.Listener<String?> {
-                override fun onResponse(response: String?) {
-                    Log.d("jukjbkj", response.toString())
-
-                    val gson = Gson()
-
-                    if (response != null ) {
-
-                        val userArray: FetchProfileData =
-                            gson.fromJson(response, FetchProfileData ::class.java)
-
-                        if (userArray != null) {
-
-                            pets = userArray.pets.toString()
-                            smoking = userArray.smoking.toString()
-
-                        }
-                    }
-
-                    progressDialog.dismiss()
-                }
-            }, object : Response.ErrorListener {
-                override fun onErrorResponse(error: VolleyError) {
-                    VolleyLog.d("volley", "Error: " + error.message)
-                    error.printStackTrace()
-                    Log.e("Responceis",  "Error: " + error.message)
-
-                    Toast.makeText(this@NumberOfPassenersToTake,"Something Went Wrong ! Please try after some time",
-                        Toast.LENGTH_LONG).show()
-
-                    progressDialog.dismiss()
-                }
-            }) {
-
-
-            override fun getHeaders(): MutableMap<String, String> {
-
-                Log.d("jukjbkj", LOGIN_TOKEN.toString())
-
-                var params = java.util.HashMap<String, String>()
-                params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
-                return params;
-            }
-
-            @Throws(AuthFailureError::class)
-            override fun getParams(): Map<String, String> {
-                val params: MutableMap<String, String> =
-                    HashMap()
-
+                params["brdate"] = pojoWithData.brdate.toString()
+                params["brtime"] = pojoWithData.brtime.toString()
                 return params
             }
         }

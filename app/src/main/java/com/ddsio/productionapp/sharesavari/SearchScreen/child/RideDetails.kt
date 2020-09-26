@@ -225,7 +225,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 //                "(${pojoWithData.tdtime})"
 
 
-        tvOfferedby.text = pojoWithData.username
          tvPrice.text = "₹ "+pojoWithData.price.toString()
 
         if (pojoWithData.image != null ) {
@@ -248,6 +247,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
 
         fetchLatLog()
+        findUser()
         getRating()
 
         ivCloseScreen.setOnClickListener {
@@ -383,7 +383,64 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             }
         }
         request!!.add(jsonObjRequest)
+    }
 
+
+
+    private fun findUser( ) {
+        val url = BASE_URL+ Configure.GET_USER_DETAILS +pojoWithData.user+"/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("driverprof", response.toString())
+
+                    val gson = Gson()
+
+                    if (response != null ) {
+
+                        val userArray: FetchProfileData =
+                            gson.fromJson(response, FetchProfileData ::class.java)
+                        tvOfferedby.text = userArray.first_name
+
+                    }
+                    progressDialog.dismiss()
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(this@RideDetails,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
 
     }
 

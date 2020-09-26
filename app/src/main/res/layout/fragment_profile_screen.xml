@@ -434,6 +434,7 @@
                     android:layout_marginStart="20dp"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content">
 
                     <CheckBox
@@ -464,6 +465,7 @@
                 <LinearLayout
                     android:layout_marginStart="20dp"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -506,22 +508,39 @@
                         android:layout_marginTop="5dp"
                         android:layout_height="wrap_content">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Bio"
-                            android:textStyle="bold"
-                            android:textColor="@color/colorPrimaryDark"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginBottom="8dp"
-                            app:fontPath = "Comfortaa-Bold.ttf"
-                            android:textSize="20sp"
-                            android:textAlignment="center"
-                            tools:ignore="MissingPrefix"  />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bio"
+                                android:layout_centerVertical="true"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginBottom="8dp"
+                                app:fontPath = "Comfortaa-Bold.ttf"
+                                android:textSize="20sp"
+                                android:textAlignment="center"
+                                tools:ignore="MissingPrefix"  />
+
+                            <ImageView
+                                android:id="@+id/ivEditB"
+                                android:layout_alignParentEnd="true"
+                                android:layout_width="30dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="20dp"
+                                android:src="@drawable/ic_baseline_edit_24"
+                                android:layout_marginTop="30dp"
+                                android:layout_height="30dp"/>
+
+                        </RelativeLayout>
 
 
                         <EditText
-                            android:id="@+id/tvBio"
+                            android:id="@+id/etBio"
                             android:layout_marginStart="30dp"
                             android:layout_marginEnd="30dp"
                             android:layout_width="match_parent"
@@ -530,9 +549,25 @@
                             android:layout_marginBottom="6dp"
                             android:textColor="@color/colorPrimary"
                             android:textSize="18sp"
+                            android:visibility="gone"
                             android:hint="Enter Bio"
                             android:layout_gravity="center_horizontal"
                             app:fontPath = "Comfortaa-Bold.ttf"
+                            android:textAlignment="center"
+                            tools:ignore="MissingPrefix"  />
+
+                        <TextView
+                            android:id="@+id/tvBio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bio"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_centerVertical="true"
+                            android:textStyle="bold"
+                            android:textColor="@color/textColor"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginBottom="8dp"
+                            android:textSize="18sp"
                             android:textAlignment="center"
                             tools:ignore="MissingPrefix"  />
 
@@ -650,7 +685,7 @@
             app:cardCornerRadius="20dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardElevation="4dp"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="25dp"

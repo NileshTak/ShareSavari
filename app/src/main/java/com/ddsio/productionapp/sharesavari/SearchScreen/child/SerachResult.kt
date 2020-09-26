@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.google.gson.Gson
@@ -24,9 +25,13 @@ import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import de.hdodenhof.circleimageview.CircleImageView
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_serach_result.*
+import kotlinx.android.synthetic.main.custom_reviews.view.*
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvName
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvRating
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class SerachResult : AppCompatActivity() {
@@ -256,10 +261,12 @@ class SerachResult : AppCompatActivity() {
 
             viewHolder.itemView.tvFromCity.text = customers.lcity
             viewHolder.itemView.tvToCity.text = customers.gcity
-            viewHolder.itemView.tvName.text = customers.username
+//            viewHolder.itemView.tvName.text = customers.username
             viewHolder.itemView.tvRate.text = "₹ "+customers.price.toString()
 
             viewHolder.itemView.rvRating.visibility = View.VISIBLE
+
+            findUser(customers.user.toString(),viewHolder.itemView.tvName,viewHolder.itemView.ivuser)
 
             getRating(customers,viewHolder.itemView.tvRating)
 
@@ -289,6 +296,73 @@ class SerachResult : AppCompatActivity() {
             }
 
         }
+    }
+
+
+    private fun findUser(
+        passenger: String,
+        tvName: TextView,
+        ivprof: CircleImageView
+    ) {
+
+        val url = BASE_URL+ Configure.GET_USER_DETAILS +passenger+"/"
+//        val url = "https://ddsio.com/sharesawaari/rest/users/22/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("driverprof", response.toString())
+
+                    val gson = Gson()
+
+                    if (response != null ) {
+
+                        val userArray: FetchProfileData =
+                            gson.fromJson(response, FetchProfileData ::class.java)
+                        tvName.text = userArray.first_name
+
+                        if (userArray.image != null) {
+                            Glide.with(this@SerachResult).load(userArray.image).into(ivprof)
+                        }
+                    }
+                    progressDialog.dismiss()
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(this@SerachResult,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
     }
 
 

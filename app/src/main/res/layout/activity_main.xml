@@ -264,6 +264,7 @@
         android:layout_height="match_parent">
 
 
+
     <LinearLayout
         android:id="@+id/llSignUp"
         android:orientation="vertical"
@@ -291,6 +292,58 @@
 
 
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginStart="20dp"
+                android:text="Notes : "
+                android:textSize="18sp"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textAlignment="center"
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:textColor="@color/md_red_800"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+            <TextView
+                android:layout_marginStart="20dp"
+                android:text="* Resolution of the Images should be at highest value. "
+                android:textSize="14sp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/md_red_800"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:layout_marginStart="20dp"
+                android:text="* Uploading Photograph must be in appropriate light conditions so that face should be clearly
+visible against white background. "
+                android:textSize="14sp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/md_red_800"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+            <TextView
+                android:layout_marginStart="20dp"
+                android:text="* Photograph must be a recently clicked or should not be more than 6 months old. "
+                android:textSize="14sp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/md_red_800"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -413,7 +466,7 @@
 
                 <TextView
                     android:text="Profile Pic"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     fontPath="Comfortaa-Bold.ttf"
                     android:layout_gravity="bottom"
                     android:textAlignment="center"
@@ -452,7 +505,7 @@
 
                     <TextView
                         android:text="Adhar Front"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         fontPath="Comfortaa-Bold.ttf"
                         android:layout_gravity="bottom"
                         android:textAlignment="center"
@@ -483,7 +536,7 @@
 
                     <TextView
                         android:text="Adhar Back"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         fontPath="Comfortaa-Bold.ttf"
                         android:layout_gravity="bottom"
                         android:textAlignment="center"

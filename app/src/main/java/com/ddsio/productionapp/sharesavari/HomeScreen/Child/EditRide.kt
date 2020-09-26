@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.activity_edit_ride.rbBookInstantly
 import kotlinx.android.synthetic.main.activity_edit_ride.rbMyself
 import kotlinx.android.synthetic.main.activity_going_date_and_time.*
 import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
+import kotlinx.android.synthetic.main.activity_return_date_and_time.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONException
@@ -59,8 +60,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
     lateinit var progressDialog: ProgressDialog
-    var pets = ""
-    var smoking = ""
+//    var pets = ""
+//    var smoking = ""
     var cbBookInstant = ""
 
     override fun attachBaseContext(newBase: Context) {
@@ -113,6 +114,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         pojoWithData.max_back_2=   previousPojo.max_back_2
         pojoWithData.max_back_3=   previousPojo.max_back_3
         pojoWithData.comment = previousPojo.comment
+        pojoWithData.brtime=   previousPojo.brtime
+        pojoWithData.brdate = previousPojo.brdate
 
 
         request= Volley.newRequestQueue(this);
@@ -124,7 +127,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         etReachingDate.setText(previousPojo.tddate.toString())
         etSelectDateReturnSave.setText(previousPojo.rdate.toString())
         etCarColorSave.setText(previousPojo.carcolor.toString())
-
+        etReachRDate.setText(previousPojo.brdate.toString())
+        etReachRTime.setText(previousPojo.brtime.toString())
         etCommentSave.setText(previousPojo.comment.toString())
         etSelectTimeGoing.setText(previousPojo.time.toString())
         etReachingTime.setText(previousPojo.tdtime.toString())
@@ -258,6 +262,32 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
 
 
+        etReachRDate.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(p0: View?, p1: Boolean) {
+                if (p1 == true) {
+                   datePickerReachR()
+                }
+            }
+        })
+
+
+        etReachRDate.setOnClickListener {
+            datePickerReachR()
+        }
+
+        etReachRTime.setOnClickListener {
+            shoeReachTimeDialogR()
+        }
+
+
+        etReachRTime.setOnFocusChangeListener(object : View.OnFocusChangeListener {
+            override fun onFocusChange(p0: View?, p1: Boolean) {
+                if (p1 == true) {
+                    shoeReachTimeDialogR()
+                }
+            }
+        })
+
         etSelectTimeReturnSave.setOnClickListener {
             shoeReturnTimeDialog()
         }
@@ -376,7 +406,48 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         btnSave.setOnClickListener {
             checkFields()
         }
-        getUserData()
+//        getUserData()
+    }
+
+    private fun datePickerReachR() {
+        val now = Calendar.getInstance()
+        datePickerdialog = DatePickerDialog(
+            this@EditRide, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(Calendar.YEAR, year)
+                selectedDate.set(Calendar.MONTH, month)
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                val date = formate.format(selectedDate.time)
+                etReachRDate.setText(date)
+                pojoWithData.brdate = date
+            },
+            now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerdialog.show()
+    }
+
+
+    private fun shoeReachTimeDialogR() {
+        val c = Calendar.getInstance()
+        var mHour = c[Calendar.HOUR_OF_DAY]
+        var mMinute = c[Calendar.MINUTE]
+
+        // Launch Time Picker Dialog
+
+        val timePickerDialog = TimePickerDialog(
+            this,
+            object : TimePickerDialog.OnTimeSetListener  {
+                override fun onTimeSet(
+                    view: TimePicker?, hourOfDay: Int,
+                    minute: Int
+                ) {
+                    etReachRTime.setText("$hourOfDay : $minute")
+
+                    pojoWithData.brtime = "$hourOfDay:$minute"
+                }
+            }, mHour, mMinute, false
+        )
+        timePickerDialog.show()
     }
 
 
@@ -405,11 +476,11 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
                         if (userArray != null) {
 
-                            pets = userArray.pets.toString()
-                            smoking = userArray.smoking.toString()
+//                            pets = userArray.pets.toString()
+//                            smoking = userArray.smoking.toString()
 
 
-                            Log.d("kjukj",pets +"        "+smoking)
+//                            Log.d("kjukj",pets +"        "+smoking)
 
                         }
                     }
@@ -505,7 +576,16 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         } else if (etReachingTime.text.toString().isEmpty() || etReachingTime.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Reaching Time",
                 Toast.LENGTH_LONG).show()
-        }else if (maxSeatCount.isEmpty() ||maxSeatCount == "") {
+        }else if (etReachRDate.text.toString().isEmpty() || etReachRDate.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Reaching Date ",
+                Toast.LENGTH_LONG).show()
+        } else  if (etReachRTime.text.toString().isEmpty() || etReachRTime.text.toString() == "") {
+            Toast.makeText(this,"Please Select Correct Reaching Time",
+                Toast.LENGTH_LONG).show()
+        } else  if (etReachRDate.text.toString() < etSelectDateReturnSave.text.toString() ) {
+            Toast.makeText(this,"Reaching Date should be greater then or equals to Leaving Date",
+                Toast.LENGTH_LONG).show()
+        } else if (maxSeatCount.isEmpty() ||maxSeatCount == "") {
             Toast.makeText(this,"Please select valid Back Seat count ",
                 Toast.LENGTH_LONG).show()
         }
@@ -574,10 +654,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             if (previousPojo.id.toString() != "" || previousPojo.id.toString().isNotEmpty()) {
                 UpdateRide(pojoWithData)
             } else {
-
                 hitOfferRideAPI()
             }
-
         }
     }
 
@@ -700,10 +778,12 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                 params["stitle"] = pojoWithData.stitle.toString()
                 params["slat"] = pojoWithData.slat.toString()
                 params["slog"] = pojoWithData.slog.toString()
-                params["pets"] = pets
-                params["smoking"] = smoking
+                params["pets"] = pojoWithData.pets.toString()
+                params["smoking"] = pojoWithData.smoking.toString()
                 params["max_back_2"] = pojoWithData.max_back_2.toString()
                 params["max_back_3"] = pojoWithData.max_back_3.toString()
+                params["brdate"] = pojoWithData.brdate.toString()
+                params["brtime"] = pojoWithData.brtime.toString()
                 return params
             }
         }
@@ -786,6 +866,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                         ride.is_direct= obj.getBoolean("is_direct")
                         ride.pets= obj.getBoolean("pets")
                         ride.smoking= obj.getBoolean("smoking")
+                        ride.brtime= obj.getString("brtime")
+                        ride.brdate= obj.getString("brdate")
 
 
                         Log.d("juguiuih",ride.leaving.toString())
@@ -867,11 +949,13 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                 params["stitle"] = pojoWithData.stitle.toString()
                 params["slat"] = pojoWithData.slat.toString()
                 params["slog"] = pojoWithData.slog.toString()
-                params["pets"] = pets
-                params["smoking"] = smoking
+                params["pets"] = pojoWithData.pets.toString()
+                params["smoking"] = pojoWithData.smoking.toString()
                 params["carcolor"] = pojoWithData.carcolor.toString()
                 params["max_back_2"] = pojoWithData.max_back_2.toString()
                 params["max_back_3"] = pojoWithData.max_back_3.toString()
+                params["brdate"] = pojoWithData.brdate.toString()
+                params["brtime"] = pojoWithData.brtime.toString()
 
                 return params
             }
