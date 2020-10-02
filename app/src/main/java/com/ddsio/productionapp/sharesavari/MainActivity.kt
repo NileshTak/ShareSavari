@@ -67,6 +67,7 @@ import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.pow
+import com.pusher.pushnotifications.PushNotifications;
 
 class MainActivity : AppCompatActivity() {
 
@@ -138,6 +139,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        PushNotifications.start(getApplicationContext(), "370afaf4-435c-45d8-b35e-5139ff3f900b");
+        PushNotifications.addDeviceInterest("hello");
 
         val bundle: Bundle? = intent.extras
         type = bundle!!.getString("type")!!

@@ -49,7 +49,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.0.0'
     implementation 'com.google.firebase:firebase-auth:19.0.0'
     implementation 'com.google.firebase:firebase-firestore:21.0.0'
-//    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.pusher:push-notifications-android:1.6.2'
 //    implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.0'
 
     implementation 'com.google.firebase:firebase-analytics:17.4.3'

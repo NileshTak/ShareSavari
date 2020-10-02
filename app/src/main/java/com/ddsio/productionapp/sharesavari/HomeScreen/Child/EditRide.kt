@@ -724,11 +724,11 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
                     Log.e("jukjbkj",  "Error: " + error.message)
-
+                    progressDialog.dismiss()
                     Toast.makeText(this@EditRide,"Something Went Wrong ! Please try after some time",
                         Toast.LENGTH_LONG).show()
 
-                    progressDialog.dismiss()
+
                 }
             }) {
 

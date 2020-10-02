@@ -229,6 +229,10 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
             } else {
                 pojoWithData.rtime = pojoWithData.time
                 pojoWithData.rdate = pojoWithData.date
+
+                pojoWithData.brtime = pojoWithData.time
+                pojoWithData.brdate = pojoWithData.date
+
                 pojoWithData.is_return = "false"
 
                 var int = Intent(this,

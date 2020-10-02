@@ -145,7 +145,8 @@ data class bookrideItem(
     val plat: Any,
     val plog: Any,
     val ride: Int,
-    val ridename: String
+    val ridename: String,
+val is_confirm : Boolean
 )
 
 

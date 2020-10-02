@@ -247,7 +247,7 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 
                     val mainActivity =
                         Intent(applicationContext, MainActivity::class.java)
-
+                    progressDialog.dismiss()
                     mainActivity.putExtra("type", "RideBooked")
                     progressDialog.dismiss()
                     startActivity(mainActivity)
@@ -261,10 +261,11 @@ class NumberOfPassenersToTake : AppCompatActivity() {
                     error.printStackTrace()
                     Log.e("jukjbkj",  "Error: " + error.message)
 
+                    progressDialog.dismiss()
+
                     Toast.makeText(this@NumberOfPassenersToTake,"Something Went Wrong ! Please try after some time",
                         Toast.LENGTH_LONG).show()
 
-                    progressDialog.dismiss()
                 }
             }) {
 

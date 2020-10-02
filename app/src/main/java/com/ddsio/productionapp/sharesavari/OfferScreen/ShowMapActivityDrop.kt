@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
+import android.location.GnssAntennaInfo
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -71,6 +72,7 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
     override fun onMapReady(googleMap: GoogleMap) {
 
         mapView.onResume()
+
 
         mMap = googleMap
         getCurrentLocation()
