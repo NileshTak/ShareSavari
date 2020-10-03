@@ -18,6 +18,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.airbnb.lottie.LottieAnimationView
@@ -33,6 +34,8 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.Vo
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleySingleton
 import com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues
 import com.ddsio.productionapp.sharesavari.R
+import com.ddsio.productionapp.sharesavari.SearchScreen.child.DriverProfile
+import com.ddsio.productionapp.sharesavari.SearchScreen.child.SerachResult
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +43,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.gson.Gson
+import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.GET_USER_DETAILS
@@ -53,6 +57,8 @@ import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.fragment_profile_screen.*
+import kotlinx.android.synthetic.main.fragment_profile_screen.tvDate
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -72,6 +78,7 @@ class ProfileScreen : Fragment() {
     lateinit var smoking : String
 
     lateinit var fetchProfileData : FetchProfileData
+    lateinit var bookRidepOjo : BookRidesPojoItem
 
     var vari = "False"
     private var mResendToken: PhoneAuthProvider.ForceResendingToken? = null
@@ -112,6 +119,7 @@ lateinit var cbPetsP : CheckBox
     lateinit var tvAlert : ImageView
     lateinit var ivVerified : ImageView
     lateinit var cvBio : CardView
+    lateinit var cvPublic : CardView
     var ADHARB_REQUEST = 1777
     private var actualProfImage: File? = null
     lateinit var ivEdit : ImageView
@@ -133,6 +141,8 @@ lateinit var cbPetsP : CheckBox
 
         request= Volley.newRequestQueue(activity);
 
+        bookRidepOjo = BookRidesPojoItem()
+
         lottieSelectImage = view.findViewById<LottieAnimationView>(R.id.lottieSelectImage)
         rlParent = view.findViewById<RelativeLayout>(R.id.rlParent)
         ivProf = view.findViewById<CircleImageView>(R.id.ivProf)
@@ -141,6 +151,7 @@ lateinit var cbPetsP : CheckBox
         tvAlert = view.findViewById<ImageView>(R.id.tvAlert)
         ivVerified = view.findViewById<ImageView>(R.id.ivVerified)
         cvBio = view.findViewById<CardView>(R.id.cvBio)
+        cvPublic = view.findViewById<CardView>(R.id.cvPublic)
         ivEdit = view.findViewById<ImageView>(R.id.ivEdit)
         ivEdi = view.findViewById<ImageView>(R.id.ivEdi)
         ivEditB = view.findViewById<ImageView>(R.id.ivEditB)
@@ -152,6 +163,20 @@ lateinit var cbPetsP : CheckBox
         ivEdi.setOnClickListener {
 
             showPopup(ivEdi)
+        }
+
+
+        cvPublic.setOnClickListener {
+            var int = Intent(activity!!,
+                DriverProfile::class.java)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    activity!! ,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            int.putExtra("pojoWithData",bookRidepOjo)
+            int.putExtra("cust",USER_ID_KEY)
+            startActivity(int,bundle)
         }
 
         tvAlert.setOnClickListener {
@@ -289,6 +314,11 @@ lateinit var cbPetsP : CheckBox
 
                     return@OnMenuItemClickListener true
                 }
+                R.id.editProfile -> {
+                    val intent = Intent(activity, EditProf::class.java)
+                    intent.putExtra("userPojo",fetchProfileData)
+                    startActivity(intent)
+                }
 
             }
             true
@@ -423,7 +453,7 @@ lateinit var cbPetsP : CheckBox
                     HashMap()
                 params["user"] = USER_ID_KEY
                 params["mobile_status"] = "true"
-                params.put("bio",fetchProfileData.bio)
+                params.put("bio", fetchProfileData.bio!!)
 //                params.put("pets",fetchProfileData.pets)
 //                params.put("smoking",fetchProfileData.smoking)
                 return params
@@ -734,7 +764,7 @@ lateinit var cbPetsP : CheckBox
                 params.put("bio",etBio.text.toString())
                 params.put("user",USER_ID_KEY)
 //                params.put("pets",pets.toString())
-                params["mobile_status"] = fetchProfileData.verification
+                params["mobile_status"] = fetchProfileData.verification.toString()
 //                params.put("smoking",smoking.toString())
 
                 return params

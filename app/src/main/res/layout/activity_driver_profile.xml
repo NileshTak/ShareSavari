@@ -250,6 +250,23 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:id="@+id/tvRatings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/0 Ratings"
+                android:focusable="true"
+                android:layout_marginTop="2dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="2dp"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/textColorHead"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                fontPath="Comfortaa-Regular.ttf"
+                android:textAlignment="center"
+                tools:ignore="MissingPrefix"  />
+
             <View
                 android:background="@color/md_blue_grey_100"
                 android:layout_width="match_parent"

@@ -252,7 +252,7 @@ class PendingReq : AppCompatActivity() {
 
 
             viewHolder.itemView.cvContact.setOnClickListener {
-                var user = User(customers.id.toString() , customers.first_name,pojoWithData.image.toString())
+                var user = User(customers.id.toString() , customers.first_name!!,pojoWithData.image.toString())
 
                 val intent = Intent(viewHolder.itemView.cvContact.context, ChatLogActivity::class.java)
                 intent.putExtra(NewMessageActivity.USER_KEY,user)

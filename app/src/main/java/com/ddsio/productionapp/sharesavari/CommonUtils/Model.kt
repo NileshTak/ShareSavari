@@ -66,21 +66,21 @@ data class UserUpdateDetailsModel(
  }
 
 
-data class FetchProfileData(
-    val bio: String,
-    val birthdate: String,
-    val email: String,
-    val first_name: String,
-    val gender: String,
-    val id: Int,
-    val image: String,
-    val last_name: String,
-    val mobile: String,
-    val url: String,
-    val verification: String,
-    val pets: String,
-    val smoking: String
-)
+ class FetchProfileData  : Serializable {
+    var bio: String? = null
+     var birthdate: String? = null
+     var email: String? = null
+     var first_name: String? = null
+     var gender: String? = null
+     var id: Int? = null
+     var image: String? = null
+     var last_name: String? = null
+     var mobile: String? = null
+     var url: String? = null
+     var verification: String? = null
+     var pets: String? = null
+     var smoking: String? = null
+}
 
 
  class BookRideScreenFetchCity : Serializable {

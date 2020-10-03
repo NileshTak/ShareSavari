@@ -593,7 +593,7 @@ class MainActivity : AppCompatActivity() {
                     Log.e("jukjbkj", "Error: " + error.message)
                     progressDialog.dismiss()
                     Toast.makeText(
-                        this@MainActivity, "Something Went Wrong ! Please try after some time",
+                        this@MainActivity, "User with that UserName already exists",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -616,7 +616,7 @@ class MainActivity : AppCompatActivity() {
                     HashMap()
                 params["first_name"] = fn
                 params["last_name"] = ln
-                params["username"] = un
+                params["username"] = etMobile.text.toString()
 
                 return params
             }
@@ -909,18 +909,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkFieldsLogin(value: String, lazyMessage: String) {
+
+        progressDialog = ProgressDialog(this@MainActivity)
+        progressDialog.setMessage("Wait a Sec....Loging In")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+
         if (value.isEmpty()) {
-            etEmail.error = "Enter Valid Email Address"
-        } else if (!validEmail(value)) {
-            Toast.makeText(this, "Enter valid e-mail!", Toast.LENGTH_LONG).show()
+            etEmail.error = "Enter Valid Mobile Number"
+        } else if (value.length != 10) {
+            Toast.makeText(this, "Enter valid Mobile Number", Toast.LENGTH_LONG).show()
             progressDialog.dismiss()
         } else if (lazyMessage.isEmpty()) {
             etPass.error = "Enter Valid Password"
         } else {
-            progressDialog = ProgressDialog(this@MainActivity)
-            progressDialog.setMessage("Wait a Sec....Loging In")
-            progressDialog.setCancelable(false)
-            progressDialog.show()
 
             hitLoginAPI()
         }
@@ -1155,7 +1158,7 @@ class MainActivity : AppCompatActivity() {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> =
                     HashMap()
-                params["email"] = emailtxtlogin
+                params["username"] = emailtxtlogin
                 params["password"] = passtxtlogin
                 return params
             }

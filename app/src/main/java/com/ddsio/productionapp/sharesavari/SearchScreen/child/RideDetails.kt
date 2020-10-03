@@ -1129,7 +1129,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${userProf.mobile}&message=${msg}&sender=WEBSMS&type=3"
 
         Log.d("smsentvjjnd", url.toString())
-        Log.d("smsentvjjnd", userProf.mobile )
+        Log.d("smsentvjjnd", userProf.mobile!!)
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
             url,

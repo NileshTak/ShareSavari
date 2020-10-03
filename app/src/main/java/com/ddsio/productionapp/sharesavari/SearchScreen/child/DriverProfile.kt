@@ -78,7 +78,6 @@ class DriverProfile : AppCompatActivity() {
         }
 
 
-
         Log.d("hhjbh", pojoWithData.image.toString())
 
         if (pojoWithData.image != null ) {
@@ -133,6 +132,14 @@ class DriverProfile : AppCompatActivity() {
 
         tvReport.setOnClickListener {
             showComplaintDialog()
+        }
+        if (cust == USER_ID_KEY) {
+            ratingB.isEnabled = false
+        }
+        if (cust != "0") {
+            getAllRating(cust)
+        } else {
+            getAllRating(pojoWithData.user.toString())
         }
 
     }
@@ -231,7 +238,7 @@ class DriverProfile : AppCompatActivity() {
             val verificationCode = alertLayout.loginetEmail!!.text!!.toString()
             if (verificationCode.isEmpty()) {
 //                Toast.makeText(this@Authentication, "Enter verification code", Toast.LENGTH_SHORT).show()
-                Toast.makeText(this, "Please Enter Valid Email Address", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Please Enter Valid Review", Toast.LENGTH_LONG).show()
 
             } else {
                 submitRating(verificationCode)
@@ -278,6 +285,8 @@ class DriverProfile : AppCompatActivity() {
                             }
                         }
                     }
+
+
                     progressDialog.dismiss()
                 }
             }, object : Response.ErrorListener {
@@ -308,6 +317,81 @@ class DriverProfile : AppCompatActivity() {
         }
         request!!.add(jsonObjRequest)
     }
+
+
+
+
+    private fun getAllRating(cust: String) {
+
+        var rating = 0
+        var userRatedCount = 0
+
+        val url = BASE_URL+ RATING
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("driverprofRate", response.toString())
+                    val gson = Gson()
+
+                    val userArray: ArrayList<RatingModelItem> =
+                        gson.fromJson(response, RatingModel ::class.java)
+
+                    if (userArray != null) {
+
+                        for (i in 0..userArray.size-1) {
+
+                            if (userArray.get(i).driver.toString() == cust) {
+                                if (userArray.get(i).points != null) {
+
+                                    rating = rating + userArray.get(i).points
+                                    userRatedCount = userRatedCount + 1
+                                }
+                            }
+                        }
+
+                        Log.d("dtsbjnkd",rating.toString())
+
+
+                        if (userRatedCount != 0 && userRatedCount != null) {
+                            var sum = userRatedCount * 5
+                            var finalRating = (rating * 5) / sum
+                            tvRatings.text = finalRating.toString()+"/5 Ratings"
+                        }
+
+                    }
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
 
 
 
@@ -461,11 +545,11 @@ class DriverProfile : AppCompatActivity() {
                         if (userArray != null) {
                             val image = userArray.image
 
-                            phoneNumber = userArray.mobile
-                            driverId = userArray.id
+                            phoneNumber = userArray.mobile!!
+                            driverId = userArray.id!!
 
                             tvName.text =  userArray.first_name
-                            if (userArray.bio == "" || userArray.bio.isEmpty()) {
+                            if (userArray.bio == "" || userArray.bio!!.isEmpty()) {
                                 tvDetail.text = "No Bio"
                             } else {
                                 tvDetail.text = userArray.bio
