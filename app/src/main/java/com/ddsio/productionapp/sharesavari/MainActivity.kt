@@ -1,6 +1,7 @@
 package com.ddsio.productionapp.sharesavari
 
 import android.Manifest
+import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.content.Context
@@ -21,15 +22,19 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
+import com.airbnb.lottie.LottieAnimationView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.ddsio.productionapp.sharesavari.CommonUtils.CircularProgress.CircleProgressBar
 import com.ddsio.productionapp.sharesavari.CommonUtils.FileUtil
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.VolleyProgressListener
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleySingleton
 import com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreen
+import com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreenParent
+import com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag
 import com.ddsio.productionapp.sharesavari.InboxScreen.InboxScreen
 import com.ddsio.productionapp.sharesavari.OfferScreen.OfferScreen
 import com.ddsio.productionapp.sharesavari.OfferScreen.ShowMapActivityPickUp
@@ -37,6 +42,11 @@ import com.ddsio.productionapp.sharesavari.ProfileScreen.ProfileScreen
 import com.ddsio.productionapp.sharesavari.SearchScreen.SearchFragment
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
@@ -67,6 +77,10 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.pow
 import com.pusher.pushnotifications.PushNotifications;
+import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.android.synthetic.main.activity_authentication.view.*
+import kotlinx.android.synthetic.main.fragment_profile_screen.*
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
@@ -80,8 +94,21 @@ class MainActivity : AppCompatActivity() {
     lateinit var tvLogin: TextView
     lateinit var tvForgotPass: TextView
     var imageUri = ""
-
+    lateinit var dialog_verifying: AlertDialog
+    lateinit var firebaseAuth: FirebaseAuth
     lateinit var USER_ID_KEY : String
+    var vari = "False"
+    private var mResendToken: PhoneAuthProvider.ForceResendingToken? = null
+
+    lateinit var mCallbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+    lateinit var mAuth: FirebaseAuth
+    lateinit var cpv : CircleProgressBar
+
+    lateinit var lottieSelectImage : LottieAnimationView
+    lateinit var rlParent : RelativeLayout
+    lateinit var ivProf : CircleImageView
+    lateinit var btnVerify : Button
+    private var mVerificationId: String? = null
 
     var type = ""
     lateinit var nsvSignUp: NestedScrollView
@@ -156,10 +183,13 @@ class MainActivity : AppCompatActivity() {
         llSearch = findViewById<LinearLayout>(R.id.llSearch)
         llLogin = findViewById<LinearLayout>(R.id.llLogin)
         cvSignUp = findViewById<CardView>(R.id.cvSignUp)
-
+        btnVerify =   findViewById<Button>(R.id.btnVerifyMob)
         etFN = findViewById<EditText>(R.id.etFN)
         etLN = findViewById<EditText>(R.id.etLN)
         etUserName = findViewById<EditText>(R.id.etLN)
+
+
+        mAuth = FirebaseAuth.getInstance()
 
 //        Utils.writeStringToPreferences(LOGIN_KEY, "",this)
 
@@ -199,10 +229,30 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Coming Soon.....", Toast.LENGTH_LONG).show()
         }
 
+        tvAlertImg.setOnClickListener {
+                Toast.makeText(this,"Number not validated yet...",Toast.LENGTH_LONG).show()
+        }
+
+
+        tvTickImg.setOnClickListener {
+            Toast.makeText(this,"Number is Verified... Please continue filling other details",Toast.LENGTH_LONG).show()
+        }
+
 
         tvForgotPass.setOnClickListener {
             showRestPassDialog()
         }
+
+        btnVerify.setOnClickListener {
+            if (etMobile.text.toString().isEmpty()) {
+                etMobile.error = "Please enter valid Mobile Number"
+            } else if (etMobile.text.toString().length != 10) {
+                etMobile.error = "Please enter valid Mobile Number"
+            } else {
+                sendCode()
+            }
+        }
+
 
         cvLogin.setOnClickListener {
 
@@ -276,7 +326,7 @@ class MainActivity : AppCompatActivity() {
         llHome.setOnClickListener {
             changeIconColor(ivHome, tvHome, "Home")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
-                loadHomeFrag(fragHome = HomeScreen())
+                loadHomeFrag(fragHome = HomeScreenParent())
             } else {
                 llLogin.visibility = View.VISIBLE
                 nsvSignUp.visibility = View.GONE
@@ -288,7 +338,7 @@ class MainActivity : AppCompatActivity() {
         llInbox.setOnClickListener {
             changeIconColor(ivInbox, tvInbox, "Inbox")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
-                loadInboxFrag(fragHome = InboxScreen())
+                loadInboxFrag(fragHome = MessagesFrag())
             } else {
                 llLogin.visibility = View.VISIBLE
                 nsvSignUp.visibility = View.GONE
@@ -337,6 +387,162 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        mCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            override fun onVerificationCompleted(Credential: PhoneAuthCredential) {
+                //        Toast.makeText(applicationContext,"Verfication Process",Toast.LENGTH_SHORT).show()
+//                val inflater = getLayoutInflater()
+//                val alertLayout = inflater.inflate(R.layout.processing_dialog, null)
+//                val show = AlertDialog.Builder(activity!!)
+//                show.setView(alertLayout)
+//                show.setCancelable(false)
+//                dialog_verifying = show.create()
+//                dialog_verifying.show()
+                signInWithPhoneAuthCredential(Credential)
+            }
+
+            override fun onVerificationFailed(e: FirebaseException) {
+//                Toast.makeText(applicationContext, "Something Went Wrong", Toast.LENGTH_SHORT).show()
+                Utils.showSnackMSG(lottieSelectImage,"Please Try After Some Time")
+
+                Log.d("Failure",e.toString())
+            }
+
+            override fun onCodeSent(verificationId: String ,
+                                    token: PhoneAuthProvider.ForceResendingToken ) {
+
+                // Save verification ID and resending token so we can use them later
+                mVerificationId = verificationId
+                mResendToken = token
+
+            }
+        }
+
+
+
+    }
+
+
+
+    private fun sendCode()
+    {
+        val phoneNumber = "+91" +etMobile!!.text.toString()
+
+        createOTPEnterDialog(phoneNumber)
+
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+            phoneNumber, // Phone number to verify
+            60, // Timeout duration
+            TimeUnit.SECONDS, // Unit of timeout
+           this, // Activity (for callback binding)
+            mCallbacks
+        )        // OnVerificationStateChangedCallbacks
+
+    }
+
+    private fun createOTPEnterDialog(phoneNumber: String) {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.activity_authentication, null)
+
+        alertLayout.phonenumberText.text = phoneNumber
+
+        alertLayout.cpv.setProgressFormatter { progress, max -> progress.toString() }
+
+        alertLayout.tvDidntGotCode.setOnClickListener {
+            dialog_otp.dismiss()
+            sendCode()
+        }
+
+        setProgress(  alertLayout.cpv,alertLayout.tvDidntGotCode)
+
+        alertLayout.verifyCodeButton!!.setOnClickListener {
+            val verificationCode = alertLayout.pinView!!.text!!.toString()
+            if (verificationCode.isEmpty()) {
+//                Toast.makeText(this@Authentication, "Enter verification code", Toast.LENGTH_SHORT).show()
+                Utils.showSnackMSG(alertLayout.parentAuth,"Please Enter Verification Code")
+
+            } else {
+
+                val inflater = getLayoutInflater()
+                val alertLayout = inflater.inflate(R.layout.processing_dialog, null)
+                val show = AlertDialog.Builder(this)
+                show.setView(alertLayout)
+                show.setCancelable(false)
+                dialog_verifying = show.create()
+                dialog_verifying.show()
+                val handler = Handler()
+                handler.postDelayed({
+                    val credential = PhoneAuthProvider.getCredential(this!!.mVerificationId.toString(), verificationCode)
+                    signInWithPhoneAuthCredential(credential)
+                },3000)
+
+            }
+        }
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        dialog_otp = showOTP.create()
+        dialog_otp.show()
+
+        alertLayout.ivClose.setOnClickListener {
+            dialog_otp.dismiss()
+        }
+
+    }
+
+    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
+        mAuth.signInWithCredential(credential)
+            .addOnCompleteListener( this!!) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+//                    Log.d(Authentication.TAG, "signInWithCredential:success")
+
+                    form.visibility = View.VISIBLE
+                    etMobileP.visibility = View.GONE
+                    tvMobP.text = etMobile.text.toString()
+                    tvMobP.visibility = View.VISIBLE
+                    btnVerify.visibility = View.GONE
+                    Toast.makeText(this,"Your Mobile Number has been verified. Please enter more details and create your Account.",Toast.LENGTH_LONG).show()
+
+                    tvAlertImg.visibility = View.GONE
+                    tvTickImg.visibility = View.VISIBLE
+                    dialog_otp.dismiss()
+                    dialog_verifying.dismiss()
+
+                } else {
+
+                    dialog_verifying.dismiss()
+                    dialog_otp.dismiss()
+                    progressDialog.dismiss()
+//                    Toast.makeText(this@Authentication, "Incorrect OTP", Toast.LENGTH_SHORT).show()
+                    Utils.showSnackMSG(lottieSelectImage,"Incorrect OTP")
+
+//                    Log.w(Authentication.TAG, "signInWithCredential:failure", task.exception)
+                    if (task.exception is FirebaseAuthInvalidCredentialsException) {
+
+                    }
+                }
+            }
+    }
+
+    private fun setProgress(
+        cpv: CircleProgressBar,
+        tvDidntGotCode: TextView
+    ) {
+        val animator = ValueAnimator.ofInt(100, 0)
+        animator.addUpdateListener { animation ->
+            val progress = animation.animatedValue as Int
+            cpv.setProgress(progress)
+
+            if (cpv.progress == 0) {
+                tvDidntGotCode.visibility = View.VISIBLE
+                cpv.visibility = View.GONE
+            }
+
+        }
+        //        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.duration = 30000
+        animator.start()
     }
 
     private fun showConvidPoster() {
@@ -946,13 +1152,7 @@ class MainActivity : AppCompatActivity() {
         } else if (etGender.text.toString().isEmpty()) {
             etGender.error = "Please Select Gender"
             progressDialog.dismiss()
-        } else if (etMobile.text.toString().isEmpty()) {
-            etMobile.error = "Please enter valid Mobile Number"
-            progressDialog.dismiss()
-        } else if (etMobile.text.toString().length != 10) {
-            etMobile.error = "Please enter valid Mobile Number"
-            progressDialog.dismiss()
-        } else if (etPass.text.toString().isEmpty()) {
+        }  else if (etPass.text.toString().isEmpty()) {
             etPass.error = "Enter Valid Password"
             progressDialog.dismiss()
         } else if (etPass.text.toString().length <= 8) {
@@ -1260,7 +1460,7 @@ class MainActivity : AppCompatActivity() {
         changeIconColor(ivHome, tvHome, "Home")
         if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
             llNav.visibility = View.VISIBLE
-            loadHomeFrag(fragHome = HomeScreen())
+            loadHomeFrag(fragHome = HomeScreenParent())
         } else {
             askGalleryPermissionLocation()
             llLogin.visibility = View.VISIBLE
@@ -1340,7 +1540,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-    fun loadHomeFrag(fragHome : HomeScreen) {
+    fun loadHomeFrag(fragHome : HomeScreenParent) {
 
         llLogin.visibility = View.GONE
         nsvSignUp.visibility = View.GONE
@@ -1368,7 +1568,7 @@ class MainActivity : AppCompatActivity() {
         fm.commit()
     }
 
-    fun loadInboxFrag(fragHome : InboxScreen) {
+    fun loadInboxFrag(fragHome : MessagesFrag) {
 
         llLogin.visibility = View.GONE
         nsvSignUp.visibility = View.GONE

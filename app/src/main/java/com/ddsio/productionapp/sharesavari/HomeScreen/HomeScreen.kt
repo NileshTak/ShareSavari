@@ -38,6 +38,7 @@ import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
 import kotlinx.android.synthetic.main.fragment_home_screen.*
+import kotlinx.android.synthetic.main.fragment_profile_screen.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.greenrobot.eventbus.Subscribe
 
@@ -74,6 +75,7 @@ class HomeScreen : Fragment() {
 
 
         askGalleryPermissionLocation()
+
 
         return view
     }
@@ -151,6 +153,8 @@ class HomeScreen : Fragment() {
                         rvOfferedRides.adapter!!.notifyDataSetChanged()
                         rvOfferedRides.scheduleLayoutAnimation()
                         progressDialog.dismiss()
+
+                        sendMobielVerifiedTrueAPI()
                     }
 
                 }
@@ -184,6 +188,64 @@ class HomeScreen : Fragment() {
                 return params
             }
         }
+        request!!.add(jsonObjRequest)
+
+    }
+
+
+    private fun sendMobielVerifiedTrueAPI() {
+
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage("Wait a Sec....Loading Details..")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+
+        val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.PUT,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkj", response.toString())
+
+                    progressDialog.dismiss()
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("jukjbkj",  "Error: " + error.message)
+                    progressDialog.dismiss()
+                    Toast.makeText(activity,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params["user"] = USER_ID_KEY
+                params["mobile_status"] = "true"
+                return params
+            }
+        }
+
+        Utils.setVolleyRetryPolicy(jsonObjRequest)
         request!!.add(jsonObjRequest)
 
     }
