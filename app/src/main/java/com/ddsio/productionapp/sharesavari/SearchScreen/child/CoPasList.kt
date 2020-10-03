@@ -2,6 +2,7 @@ package com.ddsio.productionapp.sharesavari.SearchScreen.child
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,13 +11,17 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
+import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
 import com.ddsio.productionapp.sharesavari.R
+import com.ddsio.productionapp.sharesavari.User
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
@@ -224,6 +229,28 @@ class CoPasList : AppCompatActivity() {
             viewHolder.itemView.cvAccept.visibility = View.GONE
             Glide.with( viewHolder.itemView.tvOfferedby.context).load(customers.image).into(viewHolder.itemView.ivprof)
             getRating(customers,viewHolder.itemView.tvRating)
+
+
+            viewHolder.itemView.setOnClickListener {
+                var int = Intent(viewHolder.itemView.tvOfferedby.context,
+                    DriverProfile::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        viewHolder.itemView.tvOfferedby.context ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                int.putExtra("pojoWithData",pojoWithData)
+                int.putExtra("cust",customers.id.toString())
+                startActivity(int,bundle)
+            }
+
+            viewHolder.itemView.cvContact.setOnClickListener {
+                var user = User(customers.id.toString() , customers.first_name,pojoWithData.image.toString())
+
+                val intent = Intent(viewHolder.itemView.cvContact.context, ChatLogActivity::class.java)
+                intent.putExtra(NewMessageActivity.USER_KEY,user)
+                startActivity(intent)
+            }
         }
     }
 

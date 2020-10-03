@@ -13,7 +13,6 @@ import android.view.animation.LayoutAnimationController
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
@@ -29,6 +28,10 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.custom_booked_rides.view.*
+import kotlinx.android.synthetic.main.custom_booked_rides.view.tvFromCity
+import kotlinx.android.synthetic.main.custom_booked_rides.view.tvRate
+import kotlinx.android.synthetic.main.custom_booked_rides.view.tvToCity
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -131,17 +134,14 @@ class NotificationFrag : Fragment() {
                         progressDialog.dismiss()
                     } else {
                         tvTitleTool.text = "Booked Rides : "
+                        tvTitleTool.visibility = View.GONE
                     }
 
                     for (rides in userArray) {
                         if (rides != null) {
-                            adapter.add(ridesOfferedClass(rides))
+                            hitRideSearch(rides)
                         }
-                        runAnimation(rvOfferedRides,2)
-                        rvOfferedRides.adapter = adapter
-                        rvOfferedRides.adapter!!.notifyDataSetChanged()
-                        rvOfferedRides.scheduleLayoutAnimation()
-                        progressDialog.dismiss()
+
                     }
 
                 }
@@ -192,69 +192,39 @@ class NotificationFrag : Fragment() {
 
 
 
-    inner class ridesOfferedClass(var customers: bookrideItem) : Item<ViewHolder>() {
+    inner class ridesOfferedClass(var customers: BookRidesPojoItem) : Item<ViewHolder>() {
         override fun getLayout(): Int {
             return R.layout.custom_booked_rides
         }
 
         override fun bind(viewHolder: ViewHolder, position: Int) {
 
-//            viewHolder.itemView.tvFromAdd.text = customers.leaving
-//            viewHolder.itemView.tvToAdd.text = customers.going
-//            viewHolder.itemView.tvDate.text = customers.date +"  ("+customers.time+")"
-//            viewHolder.itemView.tvRDate.text = customers.rdate +"  ("+customers.rtime+")"
-//            viewHolder.itemView.tvComment.text = customers.comment
-//            viewHolder.itemView.tvOfferedby.text = customers.username
-//            viewHolder.itemView.tvPass.text = customers.passenger.toString()
-//            viewHolder.itemView.tvPrice.text = customers.price.toString()
-//            viewHolder.itemView.tvReturn.text = customers.is_return.toString()
-//
-//
-//            viewHolder.itemView.btnBook.visibility = View.GONE
 
+            viewHolder.itemView.tvFromCity.text = customers.lcity
+            viewHolder.itemView.tvToCity.text = customers.gcity
 
-            var add = customers.ridename
-            val separated =
-                add.split("to".toRegex()).toTypedArray()
-            var from = separated[0]
+            viewHolder.itemView.tvRate.text = "₹ "+ customers.price.toString()
 
-           var to =  separated[1]
-
-
-            viewHolder.itemView.tvFromFullAdd.text = from
-            viewHolder.itemView.tvToFullAdd.text = to
-
-            viewHolder.itemView.tvDate.text = "Dat enot found"
-
-            Log.d("ihdui0",customers.ride.toString())
+            viewHolder.itemView.tvDatebs.text = Utils.convertDateFormat(
+                customers.date.toString()
+            ) +", " +customers.time.toString()
 
 
             viewHolder.itemView.setOnClickListener {
-//                var int = Intent( viewHolder.itemView.context,
-//                    RideDetails::class.java)
-//                val bundle =
-//                    ActivityOptionsCompat.makeCustomAnimation(
-//                        viewHolder.itemView.context ,
-//                        R.anim.fade_in, R.anim.fade_out
-//                    ).toBundle()
-//
-//
-//                int.putExtra("pojoWithData",customers)
-//                int.putExtra("screen","Booked")
-//                startActivity(int,bundle)
 
-                hitRideSearch(customers)
+                var int = Intent( activity,
+                    RideDetails::class.java)
+
+                int.putExtra("pojoWithData",customers)
+                int.putExtra("screen","Booked")
+                int.putExtra("IDToCancel",customers.id.toString())
+                startActivity(int)
             }
 
         }
     }
 
     private fun hitRideSearch(customers: bookrideItem) {
-
-        progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage("Wait a Sec.... ")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
 
         val adapter = GroupAdapter<ViewHolder>()
 
@@ -303,16 +273,17 @@ class NotificationFrag : Fragment() {
 
                         Log.d("juguiuih",ride.leaving.toString())
 
-                        var int = Intent( activity,
-                            RideDetails::class.java)
-
-                        int.putExtra("pojoWithData",ride)
-                        int.putExtra("screen","Booked")
-                        int.putExtra("IDToCancel",customers.id.toString())
-                        startActivity(int)
-
 
                         progressDialog.dismiss()
+
+                                adapter.add(ridesOfferedClass(ride))
+
+                            runAnimation(rvOfferedRides,2)
+                            rvOfferedRides.adapter = adapter
+                            rvOfferedRides.adapter!!.notifyDataSetChanged()
+                            rvOfferedRides.scheduleLayoutAnimation()
+                            progressDialog.dismiss()
+
 
 
                     } catch (e: JSONException) {

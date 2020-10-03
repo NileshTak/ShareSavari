@@ -224,6 +224,9 @@ class HomeScreen : Fragment() {
             viewHolder.itemView.tvFromCity.text = customers.lcity
             viewHolder.itemView.tvToCity.text = customers.gcity
             viewHolder.itemView.tvRate.text = "₹ "+customers.price.toString()
+            viewHolder.itemView.tvDates.text = Utils.convertDateFormat(
+                customers.date.toString()
+            ) +", " +customers.time.toString()
 
             Log.d("jukjbkjf",customers.user.toString())
 

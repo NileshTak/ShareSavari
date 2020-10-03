@@ -3,16 +3,13 @@ package com.ddsio.productionapp.sharesavari.ProfileScreen
 import android.Manifest
 import android.animation.ValueAnimator
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,11 +25,13 @@ import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
-import com.ddsio.productionapp.sharesavari.CommonUtils.*
 import com.ddsio.productionapp.sharesavari.CommonUtils.CircularProgress.CircleProgressBar
+import com.ddsio.productionapp.sharesavari.CommonUtils.FileUtil
+import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.VolleyProgressListener
+import com.ddsio.productionapp.sharesavari.CommonUtils.VolleySingleton
 import com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues
-import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseException
@@ -45,7 +44,6 @@ import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.GET_USER_DETAILS
 import com.productionapp.amhimemekar.CommonUtils.FetchProfileData
-import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
 import de.hdodenhof.circleimageview.CircleImageView
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.format
@@ -54,15 +52,12 @@ import id.zelory.compressor.constraint.resolution
 import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import kotlinx.android.synthetic.main.activity_authentication.view.*
-import kotlinx.android.synthetic.main.activity_authentication.view.parentAuth
-import kotlinx.android.synthetic.main.activity_authentication.view.pinView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
 import kotlinx.android.synthetic.main.fragment_profile_screen.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.*
+import java.io.File
+import java.io.IOException
 import java.net.URLConnection
 import java.util.concurrent.TimeUnit
 
@@ -120,6 +115,7 @@ lateinit var cbPetsP : CheckBox
     var ADHARB_REQUEST = 1777
     private var actualProfImage: File? = null
     lateinit var ivEdit : ImageView
+    lateinit var ivEdi : ImageView
     lateinit var ivEditB : ImageView
 
     override fun onCreateView(
@@ -146,12 +142,17 @@ lateinit var cbPetsP : CheckBox
         ivVerified = view.findViewById<ImageView>(R.id.ivVerified)
         cvBio = view.findViewById<CardView>(R.id.cvBio)
         ivEdit = view.findViewById<ImageView>(R.id.ivEdit)
+        ivEdi = view.findViewById<ImageView>(R.id.ivEdi)
         ivEditB = view.findViewById<ImageView>(R.id.ivEditB)
         btnVerify = view.findViewById<Button>(R.id.btnVerify)
         cbPetsP =view.findViewById<CheckBox>(R.id.cbPetsP)
         cbSmokingP =view.findViewById<CheckBox>(R.id.cbSmokingP)
 
 
+        ivEdi.setOnClickListener {
+
+            showPopup(ivEdi)
+        }
 
         tvAlert.setOnClickListener {
             if (vari == "False" ) {
@@ -254,6 +255,46 @@ lateinit var cbPetsP : CheckBox
         return view
     }
 
+
+    fun showPopup(v: View?) {
+        val popup = PopupMenu(activity, v)
+        //Inflating the Popup using xml file
+        popup.menuInflater.inflate(R.menu.file_menu, popup.menu)
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.logout -> {
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
+
+                    val editor = preferences.edit()
+
+                    preferences.getString(Configure.LOGIN_KEY,"")
+                    editor.clear()
+                    editor.commit()
+
+                    preferences.getString(Configure.USER_ID_KEY,"")
+                    editor.clear()
+                    editor.commit()
+
+                    Toast.makeText(activity,"Successfully Logged Out",
+                        Toast.LENGTH_LONG).show()
+
+                    ivLogout.visibility = View.GONE
+
+                    val i = Intent(context, LogInSignUpQues::class.java)
+                    i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(i)
+                    activity!!.finish()
+
+                    return@OnMenuItemClickListener true
+                }
+
+            }
+            true
+        })
+        popup.show()
+    }
 
 
     private fun askCameraPermission(RequestType: Int) {

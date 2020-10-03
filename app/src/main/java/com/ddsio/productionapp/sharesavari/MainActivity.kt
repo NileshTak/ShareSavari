@@ -40,7 +40,6 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
-import com.letsbuildthatapp.kotlinmessenger.models.User
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import id.zelory.compressor.Compressor

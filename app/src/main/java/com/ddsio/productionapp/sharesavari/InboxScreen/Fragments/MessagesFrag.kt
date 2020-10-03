@@ -14,11 +14,11 @@ import com.ddsio.productionapp.sharesavari.InboxScreen.Child.LatestMessageRow
 import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
+import com.ddsio.productionapp.sharesavari.User
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.letsbuildthatapp.kotlinmessenger.models.ChatMessage
-import com.letsbuildthatapp.kotlinmessenger.models.User
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder

@@ -12,7 +12,7 @@
         android:layout_height="550dp">
 
         <ImageView
-            android:src="@drawable/convidposter"
+            android:src="@drawable/convid_poster"
             android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="450dp"/>

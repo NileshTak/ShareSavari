@@ -1,4 +1,4 @@
-package com.letsbuildthatapp.kotlinmessenger.models
+package com.ddsio.productionapp.sharesavari
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

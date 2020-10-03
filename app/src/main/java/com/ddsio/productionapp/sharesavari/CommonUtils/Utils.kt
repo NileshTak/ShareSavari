@@ -7,6 +7,7 @@ import android.location.Geocoder
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.os.Build
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.provider.Settings
@@ -14,17 +15,18 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat.startActivity
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
-import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.google.android.material.snackbar.Snackbar
-import org.greenrobot.eventbus.EventBus
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.LocalDate
 import java.util.*
 
 
@@ -87,14 +89,42 @@ object Utils {
 
         }
 
-
         dialog.setView(view)
-
         dialog.show()
-
-          return  res
+        return  res
     }
 
+    fun convertDateFormat(date : String) : String {
+        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val outputFormat: DateFormat = SimpleDateFormat("dd MMM ")
+        val inputDateStr = date
+        val date: Date = inputFormat.parse(inputDateStr)
+        val outputDateStr: String = outputFormat.format(date)
+        return outputDateStr
+    }
+
+    fun getDayOfDate(date : String) : String {
+        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val outputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val inputDateStr = date
+        val dateF: Date = inputFormat.parse(inputDateStr)
+        val outputDateStr: String = outputFormat.format(dateF)
+
+        val tempDate = outputDateStr.toString()
+        val date: LocalDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate.parse(tempDate)
+        } else {
+            TODO("VERSION.SDK_INT < O")
+        }
+        val day = date.getDayOfWeek().toString()
+        var s : Char = day.get(0)
+        var a  =   day.get(1)
+        var c  =   day.get(2)
+
+        var d : String = s.toString()+a+c
+
+        return d
+    }
 
     fun setVolleyRetryPolicy(req: Request<*>) {
         req.retryPolicy = DefaultRetryPolicy(

@@ -1,7 +1,7 @@
 package com.ddsio.productionapp.sharesavari.InboxScreen.Child
 
 import com.ddsio.productionapp.sharesavari.R
-import com.letsbuildthatapp.kotlinmessenger.models.User
+import com.ddsio.productionapp.sharesavari.User
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder

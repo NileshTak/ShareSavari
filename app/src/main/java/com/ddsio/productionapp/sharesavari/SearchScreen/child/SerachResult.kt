@@ -27,11 +27,18 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import de.hdodenhof.circleimageview.CircleImageView
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_ride_detail.*
 import kotlinx.android.synthetic.main.activity_serach_result.*
 import kotlinx.android.synthetic.main.custom_reviews.view.*
+import kotlinx.android.synthetic.main.custom_search_rides.view.*
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.ivDirect
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.ivuser
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.rvRating
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvFromCity
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvName
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvRating
+import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvToCity
 import kotlinx.android.synthetic.main.fragment_search.*
 
 class SerachResult : AppCompatActivity() {
@@ -68,6 +75,12 @@ class SerachResult : AppCompatActivity() {
         date  = bundle!!.getString("date")!!
         passenger  = bundle!!.getString("passenger")!!
 
+
+        tvFromCity.text = to.toString()
+        tvToCity.text = from.toString()
+        tvDates.text =  Utils.convertDateFormat(date)
+        tvPass.text = passenger.toString() +" Passengers"
+
         rvRides =  findViewById<RecyclerView>(R.id.rvRides)
 
         ivB.setOnClickListener {
@@ -101,14 +114,16 @@ class SerachResult : AppCompatActivity() {
 
                     if (userArray.size == 0) {
                         progressDialog.dismiss()
-                        Toast.makeText(this@SerachResult,"No Ride Found",
-                            Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@SerachResult,"Sorry, No Rides availabel at this Route",Toast.LENGTH_LONG).show()
+
 
                     } else{
 
                         for (rides in userArray) {
                             if (rides != null) {
-                                checkPass(rides)
+                                if (rides.user.toString() != USER_ID_KEY) {
+                                    checkPass(rides)
+                                }
                             }
                         }
 
@@ -244,31 +259,25 @@ class SerachResult : AppCompatActivity() {
 
     inner class ridesClass(var customers: BookRidesPojoItem) : Item<ViewHolder>() {
         override fun getLayout(): Int {
-            return R.layout.custom_show_list_rides
+            return R.layout.custom_search_rides
         }
 
         override fun bind(viewHolder: ViewHolder, position: Int) {
 
-//            viewHolder.itemView.tvFromAdd.text = customers.leaving
-//            viewHolder.itemView.tvToAdd.text = customers.going
-//            viewHolder.itemView.tvDate.text = customers.date +"  ("+customers.time+")"
-//            viewHolder.itemView.tvRDate.text = customers.rdate +"  ("+customers.rtime+")"
-//            viewHolder.itemView.tvComment.text = customers.comment
-//            viewHolder.itemView.tvOfferedby.text = customers.username
-//            viewHolder.itemView.tvPass.text = customers.passenger.toString()
-//            viewHolder.itemView.tvPrice.text = customers.price.toString()
-//            viewHolder.itemView.tvReturn.text = customers.is_return.toString()
-
             viewHolder.itemView.tvFromCity.text = customers.lcity
             viewHolder.itemView.tvToCity.text = customers.gcity
+            viewHolder.itemView.tvLTime.text = customers.time
+            viewHolder.itemView.tvETime.text = customers.tdtime
 //            viewHolder.itemView.tvName.text = customers.username
-            viewHolder.itemView.tvRate.text = "₹ "+customers.price.toString()
+            viewHolder.itemView.tvPrices.text = "₹ "+customers.price.toString()
 
-            viewHolder.itemView.rvRating.visibility = View.VISIBLE
+            viewHolder.itemView.tvETime.text = customers.tdtime
+
+            getRating(customers,viewHolder.itemView.tvR)
 
             findUser(customers.user.toString(),viewHolder.itemView.tvName,viewHolder.itemView.ivuser)
 
-            getRating(customers,viewHolder.itemView.tvRating)
+
 
             Log.d("jukjbkjf",customers.user.toString())
 
@@ -405,12 +414,12 @@ class SerachResult : AppCompatActivity() {
                         if (userRatedCount != 0 && userRatedCount != null) {
                             var sum = userRatedCount * 5
                             var finalRating = (rating * 5) / sum
-                            tvRating.text = finalRating.toString()+"/5 ratings"
+                            tvRating.text = finalRating.toString() +"/5"
 
                         }
 
                     } else {
-                        tvRating.text = "0/5 ratings"
+                        tvRating.text = "0"+"/5"
                     }
 
 

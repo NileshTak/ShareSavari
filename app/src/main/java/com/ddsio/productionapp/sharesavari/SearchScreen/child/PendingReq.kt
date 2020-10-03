@@ -2,6 +2,7 @@ package com.ddsio.productionapp.sharesavari.SearchScreen.child
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,24 +11,28 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
+import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
 import com.ddsio.productionapp.sharesavari.R
+import com.ddsio.productionapp.sharesavari.User
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_pending_req.*
 import kotlinx.android.synthetic.main.activity_ride_detail.view.ivprof
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvOfferedby
 import kotlinx.android.synthetic.main.custom_copas_list.view.*
-import kotlinx.android.synthetic.main.custom_copas_list.view.ccvCancel
 import kotlinx.android.synthetic.main.ride_booking_type.view.*
 
 class PendingReq : AppCompatActivity() {
@@ -230,6 +235,29 @@ class PendingReq : AppCompatActivity() {
             viewHolder.itemView.cvAccept.setOnClickListener {
                 showRideDialog(customers,passenger)
             }
+
+
+            viewHolder.itemView.setOnClickListener {
+                var int = Intent(viewHolder.itemView.tvOfferedby.context,
+                    DriverProfile::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        viewHolder.itemView.tvOfferedby.context ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                int.putExtra("pojoWithData",pojoWithData)
+                int.putExtra("cust",customers.id.toString())
+                startActivity(int,bundle)
+            }
+
+
+            viewHolder.itemView.cvContact.setOnClickListener {
+                var user = User(customers.id.toString() , customers.first_name,pojoWithData.image.toString())
+
+                val intent = Intent(viewHolder.itemView.cvContact.context, ChatLogActivity::class.java)
+                intent.putExtra(NewMessageActivity.USER_KEY,user)
+                startActivity(intent)
+            }
         }
     }
 
@@ -253,6 +281,11 @@ class PendingReq : AppCompatActivity() {
                     Log.d("jukjbkjf", response.toString())
 
                     progressDialog.dismiss()
+
+                    rvPendingReq.removeAllViewsInLayout()
+                    rvPendingReq.removeAllViews()
+                    adapter.clear()
+
 
                     hitPendingReq()
 
@@ -315,6 +348,7 @@ class PendingReq : AppCompatActivity() {
 
         alertLayout.cvContinue.setOnClickListener {
             acceptReq(customers,passenger)
+            convidPoster.dismiss()
         }
 
         alertLayout.ccvCancel.setOnClickListener {

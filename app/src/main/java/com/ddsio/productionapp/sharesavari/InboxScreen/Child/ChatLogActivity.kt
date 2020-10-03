@@ -7,13 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag
 import com.ddsio.productionapp.sharesavari.R
+import com.ddsio.productionapp.sharesavari.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.letsbuildthatapp.kotlinmessenger.models.ChatMessage
-import com.letsbuildthatapp.kotlinmessenger.models.User
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter

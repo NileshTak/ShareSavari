@@ -24,6 +24,8 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.CommonUtils.Utils.convertDateFormat
+import com.ddsio.productionapp.sharesavari.CommonUtils.Utils.getDayOfDate
 import com.ddsio.productionapp.sharesavari.HomeScreen.Child.EditRide
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
@@ -78,7 +80,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     private val DEFAULT_ZOOM = 15f
 
     lateinit var mapView: MapView
-
+    var bookedSeatCount = 0
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     lateinit var pojoWithData : BookRidesPojoItem
@@ -160,10 +162,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         request= Volley.newRequestQueue(this)
 
         askGalleryPermissionLocation()
+        bookedSeatsCount(pojoWithData)
 
        tvFromAdd.text = pojoWithData.lline+", "+pojoWithData.lcity
-     tvToAdd.text = pojoWithData.gline+", "+pojoWithData.gcity
-
+       tvToAdd.text = pojoWithData.gline+", "+pojoWithData.gcity
+        tvCo.text = bookedSeatCount.toString()
 
         var dateFormat = pojoWithData.date
         val separated =
@@ -173,8 +176,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         var dateFrom =  separated[2]
         var dateFFRom =  dateFrom +"-" +monthFrom +"-"+yearFrom
         tvDate.text = dateFFRom
-        tvLTime.text = dateFFRom +" " +
+
+        tvLTime.text = convertDateFormat(pojoWithData.date.toString()) +" " +
                 "(${pojoWithData.time})"
+
+
 
 
         tvFromFullAdd.text = "("+ pojoWithData.leaving+")"
@@ -236,6 +242,20 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             Glide.with(this).load(pojoWithData.image).into(ivprof)
         }
 
+        if (pojoWithData.date == pojoWithData.tddate ) {
+            tvDay.text = getDayOfDate(pojoWithData.date.toString()) +", "+ convertDateFormat(pojoWithData.date.toString())
+            tvDay.visibility = View.VISIBLE
+            tvRTime.text =pojoWithData.tdtime
+            tvLTime.text =pojoWithData.time
+
+        } else {
+            tvRTime.text = convertDateFormat(pojoWithData.date.toString()) +" " +
+                    "(${pojoWithData.tdtime})"
+            tvLTime.text = convertDateFormat(pojoWithData.tddate.toString()) +" " +
+                    "(${pojoWithData.time})"
+            tvDay.visibility = View.GONE
+        }
+
 
 
         askGalleryPermissionLocation()
@@ -284,6 +304,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
             int.putExtra("pojoWithData",pojoWithData)
+            int.putExtra("cust","0")
             startActivity(int,bundle)
         }
 
@@ -941,6 +962,66 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         }
         request!!.add(jsonObjRequest)
     }
+
+
+
+    private fun bookedSeatsCount(customers: BookRidesPojoItem) {
+
+
+        val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"?ride=${customers.id}"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkjf", response.toString())
+
+                    val gson = Gson()
+
+                    val userArray : ArrayList<bookrideItem> =
+                        gson.fromJson(response, bookride ::class.java)
+
+                    tvCo.text = userArray.size.toString()+"/" + pojoWithData.passenger
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(this@RideDetails,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
+
+
+
 
     private fun askGalleryPermissionLocation() {
         askPermission(

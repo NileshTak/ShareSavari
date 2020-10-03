@@ -32,6 +32,18 @@
             android:id="@+id/ivLogout"
             android:layout_width="35dp"
             android:src="@drawable/logout"
+            android:visibility="gone"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:layout_centerVertical="true"
+            android:layout_height="35dp"/>
+
+
+        <ImageView
+            android:id="@+id/ivEdi"
+            android:layout_width="35dp"
+            android:tint="@color/md_white_1000"
+            android:src="@drawable/ic_baseline_edit_24"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
             android:layout_centerVertical="true"
@@ -59,6 +71,7 @@
                 android:id="@+id/ivEdit"
                 android:layout_alignParentEnd="true"
                 android:layout_width="30dp"
+                android:visibility="gone"
                 android:layout_marginEnd="20dp"
                 android:src="@drawable/ic_baseline_edit_24"
                 android:layout_marginTop="30dp"
@@ -131,7 +144,6 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_marginBottom="65dp"
             android:layout_height="match_parent">
 
             <LinearLayout

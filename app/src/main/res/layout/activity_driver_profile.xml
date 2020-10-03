@@ -177,10 +177,9 @@
                 android:layout_height="2dp"/>
 
             <TextView
-                android:id="@+id/tvRidesCount"
+                android:id="@+id/tvRidesC"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="16 rides puslished"
                 android:focusable="true"
                 android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
@@ -256,6 +255,101 @@
                 android:layout_width="match_parent"
                 android:layout_margin="5dp"
                 android:layout_height="2dp"/>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:weightSum="2"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvCall"
+                    android:layout_width="150dp"
+                    app:cardCornerRadius="20dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:layout_margin="10dp"
+                    app:cardElevation="4dp"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    app:cardBackgroundColor="@color/md_green_800"
+                    android:layout_height="40dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:text="Call"
+                            android:textColor="@color/md_white_1000"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:textStyle="bold"
+                            tools:ignore="MissingPrefix"
+                            fontPath="Comfortaa-Bold.ttf"
+                            android:textSize="14dp"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvChat"
+                    android:layout_width="150dp"
+                    app:cardCornerRadius="20dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:layout_weight="1"
+                    android:layout_margin="10dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    app:cardBackgroundColor="@color/colorPrimaryDark"
+                    android:layout_height="40dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:text="Chat"
+                            android:textColor="@color/md_white_1000"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:textStyle="bold"
+                            tools:ignore="MissingPrefix"
+                            fontPath="Comfortaa-Bold.ttf"
+                            android:textSize="14dp"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+
+
+
+            <View
+                android:background="@color/md_blue_grey_100"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:layout_height="2dp"/>
+
+
 
             <RelativeLayout
                 android:id="@+id/rvReview"

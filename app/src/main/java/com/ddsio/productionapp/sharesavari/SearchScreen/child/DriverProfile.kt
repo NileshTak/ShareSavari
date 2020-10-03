@@ -1,8 +1,10 @@
 package com.ddsio.productionapp.sharesavari.SearchScreen.child
 
+import android.Manifest
 import android.app.ProgressDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,12 +12,19 @@ import android.widget.Button
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
+import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
+import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
 import com.ddsio.productionapp.sharesavari.R
+import com.ddsio.productionapp.sharesavari.User
+import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
@@ -24,8 +33,6 @@ import com.productionapp.amhimemekar.CommonUtils.Configure.GET_USER_DETAILS
 import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import kotlinx.android.synthetic.main.activity_driver_profile.*
-import kotlinx.android.synthetic.main.activity_driver_profile.ivCloseScreen
-import kotlinx.android.synthetic.main.activity_ride_detail.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
 import kotlin.math.roundToInt
 
@@ -36,10 +43,14 @@ class DriverProfile : AppCompatActivity() {
     lateinit var USER_ID_KEY : String
     var LOGIN_TOKEN = ""
     var request: RequestQueue? = null
+    var phoneNumber = ""
     lateinit var dialog_otp: AlertDialog
     lateinit var ratingB : RatingBar
     lateinit var btnSubmitB : Button
+    var driverId = 0
     var USER_UPDATE_ID = ""
+    private val REQUEST_CALL = 1
+    lateinit var cust : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +58,7 @@ class DriverProfile : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
+        cust = bundle!!.get("cust") as String
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
@@ -59,7 +71,13 @@ class DriverProfile : AppCompatActivity() {
             onBackPressed()
         }
 
-        getDriverData()
+        if (cust != "0") {
+            getDriverData(cust)
+        } else {
+            getDriverData(pojoWithData.user.toString())
+        }
+
+
 
         Log.d("hhjbh", pojoWithData.image.toString())
 
@@ -79,6 +97,20 @@ class DriverProfile : AppCompatActivity() {
                  }
             }
         })
+
+        cvCall.setOnClickListener {
+            Log.d("hbuhbjb",phoneNumber)
+            askCallingPermission("+91"+phoneNumber)
+        }
+
+        cvChat.setOnClickListener {
+
+            var user = User(driverId.toString(), tvName.text.toString(),pojoWithData.image.toString())
+
+            val intent = Intent(this, ChatLogActivity::class.java)
+            intent.putExtra(NewMessageActivity.USER_KEY,user)
+            startActivity(intent)
+        }
 
 
         btnSubmitB.setOnClickListener {
@@ -103,6 +135,61 @@ class DriverProfile : AppCompatActivity() {
             showComplaintDialog()
         }
 
+    }
+
+
+    private fun askCallingPermission(s: String) {
+        askPermission(Manifest.permission.CALL_PHONE,Manifest.permission.READ_CONTACTS,
+            Manifest.permission.GET_ACCOUNTS){
+            //       Toast.makeText(applicationContext,"Calling"+finalworker.mobile,Toast.LENGTH_LONG).show()
+            makeCall(s)
+        }.onDeclined { e ->
+            if (e.hasDenied()) {
+                //the list of denied permissions
+                e.denied.forEach {
+                }
+
+                AlertDialog.Builder(this@DriverProfile)
+                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
+                    .setPositiveButton("yes") { dialog, which ->
+                        e.askAgain()
+                    } //ask again
+                    .setNegativeButton("no") { dialog, which ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
+
+            if (e.hasForeverDenied()) {
+                //the list of forever denied permissions, user has check 'never ask again'
+                e.foreverDenied.forEach {
+                }
+                // you need to open setting manually if you really need it
+                e.goToSettings();
+            }
+        }
+    }
+
+    private fun makeCall(number : String) {
+        if (number.trim({ it <= ' ' }).length > 0) {
+
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.CALL_PHONE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.CALL_PHONE), REQUEST_CALL
+                )
+            } else {
+                val dial = "tel:$number"
+                startActivity(Intent(Intent.ACTION_CALL, Uri.parse(dial)))
+            }
+
+        } else {
+            Toast.makeText(this, "Enter Phone Number", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showComplaintDialog() {
@@ -345,7 +432,7 @@ class DriverProfile : AppCompatActivity() {
     }
 
 
-    fun getDriverData( ) {
+    fun getDriverData(cust: String) {
 
         progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Wait a Sec....Loading Details..")
@@ -353,7 +440,7 @@ class DriverProfile : AppCompatActivity() {
         progressDialog.show()
 
 
-        val url = BASE_URL+ GET_USER_DETAILS+pojoWithData.user+"/"
+        val url = BASE_URL+ GET_USER_DETAILS+cust+"/"
 //        val url = "https://ddsio.com/sharesawaari/rest/users/22/"
 
 
@@ -374,6 +461,9 @@ class DriverProfile : AppCompatActivity() {
                         if (userArray != null) {
                             val image = userArray.image
 
+                            phoneNumber = userArray.mobile
+                            driverId = userArray.id
+
                             tvName.text =  userArray.first_name
                             if (userArray.bio == "" || userArray.bio.isEmpty()) {
                                 tvDetail.text = "No Bio"
@@ -381,7 +471,7 @@ class DriverProfile : AppCompatActivity() {
                                 tvDetail.text = userArray.bio
                             }
 
-                            hitFindOfferedRideAPI()
+                            hitFindOfferedRideAPI(cust)
 
                             if (userArray.verification == "False") {
                                 ivAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
@@ -432,9 +522,9 @@ class DriverProfile : AppCompatActivity() {
     }
 
 
-    private fun hitFindOfferedRideAPI() {
+    private fun hitFindOfferedRideAPI(cust: String) {
 
-        val url = BASE_URL+ OFFER_RIDE_URL+"?user=${USER_ID_KEY}"
+        val url = BASE_URL+ OFFER_RIDE_URL+"?user=${this.cust}"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
@@ -449,7 +539,7 @@ class DriverProfile : AppCompatActivity() {
 
                     getRating()
 
-                    tvRidesCount.text = " ${userArray.size} rides puslished"
+                    tvRidesC.text = " ${userArray.size} rides puslished"
 
                 }
             }, object : Response.ErrorListener {

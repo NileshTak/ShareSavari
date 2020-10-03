@@ -12,8 +12,8 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginEnd="130dp"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="80dp"
             android:layout_marginStart="20dp"
             android:orientation="vertical"
             android:layout_centerVertical="true"
@@ -69,9 +69,10 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="120dp"
+            android:layout_width="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
             android:layout_height="wrap_content">
 
 
@@ -142,7 +143,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/ccvCancel"
+            android:id="@+id/cvContact"
             android:layout_width="150dp"
             app:cardCornerRadius="20dp"
             android:layout_marginStart="15dp"
@@ -152,11 +153,11 @@
             android:clickable="true"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:cardElevation="4dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            app:cardBackgroundColor="@color/md_red_800"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
             android:layout_height="40dp">
 
             <RelativeLayout
@@ -165,7 +166,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:text="Cancel"
+                    android:text="Contact"
                     android:textColor="@color/md_white_1000"
                     android:gravity="center"
                     android:singleLine="true"
