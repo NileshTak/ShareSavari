@@ -292,7 +292,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             }
 
         btnDelete.setOnClickListener {
-            deleteRideAPI(pojoWithData)
+            showDeleteDialog(pojoWithData)
         }
 
 
@@ -336,6 +336,31 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         alertLayout.cvContinue.setOnClickListener {
             bookRideAPI(this.pojoWithData)
+        }
+
+        alertLayout.ccvCancel.setOnClickListener {
+            convidPoster.dismiss()
+        }
+
+    }
+
+
+
+    private fun showDeleteDialog(pojoWithData: BookRidesPojoItem) {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.ride_booking_type, null)
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        convidPoster = showOTP.create()
+        convidPoster.show()
+
+            alertLayout.tvNotice.text = "Are you sure you want to Delete this Ride ? "
+
+
+        alertLayout.cvContinue.setOnClickListener {
+            deleteRideAPI(pojoWithData)
         }
 
         alertLayout.ccvCancel.setOnClickListener {

@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.RadioButton
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.DialogFragment
@@ -23,7 +24,6 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.TimePickerFragment
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
-import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
 import com.google.gson.Gson
 import com.productionapp.amhimemekar.CommonUtils.*
@@ -32,9 +32,7 @@ import kotlinx.android.synthetic.main.activity_edit_ride.*
 import kotlinx.android.synthetic.main.activity_edit_ride.etStopPoint
 import kotlinx.android.synthetic.main.activity_edit_ride.rbBookInstantly
 import kotlinx.android.synthetic.main.activity_edit_ride.rbMyself
-import kotlinx.android.synthetic.main.activity_going_date_and_time.*
-import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
-import kotlinx.android.synthetic.main.activity_return_date_and_time.*
+import kotlinx.android.synthetic.main.ride_booking_type.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.json.JSONException
@@ -551,8 +549,14 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             if (etSelectDateReturnSave.text.toString().isEmpty() || etSelectDateReturnSave.text.toString() == "") {
                 Toast.makeText(this,"Please Select Correct Return Date ",
                     Toast.LENGTH_LONG).show()
-            }else  if (etSelectTimeReturnSave.text.toString().isEmpty() || etSelectTimeReturnSave.text.toString() == "") {
+            } else  if (etSelectTimeReturnSave.text.toString().isEmpty() || etSelectTimeReturnSave.text.toString() == "") {
                 Toast.makeText(this,"Please Select Correct Return Time",
+                    Toast.LENGTH_LONG).show()
+            } else if (etReachRDate.text.toString().isEmpty() || etReachRDate.text.toString() == "") {
+                Toast.makeText(this,"Please Select Correct Reaching Date ",
+                    Toast.LENGTH_LONG).show()
+            } else  if (etReachRTime.text.toString().isEmpty() || etReachRTime.text.toString() == "") {
+                Toast.makeText(this,"Please Select Correct Reaching Time",
                     Toast.LENGTH_LONG).show()
             }
         }
@@ -574,12 +578,6 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             Toast.makeText(this,"Please Enter Valid Car Color",
                 Toast.LENGTH_LONG).show()
         } else if (etReachingTime.text.toString().isEmpty() || etReachingTime.text.toString() == "") {
-            Toast.makeText(this,"Please Select Correct Reaching Time",
-                Toast.LENGTH_LONG).show()
-        }else if (etReachRDate.text.toString().isEmpty() || etReachRDate.text.toString() == "") {
-            Toast.makeText(this,"Please Select Correct Reaching Date ",
-                Toast.LENGTH_LONG).show()
-        } else  if (etReachRTime.text.toString().isEmpty() || etReachRTime.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Reaching Time",
                 Toast.LENGTH_LONG).show()
         } else  if (etReachRDate.text.toString() < etSelectDateReturnSave.text.toString() ) {
@@ -605,12 +603,15 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             Log.d("jkhuihuj","el")
             if (cvReturnRideSave.isChecked) {
                 pojoWithData.is_return = "true"
+                pojoWithData.brtime = etReachRTime.text.toString()
+                pojoWithData.brdate = etReachRDate.text.toString()
                 Log.d("jkhuihuj","CLick2")
             } else {
                 pojoWithData.rtime = pojoWithData.time
                 pojoWithData.rdate = pojoWithData.date
                 pojoWithData.is_return = "false"
-
+                pojoWithData.brtime = pojoWithData.time
+                pojoWithData.brdate = pojoWithData.date
                 Log.d("jkhuihuj","CLick2")
             }
 
@@ -646,10 +647,32 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
             Log.d("jkhuihuj","else")
 
-            progressDialog = ProgressDialog(this)
-            progressDialog.setMessage("Wait a Sec....Updating your Ride")
-            progressDialog.setCancelable(false)
-            progressDialog.show()
+            showSaveDialog(pojoWithData)
+
+        }
+    }
+
+
+    lateinit var convidPoster: AlertDialog
+    private fun showSaveDialog(pojoWithData: offerRideModel) {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.ride_booking_type, null)
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        convidPoster = showOTP.create()
+        convidPoster.show()
+
+        if (previousPojo.id.toString() != "" || previousPojo.id.toString().isNotEmpty()) {
+            alertLayout.tvNotice.text = "Are you sure you want to Save this Ride ? "
+        } else {
+            alertLayout.tvNotice.text = "Are you sure you want to Publish this Ride ? "
+        }
+
+
+        alertLayout.cvContinue.setOnClickListener {
+
 
             if (previousPojo.id.toString() != "" || previousPojo.id.toString().isNotEmpty()) {
                 UpdateRide(pojoWithData)
@@ -657,8 +680,11 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                 hitOfferRideAPI()
             }
         }
-    }
 
+        alertLayout.ccvCancel.setOnClickListener {
+            convidPoster.dismiss()
+        }
+    }
 
 
     private fun hitOfferRideAPI() {
@@ -678,6 +704,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             pojoWithData.max_back_3 = true
             pojoWithData.max_back_2 = false
         }
+
 
 
         progressDialog = ProgressDialog(this)
@@ -727,7 +754,6 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                     progressDialog.dismiss()
                     Toast.makeText(this@EditRide,"Something Went Wrong ! Please try after some time",
                         Toast.LENGTH_LONG).show()
-
 
                 }
             }) {
@@ -820,6 +846,11 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         pojoWithData.url =  ""
         pojoWithData.image =  ""
         pojoWithData.comment =  ""
+
+        progressDialog = ProgressDialog(this)
+        progressDialog.setMessage("Wait a Sec....Updating your Ride")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
 
         val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL+previousPojo.id+"/"
         Log.d("jukjbkj", url.toString())

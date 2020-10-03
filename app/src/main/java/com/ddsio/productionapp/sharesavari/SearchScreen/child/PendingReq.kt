@@ -9,6 +9,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
@@ -26,6 +27,8 @@ import kotlinx.android.synthetic.main.activity_pending_req.*
 import kotlinx.android.synthetic.main.activity_ride_detail.view.ivprof
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvOfferedby
 import kotlinx.android.synthetic.main.custom_copas_list.view.*
+import kotlinx.android.synthetic.main.custom_copas_list.view.ccvCancel
+import kotlinx.android.synthetic.main.ride_booking_type.view.*
 
 class PendingReq : AppCompatActivity() {
 
@@ -225,7 +228,7 @@ class PendingReq : AppCompatActivity() {
             viewHolder.itemView.llBtn.visibility = View.VISIBLE
 
             viewHolder.itemView.cvAccept.setOnClickListener {
-                acceptReq(customers,passenger)
+                showRideDialog(customers,passenger)
             }
         }
     }
@@ -240,7 +243,7 @@ class PendingReq : AppCompatActivity() {
         progressDialog.show()
 
 
-        val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"/${passenger.id}/"
+        val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"${passenger.id}/"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.PUT,
@@ -249,10 +252,6 @@ class PendingReq : AppCompatActivity() {
                 override fun onResponse(response: String?) {
                     Log.d("jukjbkjf", response.toString())
 
-                    val gson = Gson()
-
-                    val userArray : ArrayList<bookrideItem> =
-                        gson.fromJson(response, bookride ::class.java)
                     progressDialog.dismiss()
 
                     hitPendingReq()
@@ -294,5 +293,33 @@ class PendingReq : AppCompatActivity() {
             }
         }
         request!!.add(jsonObjRequest)
+    }
+
+
+    lateinit var convidPoster: AlertDialog
+    private fun showRideDialog(
+        customers: FetchProfileData,
+        passenger: bookrideItem
+    ) {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.ride_booking_type, null)
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        convidPoster = showOTP.create()
+        convidPoster.show()
+
+            alertLayout.tvNotice.text = "Are you sure you want to Accept this Ride Request? "
+
+
+        alertLayout.cvContinue.setOnClickListener {
+            acceptReq(customers,passenger)
+        }
+
+        alertLayout.ccvCancel.setOnClickListener {
+            convidPoster.dismiss()
+        }
+
     }
 }

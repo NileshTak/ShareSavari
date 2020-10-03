@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +19,6 @@ import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
-import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
@@ -26,19 +26,19 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
-import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.SerachResult
 import com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
-import com.productionapp.amhimemekar.CommonUtils.*
+import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
+import com.productionapp.amhimemekar.CommonUtils.BookRidesPojo
+import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
+import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.xwray.groupie.GroupAdapter
-import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
-import kotlinx.android.synthetic.main.fragment_search.tvToAdd
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.select_passenger_number.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -375,11 +375,36 @@ class SearchFragment : Fragment()  {
 
     @Subscribe
     fun OnAddSelected(add : BookRideScreenFetchCity?) {
+
+        var fromlat = 1.1
+        var fromlog = 1.1
+        var tolat = 1.1
+        var tolog = 1.1
+
+
         if (add!!.type == "from") {
+            fromlat = add.lat!!.toDouble()
+            fromlog = add.long!!.toDouble()
             tvFromAdd.text = add!!.city
         } else if (add!!.type == "to") {
+            tolat = add.lat!!.toDouble()
+            tolog = add.long!!.toDouble()
             tvToAdd.text = add!!.city
-        }else {
+        }
+
+        if (tvFromAdd.text.isNotEmpty() && tvToAdd.text.isNotEmpty()) {
+            val results = FloatArray(10)
+            Location.distanceBetween(
+                fromlat,
+                fromlog,
+                tolat,
+                tolog,
+                results
+            )
+
+            val s = String.format("%.1f", results[0] / 1000)
+            tvKM.text = "$s KM"
+            llKM.visibility = View.VISIBLE
         }
 
     }

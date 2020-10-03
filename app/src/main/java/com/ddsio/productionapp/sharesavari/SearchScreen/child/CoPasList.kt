@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.TextView
@@ -26,6 +27,10 @@ import com.xwray.groupie.ViewHolder
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_co_pas_list.*
 import kotlinx.android.synthetic.main.activity_ride_detail.view.*
+import kotlinx.android.synthetic.main.activity_ride_detail.view.ivprof
+import kotlinx.android.synthetic.main.activity_ride_detail.view.tvOfferedby
+import kotlinx.android.synthetic.main.activity_ride_detail.view.tvRating
+import kotlinx.android.synthetic.main.custom_copas_list.view.*
 
 class CoPasList : AppCompatActivity() {
 
@@ -216,6 +221,7 @@ class CoPasList : AppCompatActivity() {
 
         override fun bind(viewHolder: ViewHolder, position: Int) {
             viewHolder.itemView.tvOfferedby.text = customers.first_name
+            viewHolder.itemView.cvAccept.visibility = View.GONE
             Glide.with( viewHolder.itemView.tvOfferedby.context).load(customers.image).into(viewHolder.itemView.ivprof)
             getRating(customers,viewHolder.itemView.tvRating)
         }

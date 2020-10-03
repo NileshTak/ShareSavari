@@ -206,6 +206,8 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         previousPojo.smoking=   pojoWithData.smoking
         previousPojo.max_back_2=   pojoWithData.max_back_2
         previousPojo.max_back_3=   pojoWithData.max_back_3
+        previousPojo.brtime=   pojoWithData.brtime
+        previousPojo.brdate = pojoWithData.brdate
 
 
         var int = Intent(this,
