@@ -183,7 +183,11 @@ class SearchFragment : Fragment()  {
                 dateAPi = selectedDateFinal
 
 //                showTimeDialog()
-                tvDate.setText(selectedDateFinal)
+                tvDate.setText(
+                    Utils.getDayOfDate(selectedDateFinal) +", "+ Utils.convertDateFormat(
+                        selectedDateFinal
+                    )
+                )
             },
             now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
         )

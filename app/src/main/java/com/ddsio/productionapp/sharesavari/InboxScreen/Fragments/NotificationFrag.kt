@@ -70,8 +70,8 @@ class NotificationFrag : Fragment() {
         progressDialog.show()
 
 
-        askGalleryPermissionLocation()
-
+//        askGalleryPermissionLocation()
+        hitFindBookedRideAPI()
 
         return view
     }
@@ -80,7 +80,7 @@ class NotificationFrag : Fragment() {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) {
-            hitFindBookedRideAPI()
+
         }.onDeclined { e ->
             if (e.hasDenied()) {
                 //the list of denied permissions
@@ -114,7 +114,6 @@ class NotificationFrag : Fragment() {
     private fun hitFindBookedRideAPI() {
 
         val adapter = GroupAdapter<ViewHolder>()
-
 
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL +"?passenger=${USER_ID_KEY}"
 

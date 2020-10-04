@@ -73,46 +73,11 @@ class HomeScreen : Fragment() {
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-
-        askGalleryPermissionLocation()
-
+        hitFindOfferedRideAPI()
 
         return view
     }
 
-
-    private fun askGalleryPermissionLocation() {
-        askPermission(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) {
-            hitFindOfferedRideAPI()
-        }.onDeclined { e ->
-            if (e.hasDenied()) {
-                //the list of denied permissions
-                e.denied.forEach {
-                }
-
-                AlertDialog.Builder(activity!!)
-                    .setMessage("Please accept our permissions.. Otherwise you will not be able to use some of our Important Features.")
-                    .setPositiveButton("yes") { _, _ ->
-                        e.askAgain()
-                    } //ask again
-                    .setNegativeButton("no") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    .show()
-            }
-
-            if (e.hasForeverDenied()) {
-                //the list of forever denied permissions, user has check 'never ask again'
-                e.foreverDenied.forEach {
-                }
-                // you need to open setting manually if you really need it
-                e.goToSettings();
-            }
-        }
-    }
 
 
 

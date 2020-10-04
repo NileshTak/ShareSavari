@@ -3,13 +3,16 @@ package com.ddsio.productionapp.sharesavari.ProfileScreen
 import android.Manifest
 import android.animation.ValueAnimator
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.text.method.TextKeyListener.clear
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +38,6 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.VolleySingleton
 import com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.DriverProfile
-import com.ddsio.productionapp.sharesavari.SearchScreen.child.SerachResult
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -57,8 +59,6 @@ import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.fragment_profile_screen.*
-import kotlinx.android.synthetic.main.fragment_profile_screen.tvDate
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -305,7 +305,7 @@ lateinit var cbPetsP : CheckBox
                     Toast.makeText(activity,"Successfully Logged Out",
                         Toast.LENGTH_LONG).show()
 
-                    ivLogout.visibility = View.GONE
+
 
                     val i = Intent(context, LogInSignUpQues::class.java)
                     i.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -643,7 +643,9 @@ lateinit var cbPetsP : CheckBox
                         tvLN.text = userArray.last_name
                         tvBio.setText(userArray.bio)
                         etBio.setText(userArray.bio)
-                        tvDate.text = userArray.birthdate
+                        tvDate.text =   Utils.getDayOfDate(userArray.birthdate.toString()) +", "+ Utils.convertDateFormat(
+                            userArray.birthdate.toString()
+                        )
                         tvEMail.text = userArray.email
                         tvMN.text = userArray.mobile
                         tvVerified.text = userArray.verification

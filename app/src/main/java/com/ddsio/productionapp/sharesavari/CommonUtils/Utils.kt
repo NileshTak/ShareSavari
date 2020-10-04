@@ -7,7 +7,6 @@ import android.location.Geocoder
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import android.os.Build
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.provider.Settings
@@ -25,8 +24,6 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.DayOfWeek
-import java.time.LocalDate
 import java.util.*
 
 
@@ -104,26 +101,57 @@ object Utils {
     }
 
     fun getDayOfDate(date : String) : String {
+
+        var answer = ""
+
         val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val outputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        val inputDateStr = date
-        val dateF: Date = inputFormat.parse(inputDateStr)
-        val outputDateStr: String = outputFormat.format(dateF)
+        val cal = Calendar.getInstance()
+        val date: Date = inputFormat.parse(date)
+        cal.setTime(date)
 
-        val tempDate = outputDateStr.toString()
-        val date: LocalDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            LocalDate.parse(tempDate)
-        } else {
-            TODO("VERSION.SDK_INT < O")
+        when(cal.get(Calendar.DAY_OF_WEEK)) {
+            1 ->  {
+                answer = "SUN"
+            }
+            2 ->  {
+                answer = "MON"
+            }
+            3 ->  {
+                answer = "TUE"
+            }
+            4 ->  {
+                answer = "WED"
+            }
+            5 ->  {
+                answer = "THU"
+            }
+            6 ->  {
+                answer = "FRI"
+            }
+            7 ->  {
+                answer = "SAT"
+            }
         }
-        val day = date.getDayOfWeek().toString()
-        var s : Char = day.get(0)
-        var a  =   day.get(1)
-        var c  =   day.get(2)
+        return answer
+//        val inputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+//        val outputFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+//        val inputDateStr = date
+//        val dateF: Date = inputFormat.parse(inputDateStr)
+//        val outputDateStr: String = outputFormat.format(dateF)
+//
+//        val tempDate = outputDateStr.toString()
+//        val date: LocalDate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            LocalDate.parse(tempDate)
+//        } else {
+//            TODO("VERSION.SDK_INT < O")
+//        }
+//        val day = date.getDayOfWeek().toString()
+//        var s : Char = day.get(0)
+//        var a  =   day.get(1)
+//        var c  =   day.get(2)
+//
+//        var d : String = s.toString()+a+c
 
-        var d : String = s.toString()+a+c
-
-        return d
     }
 
     fun setVolleyRetryPolicy(req: Request<*>) {
