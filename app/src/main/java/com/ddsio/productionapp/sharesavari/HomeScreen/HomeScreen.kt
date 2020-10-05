@@ -73,6 +73,7 @@ class HomeScreen : Fragment() {
         progressDialog.setCancelable(false)
         progressDialog.show()
 
+        sendMobielVerifiedTrueAPI()
         hitFindOfferedRideAPI()
 
         return view
@@ -119,7 +120,7 @@ class HomeScreen : Fragment() {
                         rvOfferedRides.scheduleLayoutAnimation()
                         progressDialog.dismiss()
 
-                        sendMobielVerifiedTrueAPI()
+
                     }
 
                 }
@@ -160,10 +161,10 @@ class HomeScreen : Fragment() {
 
     private fun sendMobielVerifiedTrueAPI() {
 
-        progressDialog = ProgressDialog(activity)
-        progressDialog.setMessage("Wait a Sec....Loading Details..")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
+//        progressDialog = ProgressDialog(activity)
+//        progressDialog.setMessage("Wait a Sec....Loading Details..")
+//        progressDialog.setCancelable(false)
+//        progressDialog.show()
 
 
         val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
@@ -175,7 +176,7 @@ class HomeScreen : Fragment() {
                 override fun onResponse(response: String?) {
                     Log.d("jukjbkj", response.toString())
 
-                    progressDialog.dismiss()
+//                    progressDialog.dismiss()
 
                 }
             }, object : Response.ErrorListener {
@@ -183,7 +184,7 @@ class HomeScreen : Fragment() {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
                     Log.e("jukjbkj",  "Error: " + error.message)
-                    progressDialog.dismiss()
+//                    progressDialog.dismiss()
                     Toast.makeText(activity,"Something Went Wrong ! Please try after some time",
                         Toast.LENGTH_LONG).show()
                 }

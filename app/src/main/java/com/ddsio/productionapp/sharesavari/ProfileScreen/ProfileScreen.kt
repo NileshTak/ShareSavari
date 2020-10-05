@@ -305,6 +305,7 @@ lateinit var cbPetsP : CheckBox
                     Toast.makeText(activity,"Successfully Logged Out",
                         Toast.LENGTH_LONG).show()
 
+                    activity!!.getSharedPreferences("com.ddsio.productionapp.sharesavari_preferences", 0).edit().clear().commit()
 
 
                     val i = Intent(context, LogInSignUpQues::class.java)
@@ -643,9 +644,7 @@ lateinit var cbPetsP : CheckBox
                         tvLN.text = userArray.last_name
                         tvBio.setText(userArray.bio)
                         etBio.setText(userArray.bio)
-                        tvDate.text =   Utils.getDayOfDate(userArray.birthdate.toString()) +", "+ Utils.convertDateFormat(
-                            userArray.birthdate.toString()
-                        )
+                        tvDate.text = userArray.birthdate
                         tvEMail.text = userArray.email
                         tvMN.text = userArray.mobile
                         tvVerified.text = userArray.verification

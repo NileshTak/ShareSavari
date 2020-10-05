@@ -920,6 +920,21 @@ visible against white background. "
             </androidx.cardview.widget.CardView>
 
 
+                <TextView
+                    android:id="@+id/tvClear"
+                    android:layout_width="match_parent"
+                    android:text="Clear Form"
+                    android:textColor="@color/colorPrimary"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    tools:ignore="MissingPrefix"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:textSize="20dp"
+                    android:layout_height="wrap_content"/>
+
 
             </LinearLayout>
 

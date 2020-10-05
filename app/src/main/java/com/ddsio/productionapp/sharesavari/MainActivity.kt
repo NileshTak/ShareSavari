@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.Patterns
 import android.view.View
@@ -22,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
-import com.airbnb.lottie.LottieAnimationView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -32,10 +32,8 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleyMultipartRequest.VolleyProgressListener
 import com.ddsio.productionapp.sharesavari.CommonUtils.VolleySingleton
-import com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreen
 import com.ddsio.productionapp.sharesavari.HomeScreen.HomeScreenParent
 import com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag
-import com.ddsio.productionapp.sharesavari.InboxScreen.InboxScreen
 import com.ddsio.productionapp.sharesavari.OfferScreen.OfferScreen
 import com.ddsio.productionapp.sharesavari.OfferScreen.ShowMapActivityPickUp
 import com.ddsio.productionapp.sharesavari.ProfileScreen.ProfileScreen
@@ -50,8 +48,12 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
-import com.productionapp.amhimemekar.CommonUtils.*
+import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
+import com.productionapp.amhimemekar.CommonUtils.FetchProfileData
+import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
+import com.pusher.pushnotifications.PushNotifications
+import de.hdodenhof.circleimageview.CircleImageView
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.format
 import id.zelory.compressor.constraint.quality
@@ -59,6 +61,7 @@ import id.zelory.compressor.constraint.resolution
 import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.convid_poster_layout.view.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
@@ -72,17 +75,14 @@ import java.net.URLConnection
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.pow
-import com.pusher.pushnotifications.PushNotifications;
-import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.activity_authentication.view.*
-import kotlinx.android.synthetic.main.fragment_profile_screen.*
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var dialog_verifying: AlertDialog
 
     var GALLERY_REQUEST = 1666
     var ADHAR_REQUEST = 1888
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var tvLogin: TextView
     lateinit var tvForgotPass: TextView
     var imageUri = ""
-    lateinit var dialog_verifying: AlertDialog
+
     lateinit var firebaseAuth: FirebaseAuth
     lateinit var USER_ID_KEY : String
     var vari = "False"
@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var mAuth: FirebaseAuth
     lateinit var cpv : CircleProgressBar
 
-    lateinit var lottieSelectImage : LottieAnimationView
     lateinit var rlParent : RelativeLayout
     lateinit var ivProf : CircleImageView
     lateinit var btnVerify : Button
@@ -174,6 +173,7 @@ class MainActivity : AppCompatActivity() {
 
         request = Volley.newRequestQueue(this);
         FirebaseApp.initializeApp(this)
+        mAuth = FirebaseAuth.getInstance()
 
         tvSignUp = findViewById<TextView>(R.id.tvSignUp)
         tvForgotPass = findViewById<TextView>(R.id.tvForgotPass)
@@ -189,7 +189,6 @@ class MainActivity : AppCompatActivity() {
         etUserName = findViewById<EditText>(R.id.etLN)
 
 
-        mAuth = FirebaseAuth.getInstance()
 
 //        Utils.writeStringToPreferences(LOGIN_KEY, "",this)
 
@@ -205,6 +204,13 @@ class MainActivity : AppCompatActivity() {
 
 
         loadScreens()
+
+        tvClear.setOnClickListener {
+            val mainActivity = Intent(applicationContext, MainActivity::class.java)
+            mainActivity.putExtra("type", "")
+            startActivity(mainActivity)
+            finish()
+        }
 
         if (type == "SignUp") {
             nsvSignUp.visibility = View.VISIBLE
@@ -401,8 +407,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onVerificationFailed(e: FirebaseException) {
-//                Toast.makeText(applicationContext, "Something Went Wrong", Toast.LENGTH_SHORT).show()
-                Utils.showSnackMSG(lottieSelectImage,"Please Try After Some Time")
+                Toast.makeText(applicationContext, "Something Went Wrong, Please Try After Some Time", Toast.LENGTH_SHORT).show()
+
 
                 Log.d("Failure",e.toString())
             }
@@ -465,16 +471,17 @@ class MainActivity : AppCompatActivity() {
 
                 val inflater = getLayoutInflater()
                 val alertLayout = inflater.inflate(R.layout.processing_dialog, null)
-                val show = AlertDialog.Builder(this)
-                show.setView(alertLayout)
-                show.setCancelable(false)
-                dialog_verifying = show.create()
+                val alert = AlertDialog.Builder(this@MainActivity)
+                alert.setView(alertLayout)
+                alert.setCancelable(false)
+                dialog_verifying = alert.create()
                 dialog_verifying.show()
-                val handler = Handler()
-                handler.postDelayed({
-                    val credential = PhoneAuthProvider.getCredential(this!!.mVerificationId.toString(), verificationCode)
-                    signInWithPhoneAuthCredential(credential)
-                },3000)
+
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.postDelayed({
+                        val credential = PhoneAuthProvider.getCredential( mVerificationId.toString(), verificationCode)
+                        signInWithPhoneAuthCredential(credential)
+                    },3000)
 
             }
         }
@@ -514,9 +521,8 @@ class MainActivity : AppCompatActivity() {
 
                     dialog_verifying.dismiss()
                     dialog_otp.dismiss()
-                    progressDialog.dismiss()
-//                    Toast.makeText(this@Authentication, "Incorrect OTP", Toast.LENGTH_SHORT).show()
-                    Utils.showSnackMSG(lottieSelectImage,"Incorrect OTP")
+                    Toast.makeText(this@MainActivity, "Incorrect OTP", Toast.LENGTH_SHORT).show()
+//                    Utils.showSnackMSG(lottieSelectImage,"Incorrect OTP")
 
 //                    Log.w(Authentication.TAG, "signInWithCredential:failure", task.exception)
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
@@ -800,7 +806,7 @@ class MainActivity : AppCompatActivity() {
                     Log.e("jukjbkj", "Error: " + error.message)
                     progressDialog.dismiss()
                     Toast.makeText(
-                        this@MainActivity, "User with that UserName already exists",
+                        this@MainActivity, "User with that Mobile Number already exists",
                         Toast.LENGTH_LONG
                     ).show()
                 }
