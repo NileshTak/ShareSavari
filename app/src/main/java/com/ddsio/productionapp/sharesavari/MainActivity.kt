@@ -48,11 +48,11 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
+import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import com.productionapp.amhimemekar.CommonUtils.FetchProfileData
 import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
-import com.pusher.pushnotifications.PushNotifications
 import de.hdodenhof.circleimageview.CircleImageView
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.format
@@ -65,6 +65,7 @@ import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.convid_poster_layout.view.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
+import kotlinx.android.synthetic.main.ride_booking_type.view.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -165,9 +166,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        PushNotifications.start(getApplicationContext(), "370afaf4-435c-45d8-b35e-5139ff3f900b");
-        PushNotifications.addDeviceInterest("hello");
-
         val bundle: Bundle? = intent.extras
         type = bundle!!.getString("type")!!
 
@@ -239,11 +237,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,"Number not validated yet...",Toast.LENGTH_LONG).show()
         }
 
-
         tvTickImg.setOnClickListener {
             Toast.makeText(this,"Number is Verified... Please continue filling other details",Toast.LENGTH_LONG).show()
         }
-
 
         tvForgotPass.setOnClickListener {
             showRestPassDialog()
@@ -255,6 +251,14 @@ class MainActivity : AppCompatActivity() {
             } else if (etMobile.text.toString().length != 10) {
                 etMobile.error = "Please enter valid Mobile Number"
             } else {
+
+                val inflater = getLayoutInflater()
+                val alertLayout = inflater.inflate(R.layout.processing_dialog, null)
+                val alert = AlertDialog.Builder(this@MainActivity)
+                alert.setView(alertLayout)
+                alert.setCancelable(false)
+                dialog_verifying = alert.create()
+
                 sendCode()
             }
         }
@@ -355,8 +359,7 @@ class MainActivity : AppCompatActivity() {
 
 
         civProfImg.setOnClickListener {
-            askCameraPermission(GALLERY_REQUEST)
-
+showNotes()
         }
 
 
@@ -422,10 +425,30 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
-
-
-
     }
+
+
+
+    private fun showNotes( ) {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.select_pic_dialog, null)
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        convidPoster = showOTP.create()
+        convidPoster.show()
+
+        alertLayout.cvContinue.setOnClickListener {
+            convidPoster.dismiss()
+            askCameraPermission(GALLERY_REQUEST)
+        }
+
+        alertLayout.ccvCancel.setOnClickListener {
+            convidPoster.dismiss()
+        }
+    }
+
 
 
 
@@ -469,12 +492,7 @@ class MainActivity : AppCompatActivity() {
 
             } else {
 
-                val inflater = getLayoutInflater()
-                val alertLayout = inflater.inflate(R.layout.processing_dialog, null)
-                val alert = AlertDialog.Builder(this@MainActivity)
-                alert.setView(alertLayout)
-                alert.setCancelable(false)
-                dialog_verifying = alert.create()
+
                 dialog_verifying.show()
 
                     val handler = Handler(Looper.getMainLooper())

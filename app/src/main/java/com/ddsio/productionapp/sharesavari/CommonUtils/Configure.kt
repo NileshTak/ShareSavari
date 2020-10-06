@@ -46,6 +46,8 @@ object Configure {
 
     //SharedPreferenceValue
     val LOGIN_KEY = "Login_key"
+    val SERACH_LAT_KEY = "SERACH_LAT_KEY"
+    val SERACH_LOG_KEY = "SERACH_LOG_KEY"
     val USER_ID_KEY = "USER_ID"
     val USER_UPDATE_ID = "USER_UPDATE_ID"
     val EDIT_PROF_BACK_PRESS_KEY = "EDIT_PROF_ON_BACK"

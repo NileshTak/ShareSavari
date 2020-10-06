@@ -46,16 +46,11 @@ import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_pending_req.*
 import kotlinx.android.synthetic.main.activity_ride_detail.*
 import kotlinx.android.synthetic.main.ride_booking_type.view.*
-import java.io.BufferedReader
+import kotlinx.android.synthetic.main.ride_booking_type.view.cvAdd
+import kotlinx.android.synthetic.main.ride_booking_type.view.cvMinus
 import java.io.IOException
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
-import java.net.URL
-import java.net.URLConnection
-import java.net.URLEncoder
 import java.util.*
 
 class RideDetails : AppCompatActivity(), OnMapReadyCallback,
@@ -179,8 +174,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         tvLTime.text = convertDateFormat(pojoWithData.date.toString()) +" " +
                 "(${pojoWithData.time})"
-
-
 
 
         tvFromFullAdd.text = "("+ pojoWithData.leaving+")"
@@ -339,7 +332,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
 
     private fun showRideType(pojoWithData: BookRidesPojoItem) {
+
+        var availabl = pojoWithData.passenger!!.toInt() - bookedSeatCount
+
         val inflater = getLayoutInflater()
+        var count = 1
         val alertLayout = inflater.inflate(R.layout.ride_booking_type, null)
 
         val showOTP = AlertDialog.Builder(this!!)
@@ -354,15 +351,38 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             alertLayout.tvNotice.text = "This Ride is not Instant Booking Ride. Once you click on CONTINUE request will be sent to Driver and " +
                     "driver will decide weather to confirm or not. You will be get notified once your request is confirmed."
         }
+        alertLayout.tvCount.setText(count.toString())
+
+        alertLayout.cvMinus.setOnClickListener {
+            if (count != 1) {
+                count--
+                alertLayout.tvCount.setText(count.toString())
+            }
+        }
+
+        alertLayout.cvAdd.setOnClickListener {
+            if (count < pojoWithData.passenger!!.toInt() ) {
+                count++
+                alertLayout.tvCount.setText(count.toString())
+            } else {
+                Toast.makeText(alertLayout.cvAdd.context,"Only ${pojoWithData.passenger} Passenger's are allowed in this Ride.",Toast.LENGTH_SHORT).show()
+            }
+        }
 
         alertLayout.cvContinue.setOnClickListener {
-            bookRideAPI(this.pojoWithData)
+            if (count != 0) {
+                if (count <= availabl) {
+                    bookRideAPI(this.pojoWithData,count)
+                    convidPoster.dismiss()
+                } else {
+                    Toast.makeText(alertLayout.cvAdd.context,"Only ${availabl} Seats's are Available.",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         alertLayout.ccvCancel.setOnClickListener {
             convidPoster.dismiss()
         }
-
     }
 
 
@@ -896,7 +916,10 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     }
 
 
-    private fun bookRideAPI(customers: BookRidesPojoItem) {
+    private fun bookRideAPI(
+        customers: BookRidesPojoItem,
+        count: Int
+    ) {
 
         progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Wait a Sec....Booking Ride for you..")
@@ -922,7 +945,10 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                         progressDialog.dismiss()
                         Toast.makeText(this@RideDetails,"No seat available for this Ride. Choose another ride.",Toast.LENGTH_LONG).show()
                     } else {
-                        boookRideAllowed(customers)
+                        for (i in 0..count-1) {
+                            boookRideAllowed(customers,i,count-1)
+                        }
+
                     }
 
                 }
@@ -967,7 +993,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
     private fun bookedSeatsCount(customers: BookRidesPojoItem) {
 
-
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"?ride=${customers.id}"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
@@ -982,6 +1007,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     val userArray : ArrayList<bookrideItem> =
                         gson.fromJson(response, bookride ::class.java)
 
+                    bookedSeatCount = userArray.size
                     tvCo.text = userArray.size.toString()+"/" + pojoWithData.passenger
 
                 }
@@ -1057,7 +1083,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     }
 
 
-    private fun boookRideAllowed(customers: BookRidesPojoItem) {
+    private fun boookRideAllowed(
+        customers: BookRidesPojoItem,
+        i: Int,
+        countIndex: Int
+    ) {
 
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL
 
@@ -1074,11 +1104,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     val userArray :bookrideItem =
                         gson.fromJson(response, bookrideItem ::class.java)
 
-
                     sendSMS(customers)
 
-                    sendMessage(customers)
-
+                    if (i == countIndex) {
+                        sendMessage(customers,countIndex+1)
+                    }
 
                 }
             }, object : Response.ErrorListener {
@@ -1177,18 +1207,20 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
     }
 
-    private fun sendMessage(customers: BookRidesPojoItem) {
+    private fun sendMessage(
+        customers: BookRidesPojoItem,
+        count: Int
+    ) {
 
         var text = ""
 
         if (customers.is_direct == true) {
-            text = "Ride from ${customers.leaving} to ${customers.going} has been booked by me. " +
+            text = "Ride from ${customers.leaving} to ${customers.going} has been booked by me for ${count} Passengers. " +
                     "Please provide me more details regarding that."
         } else {
-            text = "Hello Sir, I am interested to book your Ride from ${customers.leaving} to ${customers.going}. " +
+            text = "Hello Sir, I am interested to book your Ride from ${customers.leaving} to ${customers.going} for ${count} Passengers." +
                     "Please provide me more details regarding that."
         }
-
 
         val fromId = USER_ID_KEY
         val toId = customers.user.toString()

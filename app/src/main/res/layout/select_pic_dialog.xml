@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="140dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/account"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="15dp"
+        android:layout_height="140dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Example of Good Photo"
+        android:layout_gravity="center_horizontal"
+        android:focusable="true"
+        android:layout_margin="6dp"
+        android:focusableInTouchMode="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="18sp"
+        fontPath="Comfortaa-Regular.ttf"
+        tools:ignore="MissingPrefix"  />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/tick"
+                android:layout_height="25dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Sunglasses"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="15dp"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                fontPath="Comfortaa-Regular.ttf"
+                tools:ignore="MissingPrefix"  />
+
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/textColorHead"
+        android:layout_height="2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/tick"
+                android:layout_height="25dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Facing the Camera"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="15dp"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                fontPath="Comfortaa-Regular.ttf"
+                tools:ignore="MissingPrefix"  />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/textColorHead"
+        android:layout_height="2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/tick"
+                android:layout_height="25dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You Alone"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="15dp"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                fontPath="Comfortaa-Regular.ttf"
+                tools:ignore="MissingPrefix"  />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/textColorHead"
+        android:layout_height="2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_marginTop="2dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/tick"
+                android:layout_height="25dp"/>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear and Bright"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="15dp"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                fontPath="Comfortaa-Regular.ttf"
+                tools:ignore="MissingPrefix"  />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:weightSum="2"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvContinue"
+                android:layout_width="150dp"
+                app:cardCornerRadius="20dp"
+                android:layout_gravity="center_horizontal"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:layout_margin="10dp"
+                app:cardElevation="4dp"
+                android:layout_weight="1"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                android:layout_height="40dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        fontPath="Comfortaa-Bold.ttf"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="Upload Pic"
+                        android:textColor="@color/md_white_1000"
+                        android:textSize="14dp"
+                        android:textStyle="bold"
+                        tools:ignore="MissingPrefix" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ccvCancel"
+                android:layout_width="150dp"
+                app:cardCornerRadius="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_gravity="center_horizontal"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                app:cardBackgroundColor="@color/md_red_800"
+                android:layout_height="40dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:text="Cancel"
+                        android:textColor="@color/md_white_1000"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:textStyle="bold"
+                        tools:ignore="MissingPrefix"
+                        fontPath="Comfortaa-Bold.ttf"
+                        android:textSize="14dp"
+                        android:layout_height="match_parent"/>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

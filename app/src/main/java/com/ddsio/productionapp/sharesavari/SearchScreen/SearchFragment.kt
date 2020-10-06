@@ -380,16 +380,19 @@ class SearchFragment : Fragment()  {
     @Subscribe
     fun OnAddSelected(add : BookRideScreenFetchCity?) {
 
-        var fromlat = 1.1
-        var fromlog = 1.1
-        var tolat = 1.1
-        var tolog = 1.1
-
+        var fromlat = 0.0
+        var fromlog = 0.0
+        var tolat = 0.0
+        var tolog = 0.0
 
         if (add!!.type == "from") {
             fromlat = add.lat!!.toDouble()
             fromlog = add.long!!.toDouble()
             tvFromAdd.text = add!!.city
+
+            Utils.writeStringToPreferences(Configure.SERACH_LOG_KEY,add.long!!.toString(), activity)
+            Utils.writeStringToPreferences(Configure.SERACH_LAT_KEY,add.lat!!.toString(), activity)
+
         } else if (add!!.type == "to") {
             tolat = add.lat!!.toDouble()
             tolog = add.long!!.toDouble()
@@ -397,6 +400,10 @@ class SearchFragment : Fragment()  {
         }
 
         if (tvFromAdd.text.isNotEmpty() && tvToAdd.text.isNotEmpty()) {
+
+            fromlat = Utils.getStringFromPreferences(Configure.SERACH_LAT_KEY,"",activity)!!.toDouble()
+            fromlog = Utils.getStringFromPreferences(Configure.SERACH_LOG_KEY,"",activity)!!.toDouble()
+
             val results = FloatArray(10)
             Location.distanceBetween(
                 fromlat,
@@ -405,6 +412,11 @@ class SearchFragment : Fragment()  {
                 tolog,
                 results
             )
+
+            Log.d("jjhjhjh", fromlat.toString() +"   "+
+                fromlog.toString() +"   "+
+                tolat.toString() +"   "+
+                tolog.toString() +"   " )
 
             val s = String.format("%.1f", results[0] / 1000)
             tvKM.text = "$s KM"
