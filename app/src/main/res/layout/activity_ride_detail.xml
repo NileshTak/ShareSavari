@@ -154,12 +154,27 @@
 
                     </LinearLayout>
 
-
+                    <TextView
+                        android:id="@+id/tvSP"
+                        android:layout_below="@+id/llLeaving"
+                        android:textSize="25sp"
+                        fontPath="Comfortaa-Bold.ttf"
+                        android:textAlignment="center"
+                        android:text="StopPoing"
+                        android:textStyle="bold"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="140dp"
+                        android:textColor="@color/textColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:ignore="MissingPrefix" />
 
                     <LinearLayout
                         android:id="@+id/llGoing"
                         android:layout_width="match_parent"
-                        android:layout_below="@+id/llLeaving"
+                        android:layout_below="@+id/tvSP"
                         android:orientation="horizontal"
                         android:layout_height="wrap_content">
 
@@ -233,6 +248,7 @@
                     <RelativeLayout
                         android:id="@+id/llStopPoint"
                         android:layout_width="match_parent"
+                        android:visibility="gone"
                         android:layout_below="@id/llGoing"
                         android:layout_marginTop="10dp"
                         android:layout_height="wrap_content">
@@ -706,52 +722,7 @@
                     android:background="@color/textColorHead"
                     android:layout_height="2dp"/>
 
-                <RelativeLayout
-                    android:id="@+id/rvCoPas"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
-
-                    <ImageView
-                        android:id="@+id/iv1"
-                        android:layout_width="25dp"
-                        android:layout_marginTop="2dp"
-                        android:tint="@color/colorPrimaryDark"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_baseline_group_24"
-                        android:layout_height="25dp"/>
-
-
-                    <TextView
-                        android:id="@+id/tvCoPas"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Co - Passengers"
-                        android:layout_gravity="center_vertical"
-                        android:focusable="true"
-                        android:layout_toRightOf="@+id/iv1"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginStart="20dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginBottom="15dp"
-                        android:focusableInTouchMode="true"
-                        android:textColor="@color/textColorHead"
-                        android:textSize="18sp"
-                        fontPath="Comfortaa-Regular.ttf"
-                        tools:ignore="MissingPrefix"  />
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="2dp"
-                        android:layout_centerVertical="true"
-                        android:tint="@color/colorPrimaryDark"
-                        android:foregroundGravity="right"
-                        android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
-                        android:layout_height="25dp"/>
-
-                </RelativeLayout>
 
 
 
@@ -808,6 +779,61 @@
 
 
                 </RelativeLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/rvCoPas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+                        android:id="@+id/iv1"
+                        android:layout_width="25dp"
+                        android:layout_marginTop="2dp"
+                        android:tint="@color/colorPrimaryDark"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_group_24"
+                        android:layout_height="25dp"/>
+
+
+                    <TextView
+                        android:id="@+id/tvCoPas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Co - Passengers"
+                        android:layout_gravity="center_vertical"
+                        android:focusable="true"
+                        android:layout_toRightOf="@+id/iv1"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginBottom="15dp"
+                        android:focusableInTouchMode="true"
+                        android:textColor="@color/textColorHead"
+                        android:textSize="18sp"
+                        fontPath="Comfortaa-Regular.ttf"
+                        tools:ignore="MissingPrefix"  />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="2dp"
+                        android:layout_centerVertical="true"
+                        android:tint="@color/colorPrimaryDark"
+                        android:foregroundGravity="right"
+                        android:src="@drawable/ic_baseline_keyboard_arrow_right_24"
+                        android:layout_height="25dp"/>
+
+                </RelativeLayout>
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"

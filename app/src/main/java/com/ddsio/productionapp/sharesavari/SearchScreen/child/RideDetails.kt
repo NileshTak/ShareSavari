@@ -14,6 +14,8 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -79,6 +81,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     private val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
 
     lateinit var pojoWithData : BookRidesPojoItem
+    lateinit var rvCoPas : LinearLayout
 
     var IDToCancel = "0"
 
@@ -115,6 +118,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ride_detail)
+
+        rvCoPas = findViewById<LinearLayout>(R.id.rvCoPas)
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
@@ -183,8 +188,10 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         tvCar.text = pojoWithData.carname
         if (pojoWithData.stitle == null || pojoWithData.stitle == "") {
             llStopPoint.visibility = View.GONE
+            tvSP.visibility = View.GONE
         } else {
             tvStopPoint.text = pojoWithData.stitle
+            tvSP.text = pojoWithData.stitle
         }
 
 
@@ -199,6 +206,17 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             llPets.visibility = View.VISIBLE
         } else {
             llPets.visibility = View.GONE
+        }
+
+        rvCoPas.setOnClickListener {
+
+            Log.d("huhuhujh","clickedc")
+
+            var intent = Intent(this@RideDetails,
+                CoPasList::class.java)
+            intent.putExtra("pojoWithData",pojoWithData)
+            startActivity(intent)
+
         }
 
 
@@ -273,13 +291,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             onBackPressed()
         }
 
-        rvCoPas.setOnClickListener {
-            var int = Intent(this,
-                CoPasList::class.java)
-            int.putExtra("pojoWithData",pojoWithData)
-            startActivity(int,bundle)
 
-        }
 
         rvPendReq.setOnClickListener {
             var int = Intent(this,
@@ -843,6 +855,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL+ "${IDToCancel}/"
 
+        Log.d("jbububu",url)
+
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.DELETE,
             url,
@@ -896,7 +910,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                 Log.d("jukjbkj", LOGIN_TOKEN.toString())
 
-                var params = java.util.HashMap<String, String>()
+                var params = HashMap<String, String>()
                 params.put("Content-Type", "application/json; charset=UTF-8");
                 params.put("Authorization", "Token "+LOGIN_TOKEN!!);
                 return params;

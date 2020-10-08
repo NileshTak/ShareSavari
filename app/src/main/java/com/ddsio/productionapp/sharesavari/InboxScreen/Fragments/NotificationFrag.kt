@@ -31,7 +31,6 @@ import kotlinx.android.synthetic.main.custom_booked_rides.view.*
 import kotlinx.android.synthetic.main.custom_booked_rides.view.tvFromCity
 import kotlinx.android.synthetic.main.custom_booked_rides.view.tvRate
 import kotlinx.android.synthetic.main.custom_booked_rides.view.tvToCity
-import kotlinx.android.synthetic.main.custom_show_list_rides.view.*
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -196,7 +195,10 @@ class NotificationFrag : Fragment() {
 
 
 
-    inner class ridesOfferedClass(var customers: BookRidesPojoItem) : Item<ViewHolder>() {
+    inner class ridesOfferedClass(
+        var customers: BookRidesPojoItem,
+        var idToCancel: Int
+    ) : Item<ViewHolder>() {
         override fun getLayout(): Int {
             return R.layout.custom_booked_rides
         }
@@ -221,7 +223,7 @@ class NotificationFrag : Fragment() {
 
                 int.putExtra("pojoWithData",customers)
                 int.putExtra("screen","Booked")
-                int.putExtra("IDToCancel",customers.id.toString())
+                int.putExtra("IDToCancel", idToCancel.toString())
                 startActivity(int)
             }
 
@@ -229,8 +231,6 @@ class NotificationFrag : Fragment() {
     }
 
     private fun hitRideSearch(customers: bookrideItem) {
-
-
 
         val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL + "${customers.ride}/"
 
@@ -277,7 +277,7 @@ class NotificationFrag : Fragment() {
 
                         Log.d("juguiuih",ride.leaving.toString())
 
-                                adapter.add(ridesOfferedClass(ride))
+                                adapter.add(ridesOfferedClass(ride,customers.id))
 
 
 

@@ -1181,7 +1181,7 @@ showNotes()
             etPass.error = "Enter Valid Password"
             progressDialog.dismiss()
         } else if (etPass.text.toString().length <= 8) {
-            etPass.error = "Password Length must be greater the 8 "
+            etPass.error = "Password Length must be greater then 8 "
             progressDialog.dismiss()
         } else if (actualProfImage == null) {
             Toast.makeText(this, "Please select valid Profile Picture.", Toast.LENGTH_LONG).show()
@@ -1432,7 +1432,7 @@ showNotes()
                     if (error.networkResponse.statusCode == 400) {
                         Toast.makeText(
                             applicationContext,
-                            "A user is already registered with this e-mail address",
+                            "A user is already registered with this Mobile Number",
                             Toast.LENGTH_LONG
                         ).show()
                     } else {

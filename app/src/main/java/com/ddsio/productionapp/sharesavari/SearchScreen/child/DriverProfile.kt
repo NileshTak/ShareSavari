@@ -135,8 +135,9 @@ class DriverProfile : AppCompatActivity() {
         tvReport.setOnClickListener {
             showComplaintDialog()
         }
-        if (cust == USER_ID_KEY) {
+        if (cust == USER_ID_KEY || pojoWithData.user.toString() == USER_ID_KEY) {
             ratingB.isEnabled = false
+            tvReport.visibility = View.GONE
         }
         if (cust != "0") {
             getAllRating(cust)
