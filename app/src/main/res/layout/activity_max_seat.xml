@@ -56,6 +56,21 @@
 
     </RadioGroup>
 
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieSelectImage"
+        android:layout_width="match_parent"
+        app:lottie_autoPlay="true"
+        android:layout_below="@+id/radio_groupSeatF"
+        app:lottie_fileName="ride_type.json"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="100dp"
+        app:lottie_loop="true"
+        android:layout_height="match_parent"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

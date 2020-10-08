@@ -32,6 +32,8 @@ import com.productionapp.amhimemekar.CommonUtils.Configure.COMPLAINT
 import com.productionapp.amhimemekar.CommonUtils.Configure.GET_USER_DETAILS
 import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
 import kotlin.math.roundToInt
@@ -524,6 +526,12 @@ class DriverProfile : AppCompatActivity() {
         progressDialog.show()
 
 
+        if (cust == USER_ID_KEY) {
+            llContact.visibility = View.GONE
+        } else {
+            llContact.visibility = View.VISIBLE
+        }
+
         val url = BASE_URL+ GET_USER_DETAILS+cust+"/"
 //        val url = "https://ddsio.com/sharesawaari/rest/users/22/"
 
@@ -606,9 +614,77 @@ class DriverProfile : AppCompatActivity() {
     }
 
 
+    var i = 0
+    private fun hitFindBookedRideAPI(cust: String) {
+
+        val adapter = GroupAdapter<ViewHolder>()
+
+        val url = Configure.BASE_URL + Configure.Book_RIDE_URL +"?passenger=${USER_ID_KEY}"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                    val gson = Gson()
+
+
+                    val userArray: ArrayList<bookrideItem> =
+                        gson.fromJson(response, bookride ::class.java)
+
+                    for (rides in userArray) {
+                        if (rides != null && i == 0) {
+                            if (rides.ride.toString() == pojoWithData.id.toString()) {
+                                if (rides.is_confirm == false) {
+                                    cvCall.visibility = View.GONE
+                                } else {
+                                    cvCall.visibility = View.VISIBLE
+                                    i = 1
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(this@DriverProfile,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
     private fun hitFindOfferedRideAPI(cust: String) {
 
-        val url = BASE_URL+ OFFER_RIDE_URL+"?user=${this.cust}"
+        val url = BASE_URL+ OFFER_RIDE_URL+"?user=${cust}"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
@@ -621,6 +697,7 @@ class DriverProfile : AppCompatActivity() {
                     val userArray: ArrayList<BookRidesPojoItem> =
                         gson.fromJson(response, BookRidesPojo ::class.java)
 
+                    hitFindBookedRideAPI(cust)
                     getRating()
 
                     tvRidesC.text = " ${userArray.size} rides puslished"

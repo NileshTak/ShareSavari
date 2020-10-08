@@ -37,7 +37,7 @@ public class TimePickerFragment extends DialogFragment implements TimePickerDial
 
         int hour = cal.get(Calendar.HOUR);
         int minute = cal.get(Calendar.MINUTE);
-        return new TimePickerDialog(getActivity(), this, hour, minute, DateFormat.is24HourFormat(getContext()));
+        return new TimePickerDialog(getActivity(),android.R.style.Theme_Holo_Dialog, this, hour, minute, DateFormat.is24HourFormat(getContext()));
     }
 
 

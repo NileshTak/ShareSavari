@@ -19,6 +19,7 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import kotlinx.android.synthetic.main.activity_going_date_and_time.*
 import kotlinx.android.synthetic.main.activity_number_of_passeners_to_take.*
@@ -44,6 +45,7 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
         var cv = findViewById<FloatingActionButton>(R.id.fabNextReturn)
+
 
         askGalleryPermissionLocation()
             Utils.checkConnection(this@ReturnDateAndTime,cv)
@@ -124,7 +126,7 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
         // Launch Time Picker Dialog
 
         val timePickerDialog = TimePickerDialog(
-            this,
+            this,android.R.style.Theme_Holo_Dialog,
             object : TimePickerDialog.OnTimeSetListener  {
                 override fun onTimeSet(
                     view: TimePicker?, hourOfDay: Int,
@@ -143,7 +145,7 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
     private fun datePickerReach() {
         val now = Calendar.getInstance()
         datePickerdialog = DatePickerDialog(
-            this@ReturnDateAndTime, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            this@ReturnDateAndTime,android.R.style.Theme_Holo_Dialog, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR, year)
                 selectedDate.set(Calendar.MONTH, month)
@@ -234,7 +236,7 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
     private fun datePicker() {
         val now = Calendar.getInstance()
         datePickerdialog = DatePickerDialog(
-            this@ReturnDateAndTime, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            this@ReturnDateAndTime,android.R.style.Theme_Holo_Dialog, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR, year)
                 selectedDate.set(Calendar.MONTH, month)

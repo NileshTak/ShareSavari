@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
@@ -89,6 +90,7 @@ class SmokingandBooking : AppCompatActivity() {
                 pojoWithData.smoking = false
             }
 
+            Log.d("fghjkl","v"+cbBookInstant+"v")
             if (cbBookInstant == "Book Instantly") {
                 pojoWithData.is_direct = true
             } else {

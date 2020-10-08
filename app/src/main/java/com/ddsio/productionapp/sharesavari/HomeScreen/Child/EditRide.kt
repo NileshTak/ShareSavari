@@ -146,6 +146,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         }
 
 
+
         if (previousPojo.max_back_2 == true) {
             maxSeatCount =  "Max 2 seat in back"
         } else {
@@ -189,8 +190,10 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
         if (previousPojo.is_direct.toString() == "true") {
             rbBookInstantly.isChecked = true
+            cbBookInstant = "Book Instantly"
         } else {
             rbMyself.isChecked = true
+            cbBookInstant = "No, I'll reply each request myself"
         }
 
 
@@ -527,8 +530,6 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
         maxSeatCount = radio.text.toString()
 
-        Toast.makeText(applicationContext, maxSeatCount,
-            Toast.LENGTH_SHORT).show()
     }
 
     fun radio_button_click(view: View){
@@ -537,8 +538,6 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
         cbBookInstant = radio.text.toString()
 
-        Toast.makeText(applicationContext, cbBookInstant,
-            Toast.LENGTH_SHORT).show()
     }
 
     private fun checkFields() {
@@ -642,10 +641,9 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             pojoWithData.passenger = tvCountSave.text.toString()
             pojoWithData.carname = etCarSave.text.toString()
             pojoWithData.user = USER_ID_KEY
-            pojoWithData.leaving =  tvPickupSave.text.toString()
-            pojoWithData.going =  tvDropSave.text.toString()
+//            pojoWithData.leaving =  tvPickupSave.text.toString()
+//            pojoWithData.going =  tvDropSave.text.toString()
 
-            Log.d("jkhuihuj","else")
 
             showSaveDialog(pojoWithData)
 
@@ -656,7 +654,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
     lateinit var convidPoster: AlertDialog
     private fun showSaveDialog(pojoWithData: offerRideModel) {
         val inflater = getLayoutInflater()
-        val alertLayout = inflater.inflate(R.layout.ride_booking_type, null)
+        val alertLayout = inflater.inflate(R.layout.delete_ride_dialog, null)
 
         val showOTP = AlertDialog.Builder(this!!)
         showOTP.setView(alertLayout)
@@ -1004,7 +1002,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
         // Launch Time Picker Dialog
         val timePickerDialog = TimePickerDialog(
-            this,
+            this,android.R.style.Theme_Holo_Dialog,
             object : TimePickerDialog.OnTimeSetListener  {
                 override fun onTimeSet(
                     view: TimePicker?, hourOfDay: Int,
@@ -1057,7 +1055,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
     private fun datePicker() {
         val now = Calendar.getInstance()
         datePickerdialog = DatePickerDialog(
-            this@EditRide, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            this@EditRide,android.R.style.Theme_Holo_Dialog, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR, year)
                 selectedDate.set(Calendar.MONTH, month)
@@ -1095,7 +1093,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
     private fun datePickerReach() {
         val now = Calendar.getInstance()
         datePickerdialog = DatePickerDialog(
-            this@EditRide, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            this@EditRide,android.R.style.Theme_Holo_Dialog, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR, year)
                 selectedDate.set(Calendar.MONTH, month)

@@ -46,6 +46,7 @@ class NotificationFrag : Fragment() {
 
     lateinit var rvOfferedRides : RecyclerView
     lateinit var tvTitleTool : TextView
+    val adapter = GroupAdapter<ViewHolder>()
 
 
     override fun onCreateView(
@@ -113,9 +114,13 @@ class NotificationFrag : Fragment() {
 
     private fun hitFindBookedRideAPI() {
 
+        var i = 0
+
         val adapter = GroupAdapter<ViewHolder>()
 
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL +"?passenger=${USER_ID_KEY}"
+
+        Log.d("hhhhhhhh",url)
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
@@ -136,12 +141,12 @@ class NotificationFrag : Fragment() {
                         tvTitleTool.visibility = View.GONE
                     }
 
-                    for (rides in userArray) {
-                        if (rides != null) {
-                            hitRideSearch(rides)
+                    for (i in 0..userArray.size-1) {
+                        if (i != null) {
+                            hitRideSearch(userArray.get(i))
                         }
-
                     }
+
 
                 }
             }, object : Response.ErrorListener {
@@ -225,7 +230,7 @@ class NotificationFrag : Fragment() {
 
     private fun hitRideSearch(customers: bookrideItem) {
 
-        val adapter = GroupAdapter<ViewHolder>()
+
 
         val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL + "${customers.ride}/"
 
@@ -272,16 +277,7 @@ class NotificationFrag : Fragment() {
 
                         Log.d("juguiuih",ride.leaving.toString())
 
-
-                        progressDialog.dismiss()
-
                                 adapter.add(ridesOfferedClass(ride))
-
-                            runAnimation(rvOfferedRides,2)
-                            rvOfferedRides.adapter = adapter
-                            rvOfferedRides.adapter!!.notifyDataSetChanged()
-                            rvOfferedRides.scheduleLayoutAnimation()
-                            progressDialog.dismiss()
 
 
 
@@ -292,7 +288,11 @@ class NotificationFrag : Fragment() {
 
                     }
 
-
+                    runAnimation(rvOfferedRides,2)
+                    rvOfferedRides.adapter = adapter
+                    rvOfferedRides.adapter!!.notifyDataSetChanged()
+                    rvOfferedRides.scheduleLayoutAnimation()
+                    progressDialog.dismiss()
 
                 }
             }, object : Response.ErrorListener {

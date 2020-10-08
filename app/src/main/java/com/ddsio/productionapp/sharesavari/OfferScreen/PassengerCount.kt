@@ -74,6 +74,9 @@ class PassengerCount : AppCompatActivity() {
                 if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
                     totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
                     tvTotalPrice.text = totalAmt.toString() + "₹"
+                } else {
+                    totalAmt = 0 * tvCount.text.toString().toInt()
+                    tvTotalPrice.text = totalAmt.toString() + "₹"
                 }
 
             }
@@ -87,6 +90,9 @@ class PassengerCount : AppCompatActivity() {
             if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
                 totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
                 tvTotalPrice.text = totalAmt.toString() + "₹"
+            } else {
+                totalAmt = 0 * tvCount.text.toString().toInt()
+                tvTotalPrice.text = totalAmt.toString() + "₹"
             }
         }
 
@@ -94,6 +100,9 @@ class PassengerCount : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
                     totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
+                    tvTotalPrice.text = totalAmt.toString() + "₹"
+                } else {
+                    totalAmt = 0 * tvCount.text.toString().toInt()
                     tvTotalPrice.text = totalAmt.toString() + "₹"
                 }
             }
@@ -106,10 +115,11 @@ class PassengerCount : AppCompatActivity() {
                 if (etPrice.text.toString() != null && etPrice.text.toString() != "") {
                     totalAmt = etPrice.text.toString().toInt() * tvCount.text.toString().toInt()
                     tvTotalPrice.text = totalAmt.toString() + "₹"
+                } else {
+                    totalAmt = 0 * tvCount.text.toString().toInt()
+                    tvTotalPrice.text = totalAmt.toString() + "₹"
                 }
-
             }
-
         })
 
         fabNextP.setOnClickListener {
@@ -152,8 +162,11 @@ class PassengerCount : AppCompatActivity() {
     }
 
     fun checkFields() {
-        if (etPrice.text.toString().isEmpty() || etPrice.text.toString() == "") {
+        if (etPrice.text.toString().isEmpty() || etPrice.text.toString() == "" || etPrice.text.toString() == "0") {
             Toast.makeText(this,"Please Select Correct Riding Price for per Passenger ",
+                Toast.LENGTH_LONG).show()
+        }else if (count == 0) {
+            Toast.makeText(this,"Please Select Correct Passenger Count ",
                 Toast.LENGTH_LONG).show()
         } else {
 

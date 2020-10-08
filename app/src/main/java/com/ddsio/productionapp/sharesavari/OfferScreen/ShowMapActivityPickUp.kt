@@ -249,7 +249,6 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
             pojoWithData.user = USER_ID_KEY
             pojoWithData.leaving =  tvAddSearchPickUp.text.toString()
 
-            Log.d("jhbhb",pojoWithData.lline.toString() + pojoWithData.lcity.toString())
 
             var int = Intent(this,
                 ShowMapActivityDrop::class.java)

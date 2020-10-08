@@ -284,6 +284,7 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
             int.putExtra("pojoWithData",pojoWithData)
+
             startActivity(int,bundle)
         }
     }

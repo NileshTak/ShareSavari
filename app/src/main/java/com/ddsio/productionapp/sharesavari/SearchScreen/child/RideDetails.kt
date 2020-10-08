@@ -389,7 +389,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
     private fun showDeleteDialog(pojoWithData: BookRidesPojoItem) {
         val inflater = getLayoutInflater()
-        val alertLayout = inflater.inflate(R.layout.ride_booking_type, null)
+        val alertLayout = inflater.inflate(R.layout.delete_ride_dialog, null)
 
         val showOTP = AlertDialog.Builder(this!!)
         showOTP.setView(alertLayout)

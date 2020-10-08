@@ -93,7 +93,7 @@ class NumberOfPassenersToTake : AppCompatActivity() {
             onBackPressed()
         }
 
-        fabFinish.setOnClickListener {
+        fabFinishs.setOnClickListener {
 
           checkFields()
         }
@@ -147,8 +147,7 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 
     private fun checkFieldsRecheck() {
 
-            pojoWithData.comment = etComment.text.toString()
-
+         pojoWithData.comment = etComment.text.toString()
 
          moveToRecheck()
 
