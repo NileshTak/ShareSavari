@@ -46,6 +46,7 @@ import com.google.gson.Gson
 import com.letsbuildthatapp.kotlinmessenger.models.ChatMessage
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
+import com.productionapp.amhimemekar.CommonUtils.Configure.ONESIGNAL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_ride_detail.*
@@ -63,7 +64,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
 
-
+    var player_id = ""
     lateinit var userProf : FetchProfileData
     lateinit var currentUser : FetchProfileData
     var lat = 0.0
@@ -120,6 +121,9 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         setContentView(R.layout.activity_ride_detail)
 
         rvCoPas = findViewById<LinearLayout>(R.id.rvCoPas)
+
+
+        player_id = Utils.getStringFromPreferences(Configure.PLAYER_ID, "", this@RideDetails)!!
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
@@ -1117,7 +1121,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                     val userArray :bookrideItem =
                         gson.fromJson(response, bookrideItem ::class.java)
-
+                    
+                    sendNotification(customers)
                     sendSMS(customers)
 
                     if (i == countIndex) {
@@ -1160,6 +1165,66 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 params.put("comment"," ")
                 params.put("is_confirm",pojoWithData.is_direct.toString())
 
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
+    private fun sendNotification(customers: BookRidesPojoItem) {
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            ONESIGNAL,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    sendNotificationSelf(customers)
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    sendNotificationSelf(customers)
+                }
+            }) {
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                params.put("message","Your Ride has been booked by ${currentUser.first_name}. Please check into app for more details.")
+
+                params.put("user",userProf.oneid.toString())
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
+
+
+    private fun sendNotificationSelf(customers: BookRidesPojoItem) {
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            ONESIGNAL,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+
+                }
+            }) {
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                params.put("message","Your Ride has been booked. Please check into app for more details.")
+
+                params.put("user",player_id)
                 return params
             }
         }

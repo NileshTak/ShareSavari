@@ -66,7 +66,6 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_ride)

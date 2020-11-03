@@ -177,9 +177,6 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
 
                 return false
             }
-
-
-
         })
 
         mapView.getMapAsync(this)
@@ -368,7 +365,6 @@ class ShowMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListene
     }
 
     private fun moveCamera(latLng: LatLng, zoom: Float) {
-
 
         mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
     }

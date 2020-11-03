@@ -42,6 +42,9 @@ object Configure {
     //Rest Password
     val REST_PASS = "password/reset/"
 
+    //OneSignal
+    val ONESIGNAL = "http://ddsio.com/sharesawaari/send/single/"
+
 
 
     //SharedPreferenceValue
@@ -50,6 +53,7 @@ object Configure {
     val SERACH_LOG_KEY = "SERACH_LOG_KEY"
     val USER_ID_KEY = "USER_ID"
     val USER_UPDATE_ID = "USER_UPDATE_ID"
+    val PLAYER_ID = "PLAYER_ID"
     val EDIT_PROF_BACK_PRESS_KEY = "EDIT_PROF_ON_BACK"
 
 

@@ -226,7 +226,6 @@ class NotificationFrag : Fragment() {
                 int.putExtra("IDToCancel", idToCancel.toString())
                 startActivity(int)
             }
-
         }
     }
 

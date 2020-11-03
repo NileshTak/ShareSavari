@@ -48,9 +48,13 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
+import com.onesignal.OSSubscriptionObserver
+import com.onesignal.OSSubscriptionStateChanges
+import com.onesignal.OneSignal
 import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
+import com.productionapp.amhimemekar.CommonUtils.Configure.PLAYER_ID
 import com.productionapp.amhimemekar.CommonUtils.FetchProfileData
 import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
 import de.hdodenhof.circleimageview.CircleImageView
@@ -81,7 +85,7 @@ import java.util.regex.Pattern
 import kotlin.collections.HashMap
 import kotlin.math.pow
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
     lateinit var dialog_verifying: AlertDialog
 
@@ -152,6 +156,7 @@ class MainActivity : AppCompatActivity() {
     var profPicURL: String? = null
     var adharPicURL: String? = null
     var adharPicURLB: String? = null
+    var player_id = ""
 
     var emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
@@ -187,10 +192,11 @@ class MainActivity : AppCompatActivity() {
         etUserName = findViewById<EditText>(R.id.etLN)
 
 
-
 //        Utils.writeStringToPreferences(LOGIN_KEY, "",this)
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this)!!
+
+        OneSignal.addSubscriptionObserver(this)
 
 
         Handler().postDelayed({
@@ -221,6 +227,7 @@ class MainActivity : AppCompatActivity() {
             nsvSignUp.visibility = View.GONE
             frame.visibility = View.GONE
         } else {
+            showConvidPoster()
             loadScreens()
         }
 
@@ -246,6 +253,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnVerify.setOnClickListener {
+
+            Log.d("ONESIGNALIS","gotit"+player_id)
+
+            Utils.writeStringToPreferences( PLAYER_ID, player_id, this@MainActivity)
+
             if (etMobile.text.toString().isEmpty()) {
                 etMobile.error = "Please enter valid Mobile Number"
             } else if (etMobile.text.toString().length != 10) {
@@ -289,6 +301,9 @@ class MainActivity : AppCompatActivity() {
 
 
         cvSignUp.setOnClickListener {
+
+            Utils.writeStringToPreferences( PLAYER_ID, player_id, this@MainActivity)
+
             progressDialog = ProgressDialog(this@MainActivity)
             progressDialog.setMessage("Wait a Sec....Uploading Files")
             progressDialog.setCancelable(false)
@@ -359,11 +374,13 @@ class MainActivity : AppCompatActivity() {
 
 
         civProfImg.setOnClickListener {
-showNotes()
+            Log.d("ONESIGNALIS","gotit"+player_id)
+                    showNotes()
         }
 
 
         civAdharImg.setOnClickListener {
+            Log.d("ONESIGNALIS","gotit"+player_id)
             askCameraPermission(ADHAR_REQUEST)
         }
 
@@ -470,6 +487,10 @@ showNotes()
     }
 
     private fun createOTPEnterDialog(phoneNumber: String) {
+
+        Utils.writeStringToPreferences( PLAYER_ID, player_id, this@MainActivity)
+
+
         val inflater = getLayoutInflater()
         val alertLayout = inflater.inflate(R.layout.activity_authentication, null)
 
@@ -864,6 +885,8 @@ showNotes()
         val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS
         Log.e("proceddod", "enterUpload")
 
+        player_id = Utils.getStringFromPreferences(PLAYER_ID, "", this@MainActivity)!!
+
         val multipartRequest: VolleyMultipartRequest = object : VolleyMultipartRequest(
             Method.POST,
             url,
@@ -871,7 +894,6 @@ showNotes()
 
                 val resultResponse = String(response.data)
                 Log.i("ResponceisData", resultResponse.toString())
-
 
                 try {
                     val result = JSONObject(resultResponse)
@@ -908,6 +930,7 @@ showNotes()
                 params.put("mobile", etMobile.text.toString())
                 params.put("mobile_status", "false")
                 params.put("bio", "")
+                params.put("oneid", player_id)
                 params.put("birthdate", etBirthDate.text.toString())
 
                 var gender = 1
@@ -1008,9 +1031,6 @@ showNotes()
                 progressDialog.dismiss()
             }
     }
-
-
-
 
     fun getUserNameData() {
 
@@ -1677,5 +1697,15 @@ showNotes()
         }
 
 
+    }
+
+    override fun onOSSubscriptionChanged(stateChanges: OSSubscriptionStateChanges?) {
+        if (!stateChanges!!.getFrom().getSubscribed() &&
+            stateChanges.getTo().getSubscribed()) {
+
+            Log.d("ONESIGNALIS",stateChanges.to.userId)
+            player_id = stateChanges.to.userId
+            Utils.writeStringToPreferences( PLAYER_ID, stateChanges.to.userId.toString(), this@MainActivity)
+        }
     }
 }

@@ -80,6 +80,7 @@ data class UserUpdateDetailsModel(
      var verification: String? = null
      var pets: String? = null
      var smoking: String? = null
+     var oneid: String? = null
 }
 
 

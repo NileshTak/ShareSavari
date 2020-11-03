@@ -26,6 +26,8 @@ import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.SearchScreen.child.RideDetails
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.gson.Gson
+import com.onesignal.OSSubscriptionObserver
+import com.onesignal.OSSubscriptionStateChanges
 import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
 import com.productionapp.amhimemekar.CommonUtils.BookRidesPojo
 import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
@@ -42,14 +44,14 @@ import kotlinx.android.synthetic.main.fragment_profile_screen.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.greenrobot.eventbus.Subscribe
 
-class HomeScreen : Fragment() {
+class HomeScreen : Fragment() , OSSubscriptionObserver {
 
     lateinit var progressDialog: ProgressDialog
     var LOGIN_TOKEN = ""
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
     var request: RequestQueue? = null
-
+    var player_id = ""
     lateinit var rvOfferedRides : RecyclerView
     lateinit var tvTitleTool : TextView
 
@@ -79,7 +81,15 @@ class HomeScreen : Fragment() {
         return view
     }
 
+    override fun onOSSubscriptionChanged(stateChanges: OSSubscriptionStateChanges?) {
+        if (!stateChanges!!.getFrom().getSubscribed() &&
+            stateChanges.getTo().getSubscribed()) {
 
+            Log.d("ONESIGNALIS",stateChanges.to.userId)
+            player_id = stateChanges.to.userId
+            Utils.writeStringToPreferences(Configure.PLAYER_ID, stateChanges.to.userId.toString(), activity)
+        }
+    }
 
 
 

@@ -298,6 +298,11 @@ lateinit var cbPetsP : CheckBox
                     editor.clear()
                     editor.commit()
 
+                    preferences.getString(Configure.PLAYER_ID,"")
+                    editor.clear()
+                    editor.commit()
+
+
                     preferences.getString(Configure.USER_ID_KEY,"")
                     editor.clear()
                     editor.commit()
@@ -320,7 +325,6 @@ lateinit var cbPetsP : CheckBox
                     intent.putExtra("userPojo",fetchProfileData)
                     startActivity(intent)
                 }
-
             }
             true
         })
