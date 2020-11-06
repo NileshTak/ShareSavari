@@ -170,6 +170,102 @@
 
             </RelativeLayout>
 
+
+            <View
+                android:background="@color/md_blue_grey_100"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:layout_height="2dp"/>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="60dp">
+
+
+
+                <ImageView
+                    android:id="@+id/ivP"
+                    android:src="@drawable/ic_baseline_person_outline_24"
+                    android:layout_width="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="30dp"/>
+
+
+                <TextView
+                    android:id="@+id/tvProf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile Verified"
+                    android:layout_toRightOf="@+id/ivP"
+                    android:focusable="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/textColorHead"
+                    android:textSize="18sp"
+                    android:layout_gravity="center_vertical"
+                    fontPath="Comfortaa-Regular.ttf"
+                    android:textAlignment="center"
+                    tools:ignore="MissingPrefix"  />
+
+                <ImageView
+                    android:id="@+id/ivAlertProf"
+                    android:layout_width="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/alert"
+                    android:layout_marginEnd="20dp"
+                    android:layout_gravity="end"
+                    android:layout_height="30dp"/>
+
+
+            </RelativeLayout>
+
+
+            <View
+                android:background="@color/md_blue_grey_100"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:layout_height="2dp"/>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="60dp">
+
+                <ImageView
+                    android:id="@+id/ivAge"
+                    android:src="@drawable/ic_baseline_account_circle_24"
+                    android:layout_width="30dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="30dp"/>
+
+
+                <TextView
+                    android:id="@+id/tvAgeYear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Years Old"
+                    android:layout_toRightOf="@+id/ivAge"
+                    android:focusable="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/textColorHead"
+                    android:textSize="18sp"
+                    android:layout_gravity="center_vertical"
+                    fontPath="Comfortaa-Regular.ttf"
+                    android:textAlignment="center"
+                    tools:ignore="MissingPrefix"  />
+
+
+            </RelativeLayout>
+
             <View
                 android:background="@color/md_blue_grey_100"
                 android:layout_width="match_parent"

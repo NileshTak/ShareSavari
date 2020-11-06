@@ -36,7 +36,6 @@ import org.json.JSONObject
 
 class NotificationFrag : Fragment() {
 
-
     lateinit var progressDialog: ProgressDialog
     var LOGIN_TOKEN = ""
     var USER_UPDATE_ID = ""
@@ -46,6 +45,8 @@ class NotificationFrag : Fragment() {
     lateinit var rvOfferedRides : RecyclerView
     lateinit var tvTitleTool : TextView
     val adapter = GroupAdapter<ViewHolder>()
+
+    var ridelist = arrayListOf<Int>()
 
 
     override fun onCreateView(
@@ -113,13 +114,11 @@ class NotificationFrag : Fragment() {
 
     private fun hitFindBookedRideAPI() {
 
-        var i = 0
+        var arr = ArrayList<bookrideItem>()
 
         val adapter = GroupAdapter<ViewHolder>()
 
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL +"?passenger=${USER_ID_KEY}"
-
-        Log.d("hhhhhhhh",url)
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
@@ -141,8 +140,18 @@ class NotificationFrag : Fragment() {
                     }
 
                     for (i in 0..userArray.size-1) {
+
+                        arr.clear()
+
                         if (i != null) {
-                            hitRideSearch(userArray.get(i))
+
+                            for (j in 0..userArray.size-1) {
+
+                                 if (userArray.get(i).ride == userArray.get(j).ride) {
+                                     arr.add(userArray.get(i))
+                                 }
+                            }
+                            hitRideSearch(userArray.get(i),arr)
                         }
                     }
 
@@ -197,7 +206,8 @@ class NotificationFrag : Fragment() {
 
     inner class ridesOfferedClass(
         var customers: BookRidesPojoItem,
-        var idToCancel: Int
+        var idToCancel: Int,
+        var arr: ArrayList<bookrideItem>
     ) : Item<ViewHolder>() {
         override fun getLayout(): Int {
             return R.layout.custom_booked_rides
@@ -206,14 +216,18 @@ class NotificationFrag : Fragment() {
         override fun bind(viewHolder: ViewHolder, position: Int) {
 
 
-            viewHolder.itemView.tvFromCity.text = customers.lcity
-            viewHolder.itemView.tvToCity.text = customers.gcity
 
-            viewHolder.itemView.tvRate.text = "₹ "+ customers.price.toString()
+                viewHolder.itemView.tvFromCity.text = customers.lcity
 
-            viewHolder.itemView.tvDatebs.text = Utils.convertDateFormat(
-                customers.date.toString()
-            ) +", " +customers.time.toString()
+                viewHolder.itemView.tvSeats.text = "Seats Booked : "+arr.size.toString()
+
+                viewHolder.itemView.tvToCity.text = customers.gcity
+
+                viewHolder.itemView.tvRate.text = "₹ "+ customers.price.toString()
+
+                viewHolder.itemView.tvDatebs.text = Utils.convertDateFormat(
+                    customers.date.toString()
+                ) +", " +customers.time.toString()
 
 
             viewHolder.itemView.setOnClickListener {
@@ -229,7 +243,10 @@ class NotificationFrag : Fragment() {
         }
     }
 
-    private fun hitRideSearch(customers: bookrideItem) {
+    private fun hitRideSearch(
+        customers: bookrideItem,
+        arr: ArrayList<bookrideItem>
+    ) {
 
         val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL + "${customers.ride}/"
 
@@ -273,13 +290,11 @@ class NotificationFrag : Fragment() {
                         ride.tdtime= obj.getString("tdtime")
                         ride.is_direct= obj.getBoolean("is_direct")
 
+                        if (!ridelist.contains(arr.get(0).ride)) {
+                            ridelist.add(arr.get(0).ride)
 
-                        Log.d("juguiuih",ride.leaving.toString())
-
-                                adapter.add(ridesOfferedClass(ride,customers.id))
-
-
-
+                            adapter.add(ridesOfferedClass(ride, customers.id, arr))
+                        }
                     } catch (e: JSONException) {
                         e.printStackTrace()
 

@@ -97,7 +97,11 @@ class CoPasList : AppCompatActivity() {
                         if (userArray != null) {
                             for (i in 0..userArray.size-1)   {
 //                                adapter.add(ridesClass(userArray.get(i)))
-                                getUserData(userArray.get(i).passenger)
+
+                                if (userArray.get(i).is_confirm) {
+                                    getUserData(userArray.get(i).passenger)
+                                }
+
                             }
 
                             runAnimation(rvCOPas,2)

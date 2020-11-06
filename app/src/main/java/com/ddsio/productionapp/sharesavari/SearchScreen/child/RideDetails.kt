@@ -301,7 +301,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             var int = Intent(this,
                 PendingReq ::class.java)
             int.putExtra("pojoWithData",pojoWithData)
-            startActivity(int,bundle)
+            startActivity(int)
         }
 
         rlProfile.setOnClickListener {
@@ -1011,6 +1011,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
     private fun bookedSeatsCount(customers: BookRidesPojoItem) {
 
+        val userArrayF = ArrayList<bookrideItem>()
+
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"?ride=${customers.id}"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
@@ -1025,8 +1027,22 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     val userArray : ArrayList<bookrideItem> =
                         gson.fromJson(response, bookride ::class.java)
 
-                    bookedSeatCount = userArray.size
-                    tvCo.text = userArray.size.toString()+"/" + pojoWithData.passenger
+
+
+                    if (userArray != null) {
+                        for (i in 0..userArray.size - 1) {
+//                                adapter.add(ridesClass(userArray.get(i)))
+
+                            if (userArray.get(i).is_confirm) {
+                                userArrayF.add(userArray.get(i))
+                            }
+                        }
+                        tvCo.text = userArrayF.size.toString()+"/" + pojoWithData.passenger
+                        bookedSeatCount = userArrayF.size
+                    }
+
+
+
 
                 }
             }, object : Response.ErrorListener {

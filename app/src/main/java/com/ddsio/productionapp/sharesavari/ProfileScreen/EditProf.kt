@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
@@ -45,6 +46,7 @@ class EditProf : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
 
         pojoWithData = bundle!!.get("userPojo") as FetchProfileData
+
 
         ivBa.setOnClickListener {
             onBackPressed()

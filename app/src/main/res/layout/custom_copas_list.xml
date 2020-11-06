@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/rlProfile"
         android:layout_width="match_parent"
@@ -18,8 +19,6 @@
             android:orientation="vertical"
             android:layout_centerVertical="true"
             android:layout_height="wrap_content">
-
-
 
             <TextView
                 android:id="@+id/tvOfferedby"
@@ -101,7 +100,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_marginTop="10dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/llBtn"
         android:layout_height="wrap_content">
 
@@ -186,6 +185,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="15dp"
         android:background="@color/textColorHead"
         android:layout_height="2dp"/>

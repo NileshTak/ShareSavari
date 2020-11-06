@@ -166,6 +166,9 @@ class PendingReq : AppCompatActivity() {
 
                         adapter.add(ridesClass(userArray,passenger))
 
+                    } else {
+                        Toast.makeText(this@PendingReq,"No Request Found",
+                            Toast.LENGTH_LONG).show()
                     }
 
                 }

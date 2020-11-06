@@ -68,6 +68,20 @@
 
             </RelativeLayout>
 
+
+            <TextView
+                android:id="@+id/tvSeats"
+                android:layout_width="120dp"
+                android:text="Seats : "
+                android:layout_marginTop="6dp"
+                android:textSize="20dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                fontPath="Comfortaa-Bold.ttf"
+                android:textColor="@color/md_black_1000"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingPrefix" />
+
             <RelativeLayout
                 android:visibility="visible"
                 android:id="@+id/rvRating"

@@ -36,6 +36,9 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
 class DriverProfile : AppCompatActivity() {
@@ -86,6 +89,13 @@ class DriverProfile : AppCompatActivity() {
             Glide.with(this).load(pojoWithData.image).into(cvProf)
         }
 
+        if (USER_ID_KEY == pojoWithData.user.toString() ) {
+            llContact.visibility = View.VISIBLE
+            cvCall.visibility = View.VISIBLE
+        } else {
+            llContact.visibility = View.GONE
+        }
+
 //        tvName.text = pojoWithData.username
 
 
@@ -122,7 +132,7 @@ class DriverProfile : AppCompatActivity() {
             var int = Intent(this,
                 ReviewsList::class.java)
             int.putExtra("driverid",pojoWithData.user.toString())
-            startActivity(int,bundle)
+            startActivity(int)
         }
 
         if (USER_ID_KEY == pojoWithData.user.toString()) {
@@ -557,6 +567,8 @@ class DriverProfile : AppCompatActivity() {
                             phoneNumber = userArray.mobile!!
                             driverId = userArray.id!!
 
+                            Glide.with(this@DriverProfile).load(userArray.image).into(cvProf)
+
                             tvName.text =  userArray.first_name
                             if (userArray.bio == "" || userArray.bio!!.isEmpty()) {
                                 tvDetail.text = "No Bio"
@@ -564,12 +576,18 @@ class DriverProfile : AppCompatActivity() {
                                 tvDetail.text = userArray.bio
                             }
 
+
+                            calculateAge(userArray.birthdate)
+
                             hitFindOfferedRideAPI(cust)
 
                             if (userArray.verification == "False") {
                                 ivAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
+                                ivAlertProf.setImageDrawable(resources.getDrawable(R.drawable.alert))
+
                             } else {
                                 ivAlert.setImageDrawable(resources.getDrawable(R.drawable.tick))
+                                ivAlertProf.setImageDrawable(resources.getDrawable(R.drawable.tick))
                             }
 
                         }
@@ -612,6 +630,27 @@ class DriverProfile : AppCompatActivity() {
         }
         request!!.add(jsonObjRequest)
 
+    }
+
+    private fun calculateAge(birthdate: String?) {
+        val separated =
+            birthdate!!.split("-".toRegex()).toTypedArray()
+        Log.d("ageis",separated[0]+"?"+separated[1]+"?"+separated[2])
+
+
+        val dob: Calendar = Calendar.getInstance()
+        val today: Calendar = Calendar.getInstance()
+
+        dob.set(separated[0].toInt(), separated[2].toInt(), separated[1].toInt())
+
+        var age: Int = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+
+        val ageInt = age
+        tvAgeYear.text = ageInt.toString() +" Years Old"
     }
 
 
@@ -698,7 +737,7 @@ class DriverProfile : AppCompatActivity() {
                     val userArray: ArrayList<BookRidesPojoItem> =
                         gson.fromJson(response, BookRidesPojo ::class.java)
 
-                    hitFindBookedRideAPI(cust)
+//                    hitFindBookedRideAPI(cust)
                     getRating()
 
                     tvRidesC.text = " ${userArray.size} rides puslished"
