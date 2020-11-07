@@ -72,7 +72,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     lateinit var convidPoster: AlertDialog
     var request: RequestQueue? = null
 
-
     private var fusedLocationProviderClient: FusedLocationProviderClient? = null
     private var mMap: GoogleMap? = null
     private val DEFAULT_ZOOM = 15f
@@ -122,7 +121,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         rvCoPas = findViewById<LinearLayout>(R.id.rvCoPas)
 
-
         player_id = Utils.getStringFromPreferences(Configure.PLAYER_ID, "", this@RideDetails)!!
 
         val bundle: Bundle? = intent.extras
@@ -156,8 +154,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             rvPendReq.visibility = View.GONE
             rlBottomCancel.visibility = View.GONE
         }
-
-
 
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
@@ -213,14 +209,12 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         }
 
         rvCoPas.setOnClickListener {
-
             Log.d("huhuhujh","clickedc")
 
             var intent = Intent(this@RideDetails,
                 CoPasList::class.java)
             intent.putExtra("pojoWithData",pojoWithData)
             startActivity(intent)
-
         }
 
 
@@ -1139,6 +1133,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                         gson.fromJson(response, bookrideItem ::class.java)
                     
                     sendNotification(customers)
+                    sendSMSSelf(customers)
                     sendSMS(customers)
 
                     if (i == countIndex) {
@@ -1187,6 +1182,71 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         request!!.add(jsonObjRequest)
     }
 
+    private fun sendSMS(customers: BookRidesPojoItem) {
+        var msg = ""
+
+        if (pojoWithData.is_direct == true) {
+           msg = "You%20booked%20a%20Ride%20from%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}." +
+                   "%20Please%20check%20into%20app%20for%20more%20details."
+
+        } else {
+           msg = "Your%20Request%20to%20book%20a%20Ride%20from%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}%20has%20been%20sent," +
+                    "%20you%20will%20be%20notified%20once%20Request%20has%20been%20Accepted." +
+                   "%20Please%20check%20into%20app%20for%20more%20details."
+
+        }
+
+        val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${currentUser.mobile}&message=${msg}&sender=WEBSMS&type=3"
+
+        Log.d("smsentvjjnd", url.toString())
+        Log.d("smsentvjjnd", currentUser.mobile!!)
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("smsentvjjnd", response.toString())
+
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                    Toast.makeText(this@RideDetails,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Cache-Control", "no-cache");
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    java.util.HashMap()
+//                params.put("ride",customers.id.toString())
+//                params.put("passenger",USER_ID_KEY)
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
     private fun sendNotification(customers: BookRidesPojoItem) {
 
         val jsonObjRequest: StringRequest = object : StringRequest(
@@ -1206,10 +1266,16 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> =
                     HashMap()
+                if (pojoWithData.is_direct == true) {
+                    params.put("message","You booked a Ride from ${pojoWithData.leaving} to  ${pojoWithData.going} on  ${pojoWithData.date}. Please check into app for more details.")
 
-                params.put("message","Your Ride has been booked by ${currentUser.first_name}. Please check into app for more details.")
+                } else {
+                    params.put("message","Your Request to book a Ride from ${pojoWithData.leaving} to  ${pojoWithData.going} on  ${pojoWithData.date} has been sent," +
+                            " you will be notified once Request has been Accepted. Please check into app for more details.")
 
-                params.put("user",userProf.oneid.toString())
+                }
+
+                params.put("user",currentUser.oneid.toString())
                 return params
             }
         }
@@ -1238,7 +1304,13 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 val params: MutableMap<String, String> =
                     HashMap()
 
-                params.put("message","Your Ride has been booked. Please check into app for more details.")
+                if (pojoWithData.is_direct == true) {
+                    params.put("message","Your Ride has been booked by ${currentUser.first_name}. Please check into app for more details.")
+
+                } else {
+                    params.put("message"," ${currentUser.first_name} ${ currentUser.last_name} has requested to book your Ride. Please check into app for more details.")
+
+                }
 
                 params.put("user",player_id)
                 return params
@@ -1247,9 +1319,17 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         request!!.add(jsonObjRequest)
     }
 
-    private fun sendSMS(customers: BookRidesPojoItem) {
+    private fun sendSMSSelf(customers: BookRidesPojoItem) {
 
-        var msg = "Your%20Ride%20has%20been%20booked%20by%20${currentUser.first_name}.%20Please%20check%20into%20app%20for%20more%20details."
+        var msg = ""
+
+        if (pojoWithData.is_direct == true) {
+            msg = "Your%20Ride%20has%20been%20booked%20by%20${currentUser.first_name}.%20Please%20check%20into%20app%20for%20more%20details."
+
+        } else {
+           msg = "${currentUser.first_name}%20${ currentUser.last_name}%20has%20requested%20to%20book%20your%20Ride.%20Please%20check%20into%20app%20for%20more%20details."
+
+        }
 
         val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${userProf.mobile}&message=${msg}&sender=WEBSMS&type=3"
 

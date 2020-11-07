@@ -48,6 +48,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
     lateinit var pojoWithData : offerRideModel
     lateinit var previousPojo : BookRidesPojoItem
     var totalAmt = 0
+    var player_id = ""
     var maxSeatCount = ""
     lateinit var datePickerdialog: DatePickerDialog
 
@@ -113,6 +114,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         pojoWithData.comment = previousPojo.comment
         pojoWithData.brtime=   previousPojo.brtime
         pojoWithData.brdate = previousPojo.brdate
+
+        player_id = Utils.getStringFromPreferences(Configure.PLAYER_ID, "", this@EditRide)!!
 
 
         request= Volley.newRequestQueue(this);
@@ -408,6 +411,36 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         }
 //        getUserData()
     }
+
+
+    private fun sendNotificationSelf(msg: String) {
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            Configure.ONESIGNAL,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+
+                }
+            }) {
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                params.put("message",msg)
+                params.put("user",player_id)
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
 
     private fun datePickerReachR() {
         val now = Calendar.getInstance()
@@ -730,6 +763,9 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
                     Log.d("jukjbkj", response.toString())
+
+                    sendNotificationSelf("Your Ride details of Ride ${pojoWithData.leaving} to ${pojoWithData.going} has been Offered. Please check into app for more details.")
+
                     Toast.makeText(this@EditRide,"Ride Offered Successfully...",
                         Toast.LENGTH_LONG).show()
 
@@ -859,6 +895,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                 override fun onResponse(response: String?) {
                     Log.d("jukjbkj", response.toString())
 
+
+
                     try {
                         // get JSONObject from JSON file
                         val obj = JSONObject(response.toString())
@@ -897,6 +935,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                         ride.brtime= obj.getString("brtime")
                         ride.brdate= obj.getString("brdate")
 
+
+                        sendNotificationSelf("Your Ride details of Ride ${ride.leaving} to ${ride.going} has been updated. Please check into app for more details.")
 
                         Log.d("juguiuih",ride.leaving.toString())
 

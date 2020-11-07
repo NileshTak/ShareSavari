@@ -28,7 +28,6 @@ import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_pending_req.*
 import kotlinx.android.synthetic.main.activity_ride_detail.view.ivprof
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvOfferedby
@@ -263,6 +262,39 @@ class PendingReq : AppCompatActivity() {
             }
         }
     }
+    private fun sendNotificationSelf(
+        msg: String,
+        customers: FetchProfileData
+    ) {
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            Configure.ONESIGNAL,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+
+                }
+            }) {
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    java.util.HashMap()
+
+                params.put("message",msg)
+                params.put("user", customers.oneid.toString())
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
+
+
 
     private fun acceptReq(
         customers: FetchProfileData,
@@ -283,12 +315,15 @@ class PendingReq : AppCompatActivity() {
                 override fun onResponse(response: String?) {
                     Log.d("jukjbkjf", response.toString())
 
+                    sendNotificationSelf("Your Request for Ride ${pojoWithData.leaving} to ${pojoWithData.going} on ${pojoWithData.date} has been Accepted by Driver and you can contact directly to driver from Driver's Public Profile'. " +
+                            "Please check into app for more details.", customers)
+
+                    sendSMS(customers)
                     progressDialog.dismiss()
 
                     rvPendingReq.removeAllViewsInLayout()
                     rvPendingReq.removeAllViews()
                     adapter.clear()
-
 
                     hitPendingReq()
 
@@ -330,6 +365,61 @@ class PendingReq : AppCompatActivity() {
         }
         request!!.add(jsonObjRequest)
     }
+
+
+
+    private fun sendSMS(customers: FetchProfileData) {
+
+           var msg = "Your%20Request%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}%20has%20been%20Accepted%20by%20Driver%20and%20you%20can%20contact%20directly%20to%20driver%20from%20Driver's%20Public%20Profile'.%20" +
+                    "Please%20check%20into%20app%20for%20more%20details."
+
+        val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${customers.mobile}&message=${msg}&sender=WEBSMS&type=3"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("smsentvjjnd", response.toString())
+
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                params.put("Cache-Control", "no-cache");
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    java.util.HashMap()
+//                params.put("ride",customers.id.toString())
+//                params.put("passenger",USER_ID_KEY)
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
 
 
     lateinit var convidPoster: AlertDialog

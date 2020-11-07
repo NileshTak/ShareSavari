@@ -82,7 +82,6 @@ class DriverProfile : AppCompatActivity() {
             getDriverData(pojoWithData.user.toString())
         }
 
-
         Log.d("hhjbh", pojoWithData.image.toString())
 
         if (pojoWithData.image != null ) {
