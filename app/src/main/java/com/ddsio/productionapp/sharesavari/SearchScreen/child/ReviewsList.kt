@@ -32,11 +32,17 @@ import kotlinx.android.synthetic.main.activity_ride_detail.view.tvRating
 import kotlinx.android.synthetic.main.custom_reviews.view.*
 import kotlinx.android.synthetic.main.custom_reviews.view.tvName
 import kotlinx.android.synthetic.main.fragment_profile_screen.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ReviewsList : AppCompatActivity() {
 
 
     lateinit var progressDialog: ProgressDialog
+    lateinit var pojoWithData : BookRidesPojoItem
     var LOGIN_TOKEN = ""
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
@@ -57,6 +63,7 @@ class ReviewsList : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         driverid = bundle!!.getString("driverid")!!
+        pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
@@ -67,8 +74,40 @@ class ReviewsList : AppCompatActivity() {
             onBackPressed()
         }
 
-        getRating()
+        showRatings()
+    }
 
+    private fun showRatings() {
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val formattedDate = df.format(c.time)
+
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = sdf.parse(pojoWithData.rdate +" "+pojoWithData.rtime)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.HOUR, 24)
+
+        val Year = calendar[Calendar.YEAR]
+        val Month = calendar[Calendar.MONTH]
+        val Day = calendar[Calendar.DAY_OF_MONTH]
+        val Hour = calendar[Calendar.HOUR]
+        val Minute = calendar[Calendar.MINUTE]
+        val Second = calendar[Calendar.SECOND]
+
+        var datePlus = Year.toString()+"-"+Month+"-"+Day+" "+Hour+":"+Minute+":"+Second
+
+        if(getTimeStamp(datePlus) < getTimeStamp(formattedDate)) {
+            getRating()
+        } else {
+            Toast.makeText(this@ReviewsList, "No Review Found. Given Reviews Will appear after 24 hours", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun getTimeStamp(s: String): Long {
+        val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = formatter.parse(s) as Date
+        return date.time
     }
 
 
@@ -78,9 +117,6 @@ class ReviewsList : AppCompatActivity() {
         progressDialog.setMessage("Wait a Sec.... ")
         progressDialog.setCancelable(false)
         progressDialog.show()
-
-
-
 
         val url = Configure.BASE_URL + Configure.RATING +"?driver=" + driverid
         val jsonObjRequest: StringRequest = object : StringRequest(

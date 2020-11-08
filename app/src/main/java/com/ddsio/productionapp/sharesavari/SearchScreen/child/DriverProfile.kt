@@ -35,9 +35,11 @@ import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_driver_profile.*
+import kotlinx.android.synthetic.main.activity_driver_profile.ivCloseScreen
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
@@ -65,12 +67,29 @@ class DriverProfile : AppCompatActivity() {
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
         cust = bundle!!.get("cust") as String
 
+        Log.d("jhhhhhhhhhjh",pojoWithData.date+"   "+pojoWithData.rdate+"   "+pojoWithData.brdate+"   "+pojoWithData.tddate)
+
+
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",this)!!
         request= Volley.newRequestQueue(this);
         ratingB = findViewById<RatingBar>(R.id.rating)
         btnSubmitB = findViewById<Button>(R.id.btnSubmit)
+
+        ratingB.isEnabled = false
+
+        if (cust != USER_ID_KEY) {
+
+            if (pojoWithData.is_return!!) {
+                checkRatingTime(pojoWithData.brdate+" "+pojoWithData.brtime)
+            } else {
+                checkRatingTime(pojoWithData.tddate+" "+pojoWithData.tdtime)
+            }
+
+        }
+
+        hitCopasAPI(cust)
 
         ivCloseScreen.setOnClickListener {
             onBackPressed()
@@ -88,15 +107,12 @@ class DriverProfile : AppCompatActivity() {
             Glide.with(this).load(pojoWithData.image).into(cvProf)
         }
 
-        if (USER_ID_KEY == pojoWithData.user.toString() ) {
-            llContact.visibility = View.VISIBLE
-            cvCall.visibility = View.VISIBLE
-        } else {
-            llContact.visibility = View.GONE
-        }
-
-//        tvName.text = pojoWithData.username
-
+//        if (USER_ID_KEY == pojoWithData.user.toString() ) {
+//            llContact.visibility = View.VISIBLE
+//            cvCall.visibility = View.VISIBLE
+//        } else {
+//            llContact.visibility = View.GONE
+//        }
 
         ratingB.setOnRatingBarChangeListener(object : RatingBar.OnRatingBarChangeListener{
             override fun onRatingChanged(p0: RatingBar?, p1: Float, p2: Boolean) {
@@ -130,6 +146,7 @@ class DriverProfile : AppCompatActivity() {
         rvReview.setOnClickListener {
             var int = Intent(this,
                 ReviewsList::class.java)
+            int.putExtra("pojoWithData",pojoWithData)
             int.putExtra("driverid",pojoWithData.user.toString())
             startActivity(int)
         }
@@ -154,6 +171,95 @@ class DriverProfile : AppCompatActivity() {
             getAllRating(pojoWithData.user.toString())
         }
 
+    }
+
+    private fun checkRatingTime(s: String) {
+
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val formattedDate = df.format(c.time)
+
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = sdf.parse(s)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.HOUR, 24)
+
+        val Year = calendar[Calendar.YEAR]
+        val Month = calendar[Calendar.MONTH]+1
+        val Day = calendar[Calendar.DAY_OF_MONTH]
+        val Hour = calendar[Calendar.HOUR]
+        val Minute = calendar[Calendar.MINUTE]
+        val Second = calendar[Calendar.SECOND]
+
+        var datePlus = Year.toString()+"-"+Month+"-"+Day+" "+Hour+":"+Minute+":"+Second
+
+
+        val calendar1 = Calendar.getInstance()
+        calendar1.time = date
+
+        val Year1 = calendar1[Calendar.YEAR]
+        val Month1 = calendar1[Calendar.MONTH] +1
+        val Day1 = calendar1[Calendar.DAY_OF_MONTH]
+        val Hour1 = calendar1[Calendar.HOUR]
+        val Minute1 = calendar1[Calendar.MINUTE]
+        val Second1 = calendar1[Calendar.SECOND]
+
+        var datePlus1 = Year1.toString()+"-"+Month1+"-"+Day1+" "+Hour1+":"+Minute1+":"+Second1
+
+        Log.d("jjjjjjjjj",datePlus)
+        Log.d("jjjjjjjjj",datePlus1)
+        Log.d("jjjjjjjjj",formattedDate)
+
+        if (getTimeStamp(formattedDate) > getTimeStamp(datePlus1)) {
+            if (getTimeStamp(formattedDate) < getTimeStamp(datePlus)) {
+                ratingB.isEnabled = true
+            } else {
+                ratingB.isEnabled = false
+
+            }
+        } else {
+            ratingB.isEnabled = false
+            Log.d("jjjjjjjjj","gu")
+        }
+
+    }
+
+    private fun checkRideComplete(s: String) {
+
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val formattedDate = df.format(c.time)
+
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = sdf.parse(s)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        val Year = calendar[Calendar.YEAR]
+        val Month = calendar[Calendar.MONTH]
+        val Day = calendar[Calendar.DAY_OF_MONTH]
+        val Hour = calendar[Calendar.HOUR]
+        val Minute = calendar[Calendar.MINUTE]
+        val Second = calendar[Calendar.SECOND]
+        var datePlus = Year.toString()+"-"+Month+"-"+Day+" "+Hour+":"+Minute+":"+Second
+
+        if(getTimeStamp(datePlus) < getTimeStamp(formattedDate)) {
+            ratingB.isEnabled = false
+        }
+    }
+
+
+    private fun getTimeStamp(s: String): Long {
+
+        Log.d("timestampdatsi",s)
+
+        val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = formatter.parse(s) as Date
+
+        Log.d("timestampdatsi",date.time.toString())
+
+        return date.time
     }
 
 
@@ -653,6 +759,86 @@ class DriverProfile : AppCompatActivity() {
     }
 
 
+    private fun hitCopasAPI(cust: String) {
+
+        var arr = arrayListOf<String>()
+
+        val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"?ride=${pojoWithData.id}"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkjf", response.toString())
+
+                    val gson = Gson()
+
+                    val userArray : ArrayList<bookrideItem> =
+                        gson.fromJson(response, bookride ::class.java)
+
+
+                    if (userArray != null) {
+                        for (i in 0..userArray.size-1)   {
+//                                adapter.add(ridesClass(userArray.get(i)))
+
+                            if (userArray.get(i).is_confirm) {
+                                arr.add(userArray.get(i).passenger.toString())
+                            }
+
+                        }
+
+                        checkPassengerBooked(arr)
+                    }
+
+
+
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    java.util.HashMap()
+//                params.put("ride",customers.id.toString())
+//                params.put("passenger",USER_ID_KEY)
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+    }
+
+    private fun checkPassengerBooked(arr: ArrayList<String>) {
+        for (i in 0..arr.size-1) {
+            if (arr.get(i) == cust) {
+                rating.isEnabled = true
+            }
+        }
+
+    }
+
+
     var i = 0
     private fun hitFindBookedRideAPI(cust: String) {
 
@@ -739,7 +925,7 @@ class DriverProfile : AppCompatActivity() {
 //                    hitFindBookedRideAPI(cust)
                     getRating()
 
-                    tvRidesC.text = " ${userArray.size} rides puslished"
+                    tvRidesC.text = " ${userArray.size} rides published"
 
                 }
             }, object : Response.ErrorListener {

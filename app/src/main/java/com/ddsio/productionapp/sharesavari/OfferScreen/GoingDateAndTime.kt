@@ -60,7 +60,6 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
         askGalleryPermissionLocation()
 
 
-
         var cv = findViewById<FloatingActionButton>(R.id.fabNext)
 
             Utils.checkConnection(this@GoingDateAndTime,cv)

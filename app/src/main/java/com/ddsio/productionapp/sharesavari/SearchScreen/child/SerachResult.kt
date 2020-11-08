@@ -277,8 +277,6 @@ class SerachResult : AppCompatActivity() {
 
             findUser(customers.user.toString(),viewHolder.itemView.tvName,viewHolder.itemView.ivuser)
 
-
-
             Log.d("jukjbkjf",customers.user.toString())
 
             if (customers.is_direct == true) {

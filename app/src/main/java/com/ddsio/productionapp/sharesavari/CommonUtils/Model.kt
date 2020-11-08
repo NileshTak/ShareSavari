@@ -136,7 +136,6 @@ class BookRidesPojo : ArrayList<BookRidesPojoItem>()
      var brtime : String? = null
  }
 
-
 class bookride : ArrayList<bookrideItem>()
 
 data class bookrideItem(
@@ -147,9 +146,8 @@ data class bookrideItem(
     val plog: Any,
     val ride: Int,
     val ridename: String,
-val is_confirm : Boolean
+    val is_confirm : Boolean
 )
-
 
 class RatingModel : ArrayList<RatingModelItem>()
 

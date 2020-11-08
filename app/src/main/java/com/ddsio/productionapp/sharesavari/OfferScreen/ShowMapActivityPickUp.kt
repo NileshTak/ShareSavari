@@ -140,7 +140,6 @@ class ShowMapActivityPickUp : AppCompatActivity(), OnMapReadyCallback, LocationL
 
         tvCurrentAddress = findViewById<TextView>(R.id.tvCurrentAddress)
 
-
         svSearchViewPickup.onActionViewExpanded()
 
         svSearchViewPickup.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

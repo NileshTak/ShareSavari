@@ -15,7 +15,6 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -49,11 +48,14 @@ import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.ONESIGNAL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_hault.*
 import kotlinx.android.synthetic.main.activity_ride_detail.*
 import kotlinx.android.synthetic.main.ride_booking_type.view.*
-import kotlinx.android.synthetic.main.ride_booking_type.view.cvAdd
-import kotlinx.android.synthetic.main.ride_booking_type.view.cvMinus
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.IOException
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 class RideDetails : AppCompatActivity(), OnMapReadyCallback,
@@ -128,6 +130,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         var screen  = bundle!!.get("screen") as String
         IDToCancel  = bundle!!.get("IDToCancel") as String
 
+
+
         if (screen == "home") {
             rlBottom.visibility = View.GONE
             rlBottomDelete.visibility = View.VISIBLE
@@ -183,9 +187,18 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         tvFromFullAdd.text = "("+ pojoWithData.leaving+")"
         tvToFullAdd.text = "("+ pojoWithData.going+")"
-        tvCarColor.text = "("+ pojoWithData.carcolor+")"
+
+
         tvCom.text = pojoWithData.comment
-        tvCar.text = pojoWithData.carname
+
+        if (pojoWithData.carname =="" || pojoWithData.carname.isNullOrBlank()) {
+            llCar.visibility = View.GONE
+        } else {
+            tvCar.text = pojoWithData.carname
+            tvCarColor.text = "("+ pojoWithData.carcolor+")"
+        }
+
+
         if (pojoWithData.stitle == null || pojoWithData.stitle == "") {
             llStopPoint.visibility = View.GONE
             tvSP.visibility = View.GONE
@@ -320,6 +333,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         }
 
 
+        disableCancelrideButton()
+
 
         btnCancel.setOnClickListener {
             CancelRide()
@@ -338,6 +353,29 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             startActivity(int,bundle)
         }
 
+    }
+
+    private fun disableCancelrideButton() {
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val formattedDate = df.format(c.time)
+
+        if(getTimeStamp(pojoWithData.date+" "+pojoWithData.time) < getTimeStamp(formattedDate)) {
+            btnDelete.visibility = View.GONE
+            btnEdit.visibility = View.GONE
+        }
+    }
+
+    private fun getTimeStamp(s: String): Long {
+
+        Log.d("timestampdatsi",s)
+
+        val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val date = formatter.parse(s) as Date
+
+        Log.d("timestampdatsi",date.time.toString())
+
+        return date.time
     }
 
 
@@ -502,7 +540,22 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         request!!.add(jsonObjRequest)
     }
 
+    @Subscribe
+    fun onBackFromPending(fileName : String?) {
+        if (fileName == "Pending") {
+            bookedSeatsCount(pojoWithData)
+        }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        if (!EventBus.getDefault().isRegistered(this@RideDetails)) EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this@RideDetails)
+    }
 
     private fun findUser( ) {
         val url = BASE_URL+ Configure.GET_USER_DETAILS +pojoWithData.user+"/"
@@ -1022,7 +1075,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                         gson.fromJson(response, bookride ::class.java)
 
 
-
                     if (userArray != null) {
                         for (i in 0..userArray.size - 1) {
 //                                adapter.add(ridesClass(userArray.get(i)))
@@ -1275,7 +1327,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                 }
 
-                params.put("user",currentUser.oneid.toString())
+                params.put("user",player_id)
                 return params
             }
         }
@@ -1312,7 +1364,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                 }
 
-                params.put("user",player_id)
+                params.put("user",currentUser.oneid.toString())
                 return params
             }
         }

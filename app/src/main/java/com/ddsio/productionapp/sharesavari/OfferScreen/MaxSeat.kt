@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
@@ -42,6 +43,9 @@ class MaxSeat : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
+
+
+        Log.d("jhhhhhhhhhjh",pojoWithData.date+"   "+pojoWithData.rdate+"   "+pojoWithData.brdate+"   "+pojoWithData.tddate)
 
         rbMax2SeatF.setOnClickListener {
             radio_button_click_seat(rbMax2SeatF)

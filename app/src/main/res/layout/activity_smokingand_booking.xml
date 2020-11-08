@@ -37,7 +37,80 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_marginStart="20dp"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+                <CheckBox
+                    android:id="@+id/cbPets"
+                    android:layout_width="wrap_content"
+                    android:visibility="visible"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:text="No Pets"
+                    android:textSize="25sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:visibility="visible"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_marginStart="20dp"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/cbSmoking"
+                    android:layout_width="wrap_content"
+                    android:visibility="visible"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:text="Smoking is OK"
+                    android:textSize="25sp"
+                    fontPath="Comfortaa-Bold.ttf"
+                    android:layout_centerVertical="true"
+                    android:visibility="visible"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/textColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="MissingPrefix" />
+
+            </LinearLayout>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieSelectImage"
+                android:layout_width="match_parent"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="pets.json"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="15dp"
+                app:lottie_loop="true"
+                android:layout_height="260dp"/>
 
 
             <LinearLayout
@@ -137,67 +210,8 @@
                 </RadioGroup>
 
             </LinearLayout>
-            <LinearLayout
-                android:layout_marginStart="20dp"
-                android:orientation="horizontal"
-                android:visibility="visible"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <CheckBox
-                    android:id="@+id/cbPets"
-                    android:layout_width="wrap_content"
-                    android:visibility="visible"
-                    android:layout_gravity="center_vertical"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:text="No Pets"
-                    android:textSize="25sp"
-                    fontPath="Comfortaa-Bold.ttf"
-                    android:layout_centerVertical="true"
-                    android:visibility="visible"
-                    android:layout_marginBottom="10dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:ignore="MissingPrefix" />
-
-            </LinearLayout>
 
 
-
-            <LinearLayout
-                android:layout_marginStart="20dp"
-                android:orientation="horizontal"
-                android:visibility="visible"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <CheckBox
-                    android:id="@+id/cbSmoking"
-                    android:layout_width="wrap_content"
-                    android:visibility="visible"
-                    android:layout_gravity="center_vertical"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:text="Smoking is OK"
-                    android:textSize="25sp"
-                    fontPath="Comfortaa-Bold.ttf"
-                    android:layout_centerVertical="true"
-                    android:visibility="visible"
-                    android:layout_marginBottom="10dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/textColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:ignore="MissingPrefix" />
-
-            </LinearLayout>
 
 
         </LinearLayout>

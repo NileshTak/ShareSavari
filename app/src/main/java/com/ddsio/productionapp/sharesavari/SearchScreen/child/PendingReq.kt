@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.main.activity_ride_detail.view.ivprof
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvOfferedby
 import kotlinx.android.synthetic.main.custom_copas_list.view.*
 import kotlinx.android.synthetic.main.ride_booking_type.view.*
+import org.greenrobot.eventbus.EventBus
 
 class PendingReq : AppCompatActivity() {
 
@@ -68,6 +69,12 @@ class PendingReq : AppCompatActivity() {
 
         hitPendingReq()
 
+    }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        EventBus.getDefault().post("Pending");
     }
 
     private fun hitPendingReq() {
@@ -318,7 +325,13 @@ class PendingReq : AppCompatActivity() {
                     sendNotificationSelf("Your Request for Ride ${pojoWithData.leaving} to ${pojoWithData.going} on ${pojoWithData.date} has been Accepted by Driver and you can contact directly to driver from Driver's Public Profile'. " +
                             "Please check into app for more details.", customers)
 
-                    sendSMS(customers)
+                    var msg = "Your%20Request%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}%20has%20been%20Accepted%20by%20Driver%20and%20you%20can%20contact%20directly%20to%20driver%20from%20Driver's%20Public%20Profile'.%20" +
+                            "Please%20check%20into%20app%20for%20more%20details."
+
+                    getDriverData(passenger.passenger.toString(),customers)
+
+                    sendSMS(customers, msg)
+
                     progressDialog.dismiss()
 
                     rvPendingReq.removeAllViewsInLayout()
@@ -366,12 +379,77 @@ class PendingReq : AppCompatActivity() {
         request!!.add(jsonObjRequest)
     }
 
+    fun getDriverData(
+        cust: String,
+        customers: FetchProfileData
+    ) {
+
+        val url = Configure.BASE_URL + Configure.GET_USER_DETAILS +cust+"/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("driverprof", response.toString())
+
+                    val gson = Gson()
+
+                    if (response != null ) {
+
+                        val userArray: FetchProfileData =
+                            gson.fromJson(response, FetchProfileData ::class.java)
+
+                        if (userArray != null) {
+                            sendNotificationSelf("You had accepted the request of ${customers.first_name} for Ride ${pojoWithData.leaving} to ${pojoWithData.going} on ${pojoWithData.date}. " +
+                                    "Please check into app for more details.", userArray)
+
+                            var msg = "You%20had%20accepted%20the%20request%20of%20${customers.first_name}%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}.%20" +
+                                    "Please%20check%20into%20app%20for%20more%20details."
+
+                            sendSMS(userArray, msg)
+                        }
+
+                    }
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
 
 
-    private fun sendSMS(customers: FetchProfileData) {
+                }
+            }) {
 
-           var msg = "Your%20Request%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}%20has%20been%20Accepted%20by%20Driver%20and%20you%20can%20contact%20directly%20to%20driver%20from%20Driver's%20Public%20Profile'.%20" +
-                    "Please%20check%20into%20app%20for%20more%20details."
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
+    private fun sendSMS(
+        customers: FetchProfileData,
+        msg: String
+    ) {
 
         val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${customers.mobile}&message=${msg}&sender=WEBSMS&type=3"
 
