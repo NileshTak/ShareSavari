@@ -66,7 +66,9 @@ import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_authentication.view.*
+import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_max_seat.*
 import kotlinx.android.synthetic.main.convid_poster_layout.view.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
 import kotlinx.android.synthetic.main.ride_booking_type.view.*
@@ -88,6 +90,8 @@ import kotlin.math.pow
 class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
     lateinit var dialog_verifying: AlertDialog
+
+    var tick = ""
 
     var GALLERY_REQUEST = 1666
     var ADHAR_REQUEST = 1888
@@ -360,6 +364,10 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
         }
 
+        rbTerms.setOnClickListener {
+            radio_button_click_seat(rbTerms)
+        }
+
         llInbox.setOnClickListener {
             changeIconColor(ivInbox, tvInbox, "Inbox")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
@@ -444,6 +452,11 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
         }
     }
 
+    fun radio_button_click_seat(view: View){
+
+        val radio: RadioButton = findViewById(rg.checkedRadioButtonId)
+        tick = radio.text.toString()
+    }
 
 
     private fun showNotes( ) {
@@ -1003,6 +1016,26 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
             }
     }
 
+    private fun calculateAge(birthdate: String?) : Int {
+        val separated =
+            birthdate!!.split("-".toRegex()).toTypedArray()
+        Log.d("ageis",separated[0]+"?"+separated[1]+"?"+separated[2])
+
+
+        val dob: Calendar = Calendar.getInstance()
+        val today: Calendar = Calendar.getInstance()
+
+        dob.set(separated[0].toInt(), separated[2].toInt(), separated[1].toInt())
+
+        var age: Int = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR)
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+
+        return age
+//        tvAgeYear.text = ageInt.toString() +" Years Old"
+    }
 
 
     private fun saveUserToFirebaseDatabase(profileImageUrl: String) {
@@ -1187,8 +1220,12 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
     }
 
     private fun checkFieldsSignUp() {
-
-        if (etEmail.text.toString().isEmpty()) {
+        if (tick.isEmpty() ||tick == "") {
+            Toast.makeText(this,"Please accept Terms and Conditions ",
+                Toast.LENGTH_LONG).show()
+            progressDialog.dismiss()
+        }
+        else if (etEmail.text.toString().isEmpty()) {
             etEmail.error = "Enter Valid Email Address"
             progressDialog.dismiss()
         } else if (!validEmail(etEmail.text.toString())) {
@@ -1212,6 +1249,10 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
             progressDialog.dismiss()
         } else if (actualAdharImageB == null) {
             Toast.makeText(this, "Please select valid Adhar Back Picture.", Toast.LENGTH_LONG)
+                .show()
+            progressDialog.dismiss()
+        } else if (calculateAge(etBirthDate.text.toString()) < 18) {
+            Toast.makeText(this, "To register on this platform you must be 18+", Toast.LENGTH_LONG)
                 .show()
             progressDialog.dismiss()
         } else if (etConPass.text.toString().isEmpty()) {

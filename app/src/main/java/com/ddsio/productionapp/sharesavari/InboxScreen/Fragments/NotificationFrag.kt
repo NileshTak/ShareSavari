@@ -145,12 +145,12 @@ class NotificationFrag : Fragment() {
 
                         if (i != null) {
 
-                            for (j in 0..userArray.size-1) {
-
-                                 if (userArray.get(i).ride == userArray.get(j).ride) {
-                                     arr.add(userArray.get(i))
-                                 }
-                            }
+//                            for (j in 0..userArray.size-1) {
+//
+//                                 if (userArray.get(i).ride == userArray.get(j).ride) {
+//                                     arr.add(userArray.get(i))
+//                                 }
+//                            }
                             hitRideSearch(userArray.get(i),arr)
                         }
                     }
@@ -288,13 +288,16 @@ class NotificationFrag : Fragment() {
                         ride.username= obj.getString("username")
                         ride.tddate= obj.getString("tddate")
                         ride.tdtime= obj.getString("tdtime")
+                        ride.carname= obj.getString("carname")
+                        ride.carcolor= obj.getString("carcolor")
                         ride.is_direct= obj.getBoolean("is_direct")
+                        ride.stitle= obj.getString("stitle")
 
-                        if (!ridelist.contains(arr.get(0).ride)) {
-                            ridelist.add(arr.get(0).ride)
+//                        if (!ridelist.contains(arr.get(0).ride)) {
+//                            ridelist.add(arr.get(0).ride)
 
                             adapter.add(ridesOfferedClass(ride, customers.id, arr))
-                        }
+//                        }
                     } catch (e: JSONException) {
                         e.printStackTrace()
 

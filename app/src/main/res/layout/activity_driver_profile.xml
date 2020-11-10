@@ -515,6 +515,7 @@
                 android:layout_height="wrap_content"
                 android:text="Report this member"
                 android:layout_marginTop="15dp"
+                android:visibility="gone"
                 android:layout_marginStart="20dp"
                 android:layout_marginBottom="15dp"
                 android:focusable="true"
@@ -525,8 +526,6 @@
                 fontPath="Comfortaa-Bold.ttf"
                 android:textAlignment="center"
                 tools:ignore="MissingPrefix"  />
-
-
 
 
         </LinearLayout>

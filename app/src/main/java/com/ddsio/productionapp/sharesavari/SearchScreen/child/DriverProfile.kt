@@ -67,9 +67,6 @@ class DriverProfile : AppCompatActivity() {
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
         cust = bundle!!.get("cust") as String
 
-        Log.d("jhhhhhhhhhjh",pojoWithData.date+"   "+pojoWithData.rdate+"   "+pojoWithData.brdate+"   "+pojoWithData.tddate)
-
-
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",this)!!
@@ -78,16 +75,6 @@ class DriverProfile : AppCompatActivity() {
         btnSubmitB = findViewById<Button>(R.id.btnSubmit)
 
         ratingB.isEnabled = false
-
-        if (cust != USER_ID_KEY) {
-
-            if (pojoWithData.is_return!!) {
-                checkRatingTime(pojoWithData.brdate+" "+pojoWithData.brtime)
-            } else {
-                checkRatingTime(pojoWithData.tddate+" "+pojoWithData.tdtime)
-            }
-
-        }
 
         hitCopasAPI(cust)
 
@@ -161,16 +148,19 @@ class DriverProfile : AppCompatActivity() {
         tvReport.setOnClickListener {
             showComplaintDialog()
         }
-        if (cust == USER_ID_KEY || pojoWithData.user.toString() == USER_ID_KEY) {
-            ratingB.isEnabled = false
-            tvReport.visibility = View.GONE
-        }
+
+
         if (cust != "0") {
             getAllRating(cust)
         } else {
             getAllRating(pojoWithData.user.toString())
         }
 
+Log.d("dddddddddddd",cust+"   "+USER_ID_KEY+"     "+pojoWithData.user.toString())
+        if (cust == USER_ID_KEY || pojoWithData.user.toString() == USER_ID_KEY) {
+            ratingB.isEnabled = false
+            tvReport.visibility = View.GONE
+        }
     }
 
     private fun checkRatingTime(s: String) {
@@ -216,7 +206,6 @@ class DriverProfile : AppCompatActivity() {
                 ratingB.isEnabled = true
             } else {
                 ratingB.isEnabled = false
-
             }
         } else {
             ratingB.isEnabled = false
@@ -509,9 +498,6 @@ class DriverProfile : AppCompatActivity() {
         }
         request!!.add(jsonObjRequest)
     }
-
-
-
 
 
     private fun submitComplaint(verificationCode: String) {
@@ -831,8 +817,31 @@ class DriverProfile : AppCompatActivity() {
 
     private fun checkPassengerBooked(arr: ArrayList<String>) {
         for (i in 0..arr.size-1) {
-            if (arr.get(i) == cust) {
-                rating.isEnabled = true
+
+            Log.d("bbbb","Booked" + arr.get(i)  +"  "+USER_ID_KEY )
+
+            if (arr.get(i) == USER_ID_KEY) {
+
+                Log.d("bbbb","Booked" + cust )
+
+
+                if (cust != USER_ID_KEY) {
+
+                    rating.isEnabled = true
+                    tvReport.visibility = View.VISIBLE
+
+                    if (pojoWithData.is_return!!) {
+                        checkRatingTime(pojoWithData.brdate+" "+pojoWithData.brtime)
+                    } else {
+                        checkRatingTime(pojoWithData.tddate+" "+pojoWithData.tdtime)
+                    }
+
+                }
+
+            } else {
+                Log.d("bbbb","Not Booked")
+                rating.isEnabled = false
+                tvReport.visibility = View.GONE
             }
         }
 

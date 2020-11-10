@@ -884,6 +884,31 @@ visible against white background. "
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
+                <RadioGroup
+                    android:id="@+id/rg"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/md_white_1000"
+                    android:background="#dbeceb" >
+
+                    <RadioButton
+                        android:id="@+id/rbTerms"
+                        android:layout_width="wrap_content"
+                        android:textSize="18sp"
+                        fontPath="Comfortaa-Bold.ttf"
+                        android:layout_height="wrap_content"
+                        tools:ignore="MissingPrefix"
+                        android:text="I accept all Terms and Conditions" />
+
+
+                </RadioGroup>
+
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cvSignUp"
                 android:layout_width="match_parent"

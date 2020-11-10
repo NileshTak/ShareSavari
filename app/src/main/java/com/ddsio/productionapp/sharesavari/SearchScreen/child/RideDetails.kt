@@ -131,7 +131,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         IDToCancel  = bundle!!.get("IDToCancel") as String
 
 
-
         if (screen == "home") {
             rlBottom.visibility = View.GONE
             rlBottomDelete.visibility = View.VISIBLE
@@ -191,7 +190,9 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         tvCom.text = pojoWithData.comment
 
-        if (pojoWithData.carname =="" || pojoWithData.carname.isNullOrBlank()) {
+        Log.d("sssssssss",pojoWithData.carname.toString())
+
+        if (pojoWithData.carname == "" || pojoWithData.carname.isNullOrBlank()) {
             llCar.visibility = View.GONE
         } else {
             tvCar.text = pojoWithData.carname
@@ -320,7 +321,14 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
             int.putExtra("pojoWithData",pojoWithData)
-            int.putExtra("cust","0")
+
+            if (USER_ID_KEY == pojoWithData.user.toString()) {
+                int.putExtra("cust",pojoWithData.user.toString())
+            } else {
+                int.putExtra("cust","0")
+            }
+
+
             startActivity(int,bundle)
         }
 
@@ -1364,7 +1372,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                 }
 
-                params.put("user",currentUser.oneid.toString())
+                params.put("user",userProf.oneid.toString())
                 return params
             }
         }

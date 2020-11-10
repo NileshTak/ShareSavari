@@ -40,7 +40,6 @@ import kotlin.collections.HashMap
 
 class ReviewsList : AppCompatActivity() {
 
-
     lateinit var progressDialog: ProgressDialog
     lateinit var pojoWithData : BookRidesPojoItem
     var LOGIN_TOKEN = ""
@@ -49,8 +48,6 @@ class ReviewsList : AppCompatActivity() {
     val adapter = GroupAdapter<ViewHolder>()
     var request: RequestQueue? = null
     lateinit var driverid : String
-
-
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
@@ -74,7 +71,11 @@ class ReviewsList : AppCompatActivity() {
             onBackPressed()
         }
 
-        showRatings()
+        if ( pojoWithData.user != null ) {
+            showRatings()
+        } else {
+            getRating()
+        }
     }
 
     private fun showRatings() {
@@ -118,7 +119,10 @@ class ReviewsList : AppCompatActivity() {
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-        val url = Configure.BASE_URL + Configure.RATING +"?driver=" + driverid
+        val url = Configure.BASE_URL + Configure.RATING +"?driver=" + USER_ID_KEY
+
+        Log.d("ddddd",driverid)
+
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
             url,
