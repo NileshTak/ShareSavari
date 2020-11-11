@@ -116,7 +116,6 @@ class SerachResult : AppCompatActivity() {
                         progressDialog.dismiss()
                         Toast.makeText(this@SerachResult,"Sorry, No Rides available at this Route",Toast.LENGTH_LONG).show()
 
-
                     } else{
 
                         for (rides in userArray) {

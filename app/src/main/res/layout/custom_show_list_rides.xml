@@ -41,6 +41,7 @@
                     tools:ignore="MissingPrefix" />
 
             <ImageView
+                android:id="@+id/ivarr"
                 android:layout_width="40dp"
                 android:src="@drawable/ic_arrow_forward_black_24dp"
                 android:layout_centerInParent="true"
@@ -118,6 +119,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:ignore="MissingPrefix" />
+
+
 
             <RelativeLayout
                 android:visibility="gone"

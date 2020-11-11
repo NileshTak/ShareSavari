@@ -65,6 +65,40 @@
 
             </LinearLayout>
 
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_group_24"
+                    android:layout_height="22dp"/>
+
+
+                <TextView
+                    android:id="@+id/tvSeats"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0/5 ratings"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@color/textColorHead"
+                    android:textSize="16sp"
+                    fontPath="Comfortaa-Regular.ttf"
+                    android:textAlignment="center"
+                    tools:ignore="MissingPrefix"  />
+
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <RelativeLayout

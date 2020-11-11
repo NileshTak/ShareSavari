@@ -31,7 +31,6 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_co_pas_list.*
-import kotlinx.android.synthetic.main.activity_ride_detail.view.*
 import kotlinx.android.synthetic.main.activity_ride_detail.view.ivprof
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvOfferedby
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvRating
@@ -99,7 +98,7 @@ class CoPasList : AppCompatActivity() {
 //                                adapter.add(ridesClass(userArray.get(i)))
 
                                 if (userArray.get(i).is_confirm) {
-                                    getUserData(userArray.get(i).passenger)
+                                    getUserData(userArray.get(i) )
                                 }
 
                             }
@@ -151,8 +150,8 @@ class CoPasList : AppCompatActivity() {
 
 
 
-    fun getUserData(passenger: Int) {
-        val url = BASE_URL+ GET_USER_DETAILS+passenger+"/"
+    fun getUserData(passenger: bookrideItem) {
+        val url = BASE_URL+ GET_USER_DETAILS+passenger.passenger+"/"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
@@ -168,7 +167,7 @@ class CoPasList : AppCompatActivity() {
                         val userArray: FetchProfileData =
                             gson.fromJson(response, FetchProfileData ::class.java)
 
-                        adapter.add(ridesClass(userArray))
+                        adapter.add(ridesClass(userArray,passenger))
 
                     }
 
@@ -223,7 +222,10 @@ class CoPasList : AppCompatActivity() {
     }
 
 
-    inner class ridesClass(var customers: FetchProfileData) : Item<ViewHolder>() {
+    inner class ridesClass(
+        var customers: FetchProfileData,
+        var passenger: bookrideItem
+    ) : Item<ViewHolder>() {
         override fun getLayout(): Int {
             return R.layout.custom_copas_list
         }
@@ -233,7 +235,7 @@ class CoPasList : AppCompatActivity() {
             viewHolder.itemView.cvAccept.visibility = View.GONE
             Glide.with( viewHolder.itemView.tvOfferedby.context).load(customers.image).into(viewHolder.itemView.ivprof)
             getRating(customers,viewHolder.itemView.tvRating)
-
+            viewHolder.itemView.tvSeats.text = "Seats :"+passenger.seats
 
             viewHolder.itemView.setOnClickListener {
                 var int = Intent(viewHolder.itemView.tvOfferedby.context,

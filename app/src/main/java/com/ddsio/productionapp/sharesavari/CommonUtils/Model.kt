@@ -140,6 +140,7 @@ class bookride : ArrayList<bookrideItem>()
 
 data class bookrideItem(
     val comment: String,
+    val seats: String,
     val id: Int,
     val passenger: Int,
     val plat: Any,

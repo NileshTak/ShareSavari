@@ -110,8 +110,6 @@ class NotificationFrag : Fragment() {
     }
 
 
-
-
     private fun hitFindBookedRideAPI() {
 
         var arr = ArrayList<bookrideItem>()
@@ -206,7 +204,7 @@ class NotificationFrag : Fragment() {
 
     inner class ridesOfferedClass(
         var customers: BookRidesPojoItem,
-        var idToCancel: Int,
+        var idToCancel: bookrideItem,
         var arr: ArrayList<bookrideItem>
     ) : Item<ViewHolder>() {
         override fun getLayout(): Int {
@@ -216,10 +214,9 @@ class NotificationFrag : Fragment() {
         override fun bind(viewHolder: ViewHolder, position: Int) {
 
 
-
                 viewHolder.itemView.tvFromCity.text = customers.lcity
 
-                viewHolder.itemView.tvSeats.text = "Seats Booked : "+arr.size.toString()
+                viewHolder.itemView.tvSeats.text = "Seats Booked : "+idToCancel.seats
 
                 viewHolder.itemView.tvToCity.text = customers.gcity
 
@@ -237,7 +234,7 @@ class NotificationFrag : Fragment() {
 
                 int.putExtra("pojoWithData",customers)
                 int.putExtra("screen","Booked")
-                int.putExtra("IDToCancel", idToCancel.toString())
+                int.putExtra("IDToCancel", idToCancel.id.toString())
                 startActivity(int)
             }
         }
@@ -296,7 +293,7 @@ class NotificationFrag : Fragment() {
 //                        if (!ridelist.contains(arr.get(0).ride)) {
 //                            ridelist.add(arr.get(0).ride)
 
-                            adapter.add(ridesOfferedClass(ride, customers.id, arr))
+                            adapter.add(ridesOfferedClass(ride, customers, arr))
 //                        }
                     } catch (e: JSONException) {
                         e.printStackTrace()

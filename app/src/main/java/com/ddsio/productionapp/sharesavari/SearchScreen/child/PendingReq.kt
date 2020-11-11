@@ -240,6 +240,7 @@ class PendingReq : AppCompatActivity() {
             viewHolder.itemView.tvOfferedby.text = customers.first_name
             Glide.with( viewHolder.itemView.tvOfferedby.context).load(customers.image).into(viewHolder.itemView.ivprof)
             viewHolder.itemView.llBtn.visibility = View.VISIBLE
+            viewHolder.itemView.tvSeats.text = "Seats :"+passenger.seats
 
             viewHolder.itemView.cvAccept.setOnClickListener {
                 showRideDialog(customers,passenger)

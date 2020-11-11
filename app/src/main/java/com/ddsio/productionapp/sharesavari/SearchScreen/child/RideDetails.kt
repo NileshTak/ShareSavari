@@ -1018,9 +1018,9 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                         progressDialog.dismiss()
                         Toast.makeText(this@RideDetails,"No seat available for this Ride. Choose another ride.",Toast.LENGTH_LONG).show()
                     } else {
-                        for (i in 0..count-1) {
-                            boookRideAllowed(customers,i,count-1)
-                        }
+//                        for (i in 0..count-1) {
+                            boookRideAllowed(customers,count )
+//                        }
 
                     }
 
@@ -1066,7 +1066,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
     private fun bookedSeatsCount(customers: BookRidesPojoItem) {
 
-        val userArrayF = ArrayList<bookrideItem>()
+        bookedSeatCount = 0
 
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"?ride=${customers.id}"
 
@@ -1088,11 +1088,10 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 //                                adapter.add(ridesClass(userArray.get(i)))
 
                             if (userArray.get(i).is_confirm) {
-                                userArrayF.add(userArray.get(i))
+                               bookedSeatCount = bookedSeatCount + userArray.get(i).seats.toInt()
                             }
                         }
-                        tvCo.text = userArrayF.size.toString()+"/" + pojoWithData.passenger
-                        bookedSeatCount = userArrayF.size
+                        tvCo.text = bookedSeatCount.toString()+"/"+ pojoWithData.passenger
                     }
 
 
@@ -1173,8 +1172,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
     private fun boookRideAllowed(
         customers: BookRidesPojoItem,
-        i: Int,
-        countIndex: Int
+
+        count: Int
     ) {
 
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL
@@ -1196,9 +1195,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     sendSMSSelf(customers)
                     sendSMS(customers)
 
-                    if (i == countIndex) {
-                        sendMessage(customers,countIndex+1)
-                    }
+                        sendMessage(customers,count)
+
 
                 }
             }, object : Response.ErrorListener {
@@ -1233,6 +1231,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 params.put("passenger",USER_ID_KEY)
                 params.put("plat",lat.toString())
                 params.put("plog",log.toString())
+                params.put("seats",count.toString())
                 params.put("comment"," ")
                 params.put("is_confirm",pojoWithData.is_direct.toString())
 
