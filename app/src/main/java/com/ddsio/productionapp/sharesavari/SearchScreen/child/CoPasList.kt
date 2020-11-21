@@ -247,6 +247,7 @@ class CoPasList : AppCompatActivity() {
                     ).toBundle()
                 int.putExtra("pojoWithData",pojoWithData)
                 int.putExtra("cust",customers.id.toString())
+                int.putExtra("type","copas")
                 startActivity(int,bundle)
             }
 

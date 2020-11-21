@@ -744,13 +744,13 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
             if (e.hasForeverDenied()) {
                 //the list of forever denied permissions, user has check 'never ask again'
-                e.foreverDenied.forEach {
-                }
+
                 // you need to open setting manually if you really need it
                 e.goToSettings();
             }
         }
     }
+
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -321,7 +321,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
             int.putExtra("pojoWithData",pojoWithData)
-
+            int.putExtra("type","driver")
             if (USER_ID_KEY == pojoWithData.user.toString()) {
                 int.putExtra("cust",pojoWithData.user.toString())
             } else {
@@ -1190,7 +1190,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                     val userArray :bookrideItem =
                         gson.fromJson(response, bookrideItem ::class.java)
-                    
+
+                    sendNotificationSelf(customers)
                     sendNotification(customers)
                     sendSMSSelf(customers)
                     sendSMS(customers)
@@ -1255,7 +1256,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         }
 
-        val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${currentUser.mobile}&message=${msg}&sender=WEBSMS&type=3"
+        val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${currentUser.mobile}&message=${msg}&sender=MSGSAY&type=3"
 
         Log.d("smsentvjjnd", url.toString())
         Log.d("smsentvjjnd", currentUser.mobile!!)
@@ -1313,11 +1314,10 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             ONESIGNAL,
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
-                    sendNotificationSelf(customers)
+
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
-                    sendNotificationSelf(customers)
                 }
             }) {
 
@@ -1390,7 +1390,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         }
 
-        val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${userProf.mobile}&message=${msg}&sender=WEBSMS&type=3"
+        val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${userProf.mobile}&message=${msg}&sender=MSGSAY&type=3"
 
         Log.d("smsentvjjnd", url.toString())
         Log.d("smsentvjjnd", userProf.mobile!!)

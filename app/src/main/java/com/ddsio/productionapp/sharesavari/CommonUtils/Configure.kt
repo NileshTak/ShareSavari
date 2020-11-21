@@ -3,7 +3,7 @@ package com.productionapp.amhimemekar.CommonUtils
 object Configure {
 
 
-    val BASE_URL = "http://ddsio.com/sharesawaari/rest/"
+    val BASE_URL = "https://ddsio.com/sharesawaari/rest/"
 
 
     //Registration

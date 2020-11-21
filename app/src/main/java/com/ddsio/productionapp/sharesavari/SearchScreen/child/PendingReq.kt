@@ -256,6 +256,7 @@ class PendingReq : AppCompatActivity() {
                         R.anim.fade_in, R.anim.fade_out
                     ).toBundle()
                 int.putExtra("pojoWithData",pojoWithData)
+                int.putExtra("type","driver")
                 int.putExtra("cust",customers.id.toString())
                 startActivity(int,bundle)
             }
@@ -452,7 +453,7 @@ class PendingReq : AppCompatActivity() {
         msg: String
     ) {
 
-        val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${customers.mobile}&message=${msg}&sender=WEBSMS&type=3"
+        val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${customers.mobile}&message=${msg}&sender=MSGSAY&type=3"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,

@@ -33,6 +33,11 @@ import kotlinx.android.synthetic.main.custom_booked_rides.view.tvRate
 import kotlinx.android.synthetic.main.custom_booked_rides.view.tvToCity
 import org.json.JSONException
 import org.json.JSONObject
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class NotificationFrag : Fragment() {
 
@@ -76,6 +81,28 @@ class NotificationFrag : Fragment() {
 
         return view
     }
+
+
+    fun getCurrentTimeStamp() : Long {
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val formattedDate = df.format(c.time)
+        return getTimeStamp(formattedDate) 
+    }
+
+    private fun getTimeStamp(s: String): Long {
+
+        Log.d("timestampdatsi",s)
+
+        val formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = formatter.parse(s) as Date
+
+        Log.d("timestampdatsi",date.time.toString())
+
+        return date.time
+    }
+
+
     private fun askGalleryPermissionLocation() {
         askPermission(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -240,6 +267,25 @@ class NotificationFrag : Fragment() {
         }
     }
 
+
+    fun getTimeStampPlusOneDay(s: String) : Long {
+
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = sdf.parse(s)
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.HOUR, 24)
+
+        val Year = calendar[Calendar.YEAR]
+        val Month = calendar[Calendar.MONTH]+1
+        val Day = calendar[Calendar.DAY_OF_MONTH]
+        val Hour = calendar[Calendar.HOUR]
+        val Minute = calendar[Calendar.MINUTE]
+        val Second = calendar[Calendar.SECOND]
+
+        return getTimeStamp(Year.toString()+"-"+Month+"-"+Day+" "+Hour+":"+Minute+":"+Second )
+    }
+
     private fun hitRideSearch(
         customers: bookrideItem,
         arr: ArrayList<bookrideItem>
@@ -289,11 +335,22 @@ class NotificationFrag : Fragment() {
                         ride.carcolor= obj.getString("carcolor")
                         ride.is_direct= obj.getBoolean("is_direct")
                         ride.stitle= obj.getString("stitle")
+                        ride.brdate= obj.getString("brdate")
+                        ride.brtime= obj.getString("brtime")
 
 //                        if (!ridelist.contains(arr.get(0).ride)) {
 //                            ridelist.add(arr.get(0).ride)
 
-                            adapter.add(ridesOfferedClass(ride, customers, arr))
+                        if (ride.is_return == false) {
+                            if (getTimeStampPlusOneDay(ride.tddate.toString() +" " +ride.tdtime.toString()) > getCurrentTimeStamp() ) {
+                                adapter.add(ridesOfferedClass(ride, customers, arr))
+                            }
+                        } else {
+                            if (getTimeStampPlusOneDay(ride.brdate.toString() +" " +ride.brtime.toString()) > getCurrentTimeStamp() ) {
+                                adapter.add(ridesOfferedClass(ride, customers, arr))
+                            }
+                        }
+
 //                        }
                     } catch (e: JSONException) {
                         e.printStackTrace()

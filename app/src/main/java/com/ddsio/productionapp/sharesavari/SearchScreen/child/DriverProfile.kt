@@ -34,8 +34,8 @@ import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.activity_co_pas_list.*
 import kotlinx.android.synthetic.main.activity_driver_profile.*
-import kotlinx.android.synthetic.main.activity_driver_profile.ivCloseScreen
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -58,6 +58,7 @@ class DriverProfile : AppCompatActivity() {
     var USER_UPDATE_ID = ""
     private val REQUEST_CALL = 1
     lateinit var cust : String
+    lateinit var type : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +67,7 @@ class DriverProfile : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
         cust = bundle!!.get("cust") as String
+        type = bundle!!.get("type") as String
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
@@ -96,7 +98,6 @@ class DriverProfile : AppCompatActivity() {
 
 //        if (USER_ID_KEY == pojoWithData.user.toString() ) {
 //            llContact.visibility = View.VISIBLE
-//            cvCall.visibility = View.VISIBLE
 //        } else {
 //            llContact.visibility = View.GONE
 //        }
@@ -156,18 +157,36 @@ class DriverProfile : AppCompatActivity() {
             getAllRating(pojoWithData.user.toString())
         }
 
-Log.d("dddddddddddd",cust+"   "+USER_ID_KEY+"     "+pojoWithData.user.toString())
         if (cust == USER_ID_KEY || pojoWithData.user.toString() == USER_ID_KEY) {
             ratingB.isEnabled = false
             tvReport.visibility = View.GONE
+        }
+
+        if (pojoWithData.user.toString() != USER_ID_KEY) {
+            if (type == "copas") {
+                llContact.visibility = View.GONE
+            } else {
+                llContact.visibility = View.VISIBLE
+            }
         }
     }
 
     private fun checkRatingTime(s: String) {
 
-        val c = Calendar.getInstance()
-        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val formattedDate = df.format(c.time)
+//        val c = Calendar.getInstance(),
+//        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        val formattedDate = df.format(c.time)
+
+        val calendars = Calendar.getInstance()
+        val hour12hrs = calendars[Calendar.HOUR]
+        val minutes = calendars[Calendar.MINUTE]
+        val seconds = calendars[Calendar.SECOND]
+        val year = calendars[Calendar.YEAR]
+        val month = calendars[Calendar.MONTH]+1
+        val day = calendars[Calendar.DAY_OF_MONTH]
+
+        var formattedDate = year.toString()+"-"+month+"-"+day+" "+hour12hrs+":"+minutes+":"+seconds
+
 
         val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val date = sdf.parse(s)
@@ -201,14 +220,15 @@ Log.d("dddddddddddd",cust+"   "+USER_ID_KEY+"     "+pojoWithData.user.toString()
         Log.d("jjjjjjjjj",datePlus1)
         Log.d("jjjjjjjjj",formattedDate)
 
-        if (getTimeStamp(formattedDate) > getTimeStamp(datePlus1)) {
-            if (getTimeStamp(formattedDate) < getTimeStamp(datePlus)) {
+        if (getTimeStamp(formattedDate) > getTimeStamp(datePlus1) && getTimeStamp(formattedDate) < getTimeStamp(datePlus)) {
+
+                Log.d("jjjjjjjjj","two")
                 ratingB.isEnabled = true
-            } else {
-                ratingB.isEnabled = false
-            }
+            tvReport.visibility = View.VISIBLE
+
         } else {
             ratingB.isEnabled = false
+            tvReport.visibility = View.GONE
             Log.d("jjjjjjjjj","gu")
         }
 
@@ -364,7 +384,6 @@ Log.d("dddddddddddd",cust+"   "+USER_ID_KEY+"     "+pojoWithData.user.toString()
         }
 
     }
-
 
 
 
@@ -769,17 +788,16 @@ Log.d("dddddddddddd",cust+"   "+USER_ID_KEY+"     "+pojoWithData.user.toString()
 //                                adapter.add(ridesClass(userArray.get(i)))
 
                             if (userArray.get(i).is_confirm) {
+
+                                if (userArray.get(i).passenger.toString() == cust) {
+                                    cvCall.visibility = View.VISIBLE
+                                }
+
                                 arr.add(userArray.get(i).passenger.toString())
                             }
-
                         }
-
                         checkPassengerBooked(arr)
                     }
-
-
-
-
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
@@ -824,16 +842,15 @@ Log.d("dddddddddddd",cust+"   "+USER_ID_KEY+"     "+pojoWithData.user.toString()
 
                 Log.d("bbbb","Booked" + cust )
 
-
                 if (cust != USER_ID_KEY) {
 
                     rating.isEnabled = true
                     tvReport.visibility = View.VISIBLE
 
-                    if (pojoWithData.is_return!!) {
-                        checkRatingTime(pojoWithData.brdate+" "+pojoWithData.brtime)
-                    } else {
+                    if (pojoWithData.is_return == false) {
                         checkRatingTime(pojoWithData.tddate+" "+pojoWithData.tdtime)
+                    } else {
+                        checkRatingTime(pojoWithData.brdate+" "+pojoWithData.brtime)
                     }
 
                 }
@@ -848,7 +865,7 @@ Log.d("dddddddddddd",cust+"   "+USER_ID_KEY+"     "+pojoWithData.user.toString()
     }
 
 
-    var i = 0
+
     private fun hitFindBookedRideAPI(cust: String) {
 
         val adapter = GroupAdapter<ViewHolder>()
@@ -860,21 +877,18 @@ Log.d("dddddddddddd",cust+"   "+USER_ID_KEY+"     "+pojoWithData.user.toString()
             url,
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
-
                     val gson = Gson()
-
 
                     val userArray: ArrayList<bookrideItem> =
                         gson.fromJson(response, bookride ::class.java)
 
                     for (rides in userArray) {
-                        if (rides != null && i == 0) {
+                        if (rides != null ) {
                             if (rides.ride.toString() == pojoWithData.id.toString()) {
                                 if (rides.is_confirm == false) {
                                     cvCall.visibility = View.GONE
                                 } else {
                                     cvCall.visibility = View.VISIBLE
-                                    i = 1
                                 }
                             }
                         }
