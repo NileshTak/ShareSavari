@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.TimePicker
 import android.widget.Toast
@@ -22,6 +23,7 @@ import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
@@ -31,6 +33,8 @@ import kotlinx.android.synthetic.main.activity_return_date_and_time.*
 import kotlinx.android.synthetic.main.activity_show_map.*
 import kotlinx.android.synthetic.main.activity_show_map_drop.*
 import kotlinx.android.synthetic.main.activity_show_map_pick_up.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -140,6 +144,31 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
 
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        if (!EventBus.getDefault().isRegistered(this@GoingDateAndTime)) EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this@GoingDateAndTime)
+    }
+
+
+    @Subscribe
+    fun OnAddSelected(add : BookRideScreenFetchCity?) {
+
+        Log.d("CITYIS",add!!.city.toString() +"jubhjbjbj")
+        if (add!!.type == "stop") {
+            tvStop.text = add!!.city
+            pojoWithData.stitle = add!!.city
+            pojoWithData.slat = add.lat
+            pojoWithData.slog = add.long
+
+        }
+    }
+
     private fun shoeReachTimeDialog() {
         val c = Calendar.getInstance()
         var mHour = c[Calendar.HOUR_OF_DAY]
@@ -216,6 +245,11 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
             Toast.makeText(this,"Reaching Date should be greater then or equals to Leaving Date",
                 Toast.LENGTH_LONG).show()
         }  else {
+
+            pojoWithData.stitle = etStopPoint.text.toString()
+            pojoWithData.slog = "0"
+            pojoWithData.slat = "0"
+
             if (cvReturnRide.isChecked) {
                 pojoWithData.is_return = "true"
 
@@ -245,6 +279,7 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
                         R.anim.fade_in, R.anim.fade_out
                     ).toBundle()
                 int.putExtra("pojoWithData",pojoWithData)
+                int.putExtra("stoppointReturn", "")
                 startActivity(int,bundle)
             }
 

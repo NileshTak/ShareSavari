@@ -63,6 +63,8 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 //    var smoking = ""
     var cbBookInstant = ""
 
+    var stoppointReturn = ""
+
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
@@ -81,6 +83,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         pojoWithData = offerRideModel()
 
         previousPojo = bundle!!.get("pojoWithData") as BookRidesPojoItem
+        stoppointReturn = bundle!!.get("stoppointReturn") as String
 
         pojoWithData.comment = previousPojo.comment
         pojoWithData.date= previousPojo.date
@@ -303,6 +306,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
             }
         })
 
+        etStopPointReturn.setText(stoppointReturn)
 
         etReachingTime.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(p0: View?, p1: Boolean) {
@@ -786,7 +790,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                         pohoReturnRide.slat= pojoWithData.slat
                         pohoReturnRide.id= pojoWithData.id.toString()
                         pohoReturnRide.image= pojoWithData.image
-                        pohoReturnRide.stitle= pojoWithData.stitle
+                        pohoReturnRide.stitle= etStopPointReturn.text.toString()
                         pohoReturnRide.carname= pojoWithData.carname
                         pohoReturnRide.is_return= pojoWithData.is_return.toString()
                         pohoReturnRide.passenger=  pojoWithData.passenger.toString()

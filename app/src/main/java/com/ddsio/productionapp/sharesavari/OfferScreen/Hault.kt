@@ -29,6 +29,7 @@ class Hault : AppCompatActivity() {
     lateinit var progressDialog: ProgressDialog
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
+    var stoppointReturn = ""
 
 
     override fun attachBaseContext(newBase: Context) {
@@ -45,6 +46,7 @@ class Hault : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
+        stoppointReturn = bundle!!.get("stoppointReturn") as String
 
         ivBacH.setOnClickListener {
             onBackPressed()
@@ -55,28 +57,6 @@ class Hault : AppCompatActivity() {
         }
     }
 
-    @Subscribe
-    fun OnAddSelected(add : BookRideScreenFetchCity?) {
-
-        Log.d("CITYIS",add!!.city.toString() +"jubhjbjbj")
-        if (add!!.type == "stop") {
-            tvStop.text = add!!.city
-            pojoWithData.stitle = add!!.city
-            pojoWithData.slat = add.lat
-            pojoWithData.slog = add.long
-
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (!EventBus.getDefault().isRegistered(this@Hault)) EventBus.getDefault().register(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this@Hault)
-    }
 
     fun checkFields() {
         if (etCar.text.toString().isEmpty() || etCar.text.toString() == "") {
@@ -88,10 +68,8 @@ class Hault : AppCompatActivity() {
         }   else  {
 
             pojoWithData.carname = etCar.text.toString()
-            pojoWithData.slog = "0"
-            pojoWithData.slat = "0"
             pojoWithData.carcolor = etCarColor.text.toString()
-            pojoWithData.stitle = etStopPoint.text.toString()
+
 
             var int = Intent(this,
                 SmokingandBooking::class.java)
@@ -101,6 +79,7 @@ class Hault : AppCompatActivity() {
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
             int.putExtra("pojoWithData",pojoWithData)
+            int.putExtra("stoppointReturn", stoppointReturn)
             startActivity(int,bundle)
         }
     }

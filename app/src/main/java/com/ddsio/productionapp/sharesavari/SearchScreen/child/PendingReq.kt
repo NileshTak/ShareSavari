@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
 import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
+import com.ddsio.productionapp.sharesavari.ProfileScreen.Child.ChatPas
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.User
 import com.google.gson.Gson
@@ -263,11 +264,21 @@ class PendingReq : AppCompatActivity() {
 
 
             viewHolder.itemView.cvContact.setOnClickListener {
-                var user = User(customers.id.toString() , customers.first_name!!,pojoWithData.image.toString())
+//                var user = User(customers.id.toString() , customers.first_name!!,pojoWithData.image.toString())
+//
+//                val intent = Intent(viewHolder.itemView.cvContact.context, ChatLogActivity::class.java)
+//                intent.putExtra(NewMessageActivity.USER_KEY,user)
+//                startActivity(intent)
 
-                val intent = Intent(viewHolder.itemView.cvContact.context, ChatLogActivity::class.java)
-                intent.putExtra(NewMessageActivity.USER_KEY,user)
-                startActivity(intent)
+                val intent = Intent(viewHolder.itemView.cvContact.context, ChatPas::class.java)
+//            intent.putExtra(NewMessageActivity.USER_KEY,user)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        viewHolder.itemView.cvContact.context ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                intent.putExtra("driverid" ,customers.id.toString() )
+                startActivity(intent,bundle)
             }
         }
     }

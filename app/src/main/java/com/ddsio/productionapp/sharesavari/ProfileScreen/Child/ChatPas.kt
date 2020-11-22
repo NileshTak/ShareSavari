@@ -1,30 +1,33 @@
-package com.ddsio.productionapp.sharesavari.InboxScreen.Fragments
+package com.ddsio.productionapp.sharesavari.ProfileScreen.Child
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
 import com.ddsio.productionapp.sharesavari.InboxScreen.Child.LatestMessageRow
 import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
+import com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag
 import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.User
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.letsbuildthatapp.kotlinmessenger.models.ChatMessage
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_smokingand_booking.*
 import kotlinx.android.synthetic.main.fragment_messages.*
 
-class MessagesFrag : Fragment() {
+class ChatPas : AppCompatActivity() {
 
     companion object {
         var currentUser: User? = null
@@ -37,34 +40,41 @@ class MessagesFrag : Fragment() {
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
 
+    var driverid = ""
+
     lateinit var progressDialog: ProgressDialog
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_chat_pas)
 
+        recyclerview_latest_messages = findViewById<RecyclerView>(R.id.recyclerview_latest_messages)
+        fabNewMsg = findViewById<FloatingActionButton>(R.id.fabNewMsg)
 
-        val view = inflater.inflate(R.layout.fragment_messages, container, false)
-        recyclerview_latest_messages = view.findViewById<RecyclerView>(R.id.recyclerview_latest_messages)
-        fabNewMsg = view.findViewById<FloatingActionButton>(R.id.fabNewMsg)
-
-        LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",activity)!!
-        USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",activity)!!
-        USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",activity)!!
-
+        LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
+        USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
+        USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY,"",this)!!
+        val bundle: Bundle? = intent.extras
+        driverid = bundle!!.get("driverid") as String
 
         recyclerview_latest_messages.adapter = adapter
-        recyclerview_latest_messages.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+        recyclerview_latest_messages.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
+
+        ivBacS.setOnClickListener {
+            onBackPressed()
+        }
 
         fabNewMsg.setOnClickListener {
-            val intent = Intent(activity, NewMessageActivity::class.java)
+            val intent = Intent(this, NewMessageActivity::class.java)
             startActivity(intent)
         }
 
-        progressDialog = ProgressDialog(activity)
+        progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Wait a Sec....Loading Chats")
         progressDialog.setCancelable(false)
         progressDialog.show()
@@ -73,7 +83,7 @@ class MessagesFrag : Fragment() {
         // set item click listener on your adapter
         adapter.setOnItemClickListener { item, view ->
 
-            val intent = Intent(activity, ChatLogActivity::class.java)
+            val intent = Intent(this, ChatLogActivity::class.java)
 
             // we are missing the chat partner user
 
@@ -88,21 +98,21 @@ class MessagesFrag : Fragment() {
         fetchCurrentUser()
 
         verifyUserIsLoggedIn()
-
-        return view
     }
 
     val latestMessagesMap = HashMap<String, ChatMessage>()
 
     private fun refreshRecyclerViewMessages() {
         adapter.clear()
-        if (latestMessagesMap.size < 1) {
-            llNoMsg.visibility = View.VISIBLE
-        } else {
+//        if (latestMessagesMap.size < 1) {
+//            llNoMsg.visibility = View.VISIBLE
+//        } else {
             llNoMsg.visibility = View.GONE
-        }
+//        }
         latestMessagesMap.values.forEach {
-            adapter.add(LatestMessageRow(it))
+            if (it.toId == driverid) {
+                adapter.add(LatestMessageRow(it))
+            }
         }
         progressDialog.dismiss()
     }
@@ -150,8 +160,8 @@ class MessagesFrag : Fragment() {
         ref.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(p0: DataSnapshot) {
-                currentUser = p0.getValue(User::class.java)
-                Log.d("LatestMessages", "Current user ${currentUser?.profileImageUrl}")
+                MessagesFrag.currentUser = p0.getValue(User::class.java)
+                Log.d("LatestMessages", "Current user ${MessagesFrag.currentUser?.profileImageUrl}")
                 progressDialog.dismiss()
             }
 
@@ -163,11 +173,9 @@ class MessagesFrag : Fragment() {
 
     private fun verifyUserIsLoggedIn() {
         if (USER_ID_KEY == null || USER_ID_KEY.isEmpty() ) {
-            val intent = Intent(activity, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
     }
-
-
 }

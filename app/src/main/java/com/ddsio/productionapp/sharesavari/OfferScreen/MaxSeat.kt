@@ -28,6 +28,7 @@ class MaxSeat : AppCompatActivity() {
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
     var maxSeatCount = ""
+    var stoppointReturn = ""
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
@@ -43,6 +44,7 @@ class MaxSeat : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
+        stoppointReturn = bundle!!.get("stoppointReturn") as String
 
 
         Log.d("jhhhhhhhhhjh",pojoWithData.date+"   "+pojoWithData.rdate+"   "+pojoWithData.brdate+"   "+pojoWithData.tddate)
@@ -94,6 +96,7 @@ class MaxSeat : AppCompatActivity() {
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
             int.putExtra("pojoWithData",pojoWithData)
+            int.putExtra("stoppointReturn", stoppointReturn)
             startActivity(int,bundle)
         }
     }

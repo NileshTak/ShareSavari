@@ -2,6 +2,7 @@ package com.ddsio.productionapp.sharesavari.SearchScreen.child
 
 import android.Manifest
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,18 +15,22 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
-import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
-import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
+import com.ddsio.productionapp.sharesavari.ProfileScreen.Child.ChatPas
 import com.ddsio.productionapp.sharesavari.R
-import com.ddsio.productionapp.sharesavari.User
 import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
+import com.letsbuildthatapp.kotlinmessenger.models.ChatMessage
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.productionapp.amhimemekar.CommonUtils.Configure.BASE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.COMPLAINT
@@ -34,7 +39,7 @@ import com.productionapp.amhimemekar.CommonUtils.Configure.OFFER_RIDE_URL
 import com.productionapp.amhimemekar.CommonUtils.Configure.RATING
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.activity_co_pas_list.*
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
 import java.text.DateFormat
@@ -60,6 +65,10 @@ class DriverProfile : AppCompatActivity() {
     lateinit var cust : String
     lateinit var type : String
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driver_profile)
@@ -79,6 +88,8 @@ class DriverProfile : AppCompatActivity() {
         ratingB.isEnabled = false
 
         hitCopasAPI(cust)
+
+        listenForLatestMessages()
 
         ivCloseScreen.setOnClickListener {
             onBackPressed()
@@ -119,11 +130,19 @@ class DriverProfile : AppCompatActivity() {
 
         cvChat.setOnClickListener {
 
-            var user = User(driverId.toString(), tvName.text.toString(),pojoWithData.image.toString())
+//            var user = User(driverId.toString(), tvName.text.toString(),pojoWithData.image.toString())
 
-            val intent = Intent(this, ChatLogActivity::class.java)
-            intent.putExtra(NewMessageActivity.USER_KEY,user)
-            startActivity(intent)
+//
+            val intent = Intent(this, ChatPas::class.java)
+//            intent.putExtra(NewMessageActivity.USER_KEY,user)
+            val bundle =
+                ActivityOptionsCompat.makeCustomAnimation(
+                    this ,
+                    R.anim.fade_in, R.anim.fade_out
+                ).toBundle()
+            intent.putExtra("driverid" , driverId.toString())
+            startActivity(intent,bundle)
+
         }
 
 
@@ -139,7 +158,7 @@ class DriverProfile : AppCompatActivity() {
             startActivity(int)
         }
 
-        if (USER_ID_KEY == pojoWithData.user.toString()) {
+        if (type == "self") {
             rvRating.visibility = View.GONE
         } else {
             rvRating.visibility = View.VISIBLE
@@ -170,6 +189,36 @@ class DriverProfile : AppCompatActivity() {
             }
         }
     }
+
+
+    val latestMessagesMap = HashMap<String, ChatMessage>()
+
+    private fun listenForLatestMessages() {
+        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$USER_ID_KEY")
+        ref.addChildEventListener(object: ChildEventListener {
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val chatMessage = p0.getValue(ChatMessage::class.java) ?: return
+                latestMessagesMap[p0.key!!] = chatMessage
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                val chatMessage = p0.getValue(ChatMessage::class.java) ?: return
+                latestMessagesMap[p0.key!!] = chatMessage
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+
+            }
+            override fun onChildRemoved(p0: DataSnapshot) {
+
+            }
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+        })
+    }
+
+
 
     private fun checkRatingTime(s: String) {
 

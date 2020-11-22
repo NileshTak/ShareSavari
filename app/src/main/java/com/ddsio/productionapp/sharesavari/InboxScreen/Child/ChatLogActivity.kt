@@ -129,7 +129,9 @@ class ChatLogActivity : AppCompatActivity() {
             edittext_chat_log.error = "Enter Valid Message"
         } else if (getNumbers(edittext_chat_log.text.toString())) {
                 edittext_chat_log.error = "Mobile Number not allowed"
-        }else {
+        } else if (getTweleveNumbers(edittext_chat_log.text.toString())) {
+            edittext_chat_log.error = "Mobile Number not allowed"
+        } else {
                 val text = edittext_chat_log.text.toString()
 
                 val fromId = USER_ID_KEY
@@ -181,6 +183,17 @@ class ChatLogActivity : AppCompatActivity() {
         return false
     }
 
+    private fun getTweleveNumbers(toString: String): Boolean {
+        val p = Pattern.compile("\\b-?\\d+\\b")
+        val m: Matcher = p.matcher(toString)
+        while (m.find()) {
+            if (m.group().length == 10) {
+                return checkTweleveNumber(m.group())
+            }
+        }
+        return false
+    }
+
     private fun checkNumber(toString: String ): Boolean {
 
             if(Pattern.matches("[0-9]{10}", toString)) {
@@ -188,6 +201,15 @@ class ChatLogActivity : AppCompatActivity() {
             }
             return false
         }
+
+
+    private fun checkTweleveNumber(toString: String ): Boolean {
+
+        if(Pattern.matches("[0-9]{12}", toString)) {
+            return true
+        }
+        return false
+    }
 
 
 

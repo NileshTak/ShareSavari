@@ -58,6 +58,7 @@ class NumberOfPassenersToTake : AppCompatActivity() {
 
 //    var pets = ""
 //    var smoking = ""
+var stoppointReturn = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +72,7 @@ class NumberOfPassenersToTake : AppCompatActivity() {
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
         request= Volley.newRequestQueue(this);
         previousPojo = BookRidesPojoItem()
+        stoppointReturn = bundle!!.get("stoppointReturn") as String
 
 //        cvStopPoint.setOnClickListener {
 //            val intent =  (Intent(this, ShowMapActivity::class.java))
@@ -217,6 +219,7 @@ class NumberOfPassenersToTake : AppCompatActivity() {
                 R.anim.fade_in, R.anim.fade_out
             ).toBundle()
         int.putExtra("pojoWithData",previousPojo)
+        int.putExtra("stoppointReturn", stoppointReturn)
         startActivity(int,bundle)
     }
 

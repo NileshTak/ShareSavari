@@ -33,6 +33,7 @@ class PassengerCount : AppCompatActivity() {
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
     var totalAmt = 0
+    var stoppointReturn = ""
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
@@ -50,6 +51,7 @@ class PassengerCount : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as offerRideModel
+        stoppointReturn = bundle!!.get("stoppointReturn") as String
 
         askGalleryPermissionLocation()
         Utils.checkConnection(this@PassengerCount,cv)
@@ -182,6 +184,7 @@ class PassengerCount : AppCompatActivity() {
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
             int.putExtra("pojoWithData",pojoWithData)
+            int.putExtra("stoppointReturn", stoppointReturn)
             startActivity(int,bundle)
         }
     }
