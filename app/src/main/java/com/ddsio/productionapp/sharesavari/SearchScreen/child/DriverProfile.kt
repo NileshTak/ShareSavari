@@ -163,7 +163,7 @@ class DriverProfile : AppCompatActivity() {
         }
 
         if (pojoWithData.user.toString() != USER_ID_KEY) {
-            if (type == "copas") {
+            if (type == "copas" || type == "self") {
                 llContact.visibility = View.GONE
             } else {
                 llContact.visibility = View.VISIBLE
@@ -793,6 +793,10 @@ class DriverProfile : AppCompatActivity() {
                                     cvCall.visibility = View.VISIBLE
                                 }
 
+                                if (userArray.get(i).passenger.toString() == USER_ID_KEY && type == "driver") {
+                                    cvCall.visibility = View.VISIBLE
+                                }
+
                                 arr.add(userArray.get(i).passenger.toString())
                             }
                         }
@@ -847,14 +851,12 @@ class DriverProfile : AppCompatActivity() {
                     rating.isEnabled = true
                     tvReport.visibility = View.VISIBLE
 
-                    if (pojoWithData.is_return == false) {
+//                    if (pojoWithData.is_return == false) {
                         checkRatingTime(pojoWithData.tddate+" "+pojoWithData.tdtime)
-                    } else {
-                        checkRatingTime(pojoWithData.brdate+" "+pojoWithData.brtime)
-                    }
-
+//                    } else {
+//                        checkRatingTime(pojoWithData.brdate+" "+pojoWithData.brtime)
+//                    }
                 }
-
             } else {
                 Log.d("bbbb","Not Booked")
                 rating.isEnabled = false

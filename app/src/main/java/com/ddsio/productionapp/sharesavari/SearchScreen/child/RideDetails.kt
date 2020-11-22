@@ -244,7 +244,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             llAutoApp.visibility = View.GONE
         }
 
-        Log.d("jknj",pojoWithData.is_return.toString())
 
         var dateRFormat = pojoWithData.tddate
         val separatedR =
@@ -1251,9 +1250,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         } else {
            msg = "Your%20Request%20to%20book%20a%20Ride%20from%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}%20has%20been%20sent," +
-                    "%20you%20will%20be%20notified%20once%20Request%20has%20been%20Accepted." +
                    "%20Please%20check%20into%20app%20for%20more%20details."
-
         }
 
         val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${currentUser.mobile}&message=${msg}&sender=MSGSAY&type=3"
@@ -1266,7 +1263,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
                     Log.d("smsentvjjnd", response.toString())
-
 
                 }
             }, object : Response.ErrorListener {
@@ -1330,8 +1326,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                 } else {
                     params.put("message","Your Request to book a Ride from ${pojoWithData.leaving} to  ${pojoWithData.going} on  ${pojoWithData.date} has been sent," +
-                            " you will be notified once Request has been Accepted. Please check into app for more details.")
-
+                            " Please check into app for more details.")
                 }
 
                 params.put("user",player_id)
@@ -1367,8 +1362,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     params.put("message","Your Ride has been booked by ${currentUser.first_name}. Please check into app for more details.")
 
                 } else {
-                    params.put("message"," ${currentUser.first_name} ${ currentUser.last_name} has requested to book your Ride. Please check into app for more details.")
-
+                    params.put("message"," ${currentUser.first_name} has requested to book your Ride. Please check into app for more details.")
                 }
 
                 params.put("user",userProf.oneid.toString())
@@ -1386,7 +1380,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             msg = "Your%20Ride%20has%20been%20booked%20by%20${currentUser.first_name}.%20Please%20check%20into%20app%20for%20more%20details."
 
         } else {
-           msg = "${currentUser.first_name}%20${ currentUser.last_name}%20has%20requested%20to%20book%20your%20Ride.%20Please%20check%20into%20app%20for%20more%20details."
+           msg = "${currentUser.first_name}%20has%20requested%20to%20book%20your%20Ride.%20Please%20check%20into%20app%20for%20more%20details."
 
         }
 

@@ -274,11 +274,11 @@ class HomeScreen : Fragment() , OSSubscriptionObserver {
                 viewHolder.itemView.ivDirect.visibility = View.GONE
             }
 
-            if (customers.is_return == true) {
-                viewHolder.itemView.ivarr.setImageResource(R.drawable.ic_baseline_compare_arrows_24)
-            } else {
-                viewHolder.itemView.ivarr.setImageResource(R.drawable.ic_arrow_forward_black_24dp)
-            }
+//            if (customers.is_return == true) {
+//                viewHolder.itemView.ivarr.setImageResource(R.drawable.ic_baseline_compare_arrows_24)
+//            } else {
+//                viewHolder.itemView.ivarr.setImageResource(R.drawable.ic_arrow_forward_black_24dp)
+//            }
 
 
             viewHolder.itemView.setOnClickListener {

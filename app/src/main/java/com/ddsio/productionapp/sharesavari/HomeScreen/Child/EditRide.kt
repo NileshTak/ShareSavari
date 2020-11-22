@@ -703,11 +703,10 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
 
         alertLayout.cvContinue.setOnClickListener {
 
-
             if (previousPojo.id.toString() != "" || previousPojo.id.toString().isNotEmpty()) {
                 UpdateRide(pojoWithData)
             } else {
-                hitOfferRideAPI()
+              hitOfferRideAPI()
             }
         }
 
@@ -764,20 +763,55 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                 override fun onResponse(response: String?) {
                     Log.d("jukjbkj", response.toString())
 
-                    sendNotificationSelf("Your Ride details of Ride ${pojoWithData.leaving} to ${pojoWithData.going} has been Offered. Please check into app for more details.")
 
-                    Toast.makeText(this@EditRide,"Ride Offered Successfully...",
-                        Toast.LENGTH_LONG).show()
+                    if (pojoWithData.is_return == "true") {
 
-                    val mainActivity =
-                        Intent(applicationContext, MainActivity::class.java)
+                        var pohoReturnRide = offerRideModel()
 
-                    mainActivity.putExtra("type", "RideBooked")
-                    progressDialog.dismiss()
-                    startActivity(mainActivity)
-                    finish()
+                        pohoReturnRide.comment = pojoWithData.comment
+                        pohoReturnRide.date= pojoWithData.rdate
+                        pohoReturnRide.smoking=  pojoWithData.smoking
+                        pohoReturnRide.gcity=  pojoWithData.lcity
+                        pohoReturnRide.pets = pojoWithData.pets
+                        pohoReturnRide.glat= pojoWithData.llat
+                        pohoReturnRide.gline= pojoWithData.lline
+                        pohoReturnRide.glog = pojoWithData.llog
+                        pohoReturnRide.going= pojoWithData.leaving
+                        pohoReturnRide.lcity= pojoWithData.gcity
+                        pohoReturnRide.leaving= pojoWithData.going
+                        pohoReturnRide.llat= pojoWithData.glat
+                        pohoReturnRide.lline= pojoWithData.gline
+                        pohoReturnRide.llog= pojoWithData.glog
+                        pohoReturnRide.slog= pojoWithData.slog
+                        pohoReturnRide.slat= pojoWithData.slat
+                        pohoReturnRide.id= pojoWithData.id.toString()
+                        pohoReturnRide.image= pojoWithData.image
+                        pohoReturnRide.stitle= pojoWithData.stitle
+                        pohoReturnRide.carname= pojoWithData.carname
+                        pohoReturnRide.is_return= pojoWithData.is_return.toString()
+                        pohoReturnRide.passenger=  pojoWithData.passenger.toString()
+                        pohoReturnRide.price= pojoWithData.price.toString()
+                        pohoReturnRide.rdate= pojoWithData.rdate
+                        pohoReturnRide.rtime= pojoWithData.rtime
+                        pohoReturnRide.time=  pojoWithData.rtime
+                        pohoReturnRide.url= pojoWithData.url
+                        pohoReturnRide.user=  pojoWithData.user.toString()
+                        pohoReturnRide.username=  pojoWithData.username
+                        pohoReturnRide.tddate= pojoWithData.brdate
+                        pohoReturnRide.tdtime= pojoWithData.brtime
+                        pohoReturnRide.is_direct=   pojoWithData.is_direct
+                        pohoReturnRide.carcolor=   pojoWithData.carcolor
+                        pohoReturnRide.max_back_2=   pojoWithData.max_back_2
+                        pohoReturnRide.max_back_3=   pojoWithData.max_back_3
+                        pohoReturnRide.comment = pojoWithData.comment
+                        pohoReturnRide.brtime=   pojoWithData.brtime
+                        pohoReturnRide.brdate = pojoWithData.brdate
 
+                        postReturnRide(pohoReturnRide)
 
+                    } else {
+                        rideOffered()
+                    }
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
@@ -785,7 +819,7 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
                     error.printStackTrace()
                     Log.e("jukjbkj",  "Error: " + error.message)
                     progressDialog.dismiss()
-                    Toast.makeText(this@EditRide,"Something Went Wrong ! Please try after some time",
+                    Toast.makeText(this@EditRide,"Something Went Wrong !! Please try after some time",
                         Toast.LENGTH_LONG).show()
 
                 }
@@ -848,6 +882,107 @@ class EditRide : AppCompatActivity(),TimePickerFragment.TimePickerListener {
         }
         request!!.add(jsonObjRequest)
 
+    }
+
+    private fun postReturnRide(pohoReturnRide: offerRideModel) {
+
+        val url = Configure.BASE_URL + Configure.OFFER_RIDE_URL
+        Log.d("jukjbkj", url.toString())
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkj", response.toString())
+
+                        rideOffered()
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("jukjbkj",  "Error: " + error.message)
+                    progressDialog.dismiss()
+                    Toast.makeText(this@EditRide,"Something Went Wrong !!! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params["id"] =  pohoReturnRide.id.toString()
+                params["url"] = pohoReturnRide.url.toString()
+                params["username"] = pohoReturnRide.username.toString()
+                params["user"] =  pohoReturnRide.user.toString()
+                params["image"] = pohoReturnRide.image.toString()
+                params["leaving"] = pohoReturnRide.leaving.toString()
+                params["lline"] =  pohoReturnRide.lline.toString()
+                params["lcity"] = pohoReturnRide.lcity.toString()
+                params["llat"] = pohoReturnRide.llat.toString()
+                params["llog"] =  pohoReturnRide.llog.toString()
+                params["going"] = pohoReturnRide.going.toString()
+                params["glog"] = pohoReturnRide.glog.toString()
+                params["glat"] = pohoReturnRide.glat.toString()
+                params["gcity"] = pohoReturnRide.gcity.toString()
+                params["gline"] = pohoReturnRide.gline.toString()
+                params["date"] =  pohoReturnRide.date.toString()
+                params["time"] = pohoReturnRide.time.toString()
+                params["rdate"] = pohoReturnRide.rdate.toString()
+                params["rtime"] =  pohoReturnRide.rtime.toString()
+                params["price"] = pohoReturnRide.price.toString()
+                params["passenger"] = pohoReturnRide.passenger.toString()
+                params["comment"] = etCommentSave.text.toString()
+                params["is_return"] = pohoReturnRide.is_return.toString()
+                params["tddate"] = pohoReturnRide.tddate.toString()
+                params["tdtime"] = pohoReturnRide.tdtime.toString()
+                params["is_direct"] = pohoReturnRide.is_direct.toString()
+                params["carname"] = pohoReturnRide.carname.toString()
+                params["carcolor"] = pohoReturnRide.carcolor.toString()
+                params["stitle"] = pohoReturnRide.stitle.toString()
+                params["slat"] = pohoReturnRide.slat.toString()
+                params["slog"] = pohoReturnRide.slog.toString()
+                params["pets"] = pohoReturnRide.pets.toString()
+                params["smoking"] = pohoReturnRide.smoking.toString()
+                params["max_back_2"] = pohoReturnRide.max_back_2.toString()
+                params["max_back_3"] = pohoReturnRide.max_back_3.toString()
+                params["brdate"] = pohoReturnRide.brdate.toString()
+                params["brtime"] = pohoReturnRide.brtime.toString()
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
+    private fun rideOffered() {
+        sendNotificationSelf("Your Ride details of Ride ${pojoWithData.leaving} to ${pojoWithData.going} has been Offered. Please check into app for more details.")
+
+        Toast.makeText(this@EditRide,"Ride Offered Successfully...",
+            Toast.LENGTH_LONG).show()
+
+        val mainActivity =
+            Intent(applicationContext, MainActivity::class.java)
+
+        mainActivity.putExtra("type", "RideBooked")
+        progressDialog.dismiss()
+        startActivity(mainActivity)
+        finish()
     }
 
     private fun UpdateRide(pojoWithData: offerRideModel) {

@@ -55,6 +55,7 @@ import com.productionapp.amhimemekar.CommonUtils.BookRidesPojoItem
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.Configure.LOGIN_KEY
 import com.productionapp.amhimemekar.CommonUtils.Configure.PLAYER_ID
+import com.productionapp.amhimemekar.CommonUtils.Configure.USER_UPDATE_ID
 import com.productionapp.amhimemekar.CommonUtils.FetchProfileData
 import com.productionapp.amhimemekar.CommonUtils.UserDetailsModel
 import de.hdodenhof.circleimageview.CircleImageView
@@ -201,7 +202,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
         LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this)!!
 
         OneSignal.addSubscriptionObserver(this)
-
 
         Handler().postDelayed({
             Utils.checkConnection(this@MainActivity, frameContainer)
@@ -1088,7 +1088,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                         userid.toString(),
                         this@MainActivity
                     )
-
                     getData(userid)
 
                 }
@@ -1151,6 +1150,9 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                         Toast.LENGTH_LONG
                     ).show()
                     loadScreens()
+
+                    updateOneID()
+
                     showConvidPoster()
                     progressDialog.dismiss()
                 }
@@ -1201,14 +1203,15 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
 
         if (value.isEmpty()) {
-            etEmail.error = "Enter Valid Mobile Number"
+            etEmail.error = "Enter Valid Email Address"
+            progressDialog.dismiss()
         } else if (value.length != 10) {
             Toast.makeText(this, "Enter valid Mobile Number", Toast.LENGTH_LONG).show()
             progressDialog.dismiss()
         } else if (lazyMessage.isEmpty()) {
             etPass.error = "Enter Valid Password"
+            progressDialog.dismiss()
         } else {
-
             hitLoginAPI()
         }
     }
@@ -1408,7 +1411,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                     Utils.writeStringToPreferences(LOGIN_KEY, key.toString(), this@MainActivity)
                     LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this@MainActivity)!!
 
-
                     getUserNameData()
 
                 }
@@ -1454,6 +1456,49 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 //            request!!.start()
 
 //            AppController.getInstance().addToRequestQueue(jsonObjRequest)
+
+    }
+
+
+    fun updateOneID( ) {
+        val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.PUT,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params.put("oneid",player_id)
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
 
     }
 
