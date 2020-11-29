@@ -149,10 +149,16 @@ class ShowMapActivityDrop : AppCompatActivity(), OnMapReadyCallback, LocationLis
                         e.printStackTrace()
                     }
 
-                    var address = addressList!!.get(0)
-                    var latLng = LatLng(address.latitude,address.longitude)
-                    mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
-                    mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10f))
+                    if (addressList!!.size != 0) {
+                        var address = addressList!!.get(0)
+                        var latLng = LatLng(address.latitude,address.longitude)
+                        mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                        mMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10f))
+                    } else {
+
+                        Toast.makeText(this@ShowMapActivityDrop,"Enter valid City Name",
+                            Toast.LENGTH_LONG).show()
+                    }
 
                 }
 

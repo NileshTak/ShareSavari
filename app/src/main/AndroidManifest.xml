@@ -49,7 +49,6 @@
         <activity android:name=".SearchScreen.child.ReviewsList" />
         <activity android:name=".SearchScreen.child.CoPasList" />
         <activity android:name=".SearchScreen.child.SerachResult" />
-        <activity android:name=".AmitRequest" />
         <activity android:name=".HomeScreen.Child.EditRide" />
         <activity android:name=".SearchScreen.child.BookedSuccess" />
         <activity android:name=".SearchScreen.child.DriverProfile" />

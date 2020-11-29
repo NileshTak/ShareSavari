@@ -177,6 +177,7 @@ class DriverProfile : AppCompatActivity() {
         }
 
         if (cust == USER_ID_KEY || pojoWithData.user.toString() == USER_ID_KEY) {
+            Log.d("llllllll","custEqial")
             ratingB.isEnabled = false
             tvReport.visibility = View.GONE
         }
@@ -277,35 +278,36 @@ class DriverProfile : AppCompatActivity() {
 
         } else {
             ratingB.isEnabled = false
+            Log.d("llllllll","time no")
             tvReport.visibility = View.GONE
             Log.d("jjjjjjjjj","gu")
         }
 
     }
 
-    private fun checkRideComplete(s: String) {
-
-        val c = Calendar.getInstance()
-        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val formattedDate = df.format(c.time)
-
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-        val date = sdf.parse(s)
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-
-        val Year = calendar[Calendar.YEAR]
-        val Month = calendar[Calendar.MONTH]
-        val Day = calendar[Calendar.DAY_OF_MONTH]
-        val Hour = calendar[Calendar.HOUR]
-        val Minute = calendar[Calendar.MINUTE]
-        val Second = calendar[Calendar.SECOND]
-        var datePlus = Year.toString()+"-"+Month+"-"+Day+" "+Hour+":"+Minute+":"+Second
-
-        if(getTimeStamp(datePlus) < getTimeStamp(formattedDate)) {
-            ratingB.isEnabled = false
-        }
-    }
+//    private fun checkRideComplete(s: String) {
+//
+//        val c = Calendar.getInstance()
+//        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        val formattedDate = df.format(c.time)
+//
+//        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+//        val date = sdf.parse(s)
+//        val calendar = Calendar.getInstance()
+//        calendar.time = date
+//
+//        val Year = calendar[Calendar.YEAR]
+//        val Month = calendar[Calendar.MONTH]
+//        val Day = calendar[Calendar.DAY_OF_MONTH]
+//        val Hour = calendar[Calendar.HOUR]
+//        val Minute = calendar[Calendar.MINUTE]
+//        val Second = calendar[Calendar.SECOND]
+//        var datePlus = Year.toString()+"-"+Month+"-"+Day+" "+Hour+":"+Minute+":"+Second
+//
+//        if(getTimeStamp(datePlus) < getTimeStamp(formattedDate)) {
+//            ratingB.isEnabled = false
+//        }
+//    }
 
 
     private fun getTimeStamp(s: String): Long {
@@ -456,6 +458,7 @@ class DriverProfile : AppCompatActivity() {
                             if (userArray.get(i).driver.toString() == pojoWithData.user.toString()) {
                                 btnSubmitB.isEnabled = false
                                 ratingB.isEnabled = false
+                                Log.d("llllllll","getRating")
                                 ratingB.rating = userArray.get(i).points.toFloat()
                             }
                         }
@@ -646,6 +649,7 @@ class DriverProfile : AppCompatActivity() {
 
                     btnSubmitB.isEnabled = false
                     ratingB.isEnabled = false
+                    Log.d("llllllll","submiy")
                     progressDialog.dismiss()
                 }
             }, object : Response.ErrorListener {
@@ -891,7 +895,7 @@ class DriverProfile : AppCompatActivity() {
 
             Log.d("bbbb","Booked" + arr.get(i)  +"  "+USER_ID_KEY )
 
-            if (arr.get(i) == USER_ID_KEY) {
+//            if (arr.get(i) == USER_ID_KEY) {
 
                 Log.d("bbbb","Booked" + cust )
 
@@ -906,11 +910,12 @@ class DriverProfile : AppCompatActivity() {
 //                        checkRatingTime(pojoWithData.brdate+" "+pojoWithData.brtime)
 //                    }
                 }
-            } else {
-                Log.d("bbbb","Not Booked")
-                rating.isEnabled = false
-                tvReport.visibility = View.GONE
-            }
+//            } else {
+//                    ratingB.isEnabled = false
+//                    Log.d("bbbb","Not Booked"+pojoWithData.user.toString()+USER_ID_KEY)
+//                    tvReport.visibility = View.GONE
+//
+//            }
         }
 
     }
