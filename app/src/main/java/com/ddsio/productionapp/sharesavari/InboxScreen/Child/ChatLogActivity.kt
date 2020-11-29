@@ -176,7 +176,7 @@ class ChatLogActivity : AppCompatActivity() {
         val p = Pattern.compile("\\b-?\\d+\\b")
         val m: Matcher = p.matcher(toString)
         while (m.find()) {
-            if (m.group().length == 10) {
+            if (m.group().length == 10 || m.group().length == 11) {
                 return checkNumber(m.group())
             }
         }
@@ -184,33 +184,21 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     private fun isValidMobile(phone: String): Boolean {
-
-//        val p =
-//            Pattern.compile("^\\+(?:[0-9] ?){6,14}[0-9]$")
-//
-//        val m = p.matcher(phone)
-//        return m.find() && m.group() == phone
-
         if ( phone.toLowerCase().indexOf("+91") != -1 ) {
-
            return true
 
         } else {
             return false
         }
-
     }
 
     private fun checkNumber(toString: String ): Boolean {
 
-            if(Pattern.matches("[0-9]{10}", toString)) {
+            if(Pattern.matches("[0-9]{10,11}", toString)) {
                 return true
             }
             return false
         }
-
-
-
 
     fun getUserData(userId: String) {
         val url = Configure.BASE_URL + Configure.GET_USER_DETAILS + userId + "/"

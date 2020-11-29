@@ -112,13 +112,15 @@ class ChatPas : AppCompatActivity() {
         latestMessagesMap.values.forEach {
             if (it.toId == driverid) {
                 adapter.add(LatestMessageRow(it))
+            } else if (it.fromId == driverid) {
+                adapter.add(LatestMessageRow(it))
             }
         }
         progressDialog.dismiss()
     }
 
     private fun listenForLatestMessages() {
-        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$USER_ID_KEY")
+        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$USER_ID_KEY").orderByKey()
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val chatMessage = p0.getValue(ChatMessage::class.java) ?: return

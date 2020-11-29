@@ -420,7 +420,7 @@ class SearchFragment : Fragment()  {
 
             val s = String.format("%.1f", results[0] / 1000)
             tvKM.text = "$s KM"
-            llKM.visibility = View.VISIBLE
+//            llKM.visibility = View.VISIBLE
         }
 
     }

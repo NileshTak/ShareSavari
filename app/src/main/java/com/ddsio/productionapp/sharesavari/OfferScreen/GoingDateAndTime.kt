@@ -6,16 +6,12 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.DialogFragment
 import com.ddsio.productionapp.sharesavari.CommonUtils.TimePickerFragment
@@ -24,15 +20,9 @@ import com.ddsio.productionapp.sharesavari.R
 import com.github.florent37.runtimepermission.kotlin.askPermission
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.productionapp.amhimemekar.CommonUtils.BookRideScreenFetchCity
-import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.productionapp.amhimemekar.CommonUtils.offerRideModel
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_going_date_and_time.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_return_date_and_time.*
-import kotlinx.android.synthetic.main.activity_show_map.*
-import kotlinx.android.synthetic.main.activity_show_map_drop.*
-import kotlinx.android.synthetic.main.activity_show_map_pick_up.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.text.SimpleDateFormat
@@ -44,6 +34,14 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
     lateinit var datePickerdialog: DatePickerDialog
 
     lateinit var pojoWithData : offerRideModel
+
+    var reachHour = ""
+
+    var goingHour = ""
+
+    var reachMin = ""
+
+    var goingMin = ""
 
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
     var formate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -186,6 +184,9 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
                 ) {
                     etReachTime.setText("$hourOfDay : $minute")
 
+                    reachHour = "$hourOfDay"
+                    reachMin = "$minute"
+
                     pojoWithData.tdtime = "$hourOfDay:$minute"
                 }
             }, mHour, mMinute, false
@@ -229,6 +230,8 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
 
     private fun checkFields() {
 
+        Log.d("ddddddddd",etReachDate.text.toString() +"  "+ etSelectDate.text.toString() +"  "+ reachHour +"  "+ goingHour)
+
         if (etSelectDate.text.toString().isEmpty() || etSelectDate.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Leaving Date ",
                 Toast.LENGTH_LONG).show()
@@ -244,7 +247,17 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
         }else  if (etReachDate.text.toString() < etSelectDate.text.toString() ) {
             Toast.makeText(this,"Reaching Date should be greater then or equals to Leaving Date",
                 Toast.LENGTH_LONG).show()
-        }  else {
+        } else  if (etReachDate.text.toString() == etSelectDate.text.toString() && reachHour.toInt()  < goingHour.toInt() ) {
+
+                Toast.makeText(this,"Reaching Time should be greater then or equals to Leaving Time",
+                    Toast.LENGTH_LONG).show()
+
+        }else  if (etReachDate.text.toString() == etSelectDate.text.toString() && reachHour.toInt()  == goingHour.toInt() && reachMin.toInt()  < goingMin.toInt()  ) {
+
+            Toast.makeText(this,"Reaching Time should be greater then or equals to Leaving Time",
+                Toast.LENGTH_LONG).show()
+
+        } else {
 
             pojoWithData.stitle = etStopPoint.text.toString()
             pojoWithData.slog = "0"
@@ -288,9 +301,22 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
     }
 
 
+    fun getFirstWord(str : String) : String {
+        val arr = str.split(" ".toRegex(), 3).toTypedArray()
+
+        val firstWord = arr[0]
+
+        Log.d("dddd",firstWord)
+
+        return  firstWord
+    }
+
+
     override fun onTimeSet(timePicker: TimePicker?, hour: Int, minute: Int) {
         etSelectTime.setText(" $hour : $minute")
 
+        goingHour = "$hour"
+        goingMin = "$minute"
         pojoWithData.time = "$hour:$minute"
     }
 

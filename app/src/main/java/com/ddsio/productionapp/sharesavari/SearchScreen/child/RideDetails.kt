@@ -1453,6 +1453,75 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         val fromId = USER_ID_KEY
         val toId = customers.user.toString()
 
+
+
+        if (fromId == null) return
+
+        val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()
+
+        val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
+
+        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+
+        reference.setValue(chatMessage)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+
+                if (pojoWithData.is_direct == true) {
+                    Toast.makeText(this@RideDetails,"Ride Booked Successfully.",Toast.LENGTH_LONG).show()
+
+                    var int = Intent(this@RideDetails,
+                        BookedSuccess::class.java)
+                    val bundle =
+                        ActivityOptionsCompat.makeCustomAnimation(
+                            this@RideDetails ,
+                            R.anim.fade_in, R.anim.fade_out
+                        ).toBundle()
+                    startActivity(int,bundle)
+
+                } else {
+//                    sendMessageSelf(  customers,
+//                        count )
+                    Toast.makeText(this@RideDetails,"Request sent Successfully. You will get notified soon.",Toast.LENGTH_LONG).show()
+                }
+
+            }
+            .addOnFailureListener {
+                progressDialog.dismiss()
+                Toast.makeText(this@RideDetails,"Ride Booked Successfully.",Toast.LENGTH_LONG).show()
+
+                var int = Intent(this@RideDetails,
+                    BookedSuccess::class.java)
+                val bundle =
+                    ActivityOptionsCompat.makeCustomAnimation(
+                        this@RideDetails ,
+                        R.anim.fade_in, R.anim.fade_out
+                    ).toBundle()
+                startActivity(int,bundle)
+            }
+
+        toReference.setValue(chatMessage)
+
+        val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")
+        latestMessageRef.setValue(chatMessage)
+
+        val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
+        latestMessageToRef.setValue(chatMessage)
+    }
+
+
+    private fun sendMessageSelf(
+        customers: BookRidesPojoItem,
+        count: Int
+    ) {
+
+        var text = "Hello Sir, we got your request. Request status will be updated soon."
+
+
+        val fromId = customers.user.toString()
+        val toId = USER_ID_KEY
+
+
         if (fromId == null) return
 
         val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()

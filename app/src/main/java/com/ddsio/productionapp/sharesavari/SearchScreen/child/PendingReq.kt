@@ -33,7 +33,11 @@ import kotlinx.android.synthetic.main.activity_pending_req.*
 import kotlinx.android.synthetic.main.activity_ride_detail.view.ivprof
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvOfferedby
 import kotlinx.android.synthetic.main.custom_copas_list.view.*
+import kotlinx.android.synthetic.main.delete_ride_dialog.view.*
 import kotlinx.android.synthetic.main.ride_booking_type.view.*
+import kotlinx.android.synthetic.main.ride_booking_type.view.ccvCancel
+import kotlinx.android.synthetic.main.ride_booking_type.view.cvContinue
+import kotlinx.android.synthetic.main.ride_booking_type.view.tvNotice
 import org.greenrobot.eventbus.EventBus
 
 class PendingReq : AppCompatActivity() {
@@ -100,7 +104,7 @@ class PendingReq : AppCompatActivity() {
                         gson.fromJson(response, bookride ::class.java)
 
 
-                    if (userArray != null) {
+                    if (userArray != null && userArray.size != 0) {
                         for (i in 0..userArray.size-1)   {
                             if (userArray.get(i).is_confirm == false) {
 //                                adapter.add(ridesClass(userArray.get(i)))
@@ -112,6 +116,11 @@ class PendingReq : AppCompatActivity() {
                         rvPendingReq.adapter = adapter
                         rvPendingReq.adapter!!.notifyDataSetChanged()
                         rvPendingReq.scheduleLayoutAnimation()
+                        progressDialog.dismiss()
+                    } else {
+                        Toast.makeText(this@PendingReq,"No Request Found",
+                            Toast.LENGTH_LONG).show()
+
                         progressDialog.dismiss()
                     }
 
@@ -347,11 +356,7 @@ class PendingReq : AppCompatActivity() {
 
                     progressDialog.dismiss()
 
-                    rvPendingReq.removeAllViewsInLayout()
-                    rvPendingReq.removeAllViews()
-                    adapter.clear()
-
-                    hitPendingReq()
+                    showRideAcceptedDialog(customers, passenger)
 
                 }
             }, object : Response.ErrorListener {
@@ -537,6 +542,44 @@ class PendingReq : AppCompatActivity() {
 
         alertLayout.ccvCancel.setOnClickListener {
             convidPoster.dismiss()
+        }
+
+    }
+
+
+
+    private fun showRideAcceptedDialog(
+        customers: FetchProfileData,
+        passenger: bookrideItem
+    ) {
+        val inflater = getLayoutInflater()
+        val alertLayout = inflater.inflate(R.layout.delete_ride_dialog, null)
+
+        val showOTP = AlertDialog.Builder(this!!)
+        showOTP.setView(alertLayout)
+        showOTP.setCancelable(false)
+        alertLayout.okbtn.text = "OK"
+        convidPoster = showOTP.create()
+        convidPoster.show()
+
+        alertLayout.tvNotice.text = "Request Accepted "
+        alertLayout.tvNotice.setTextSize( 22F)
+
+        alertLayout.lo.visibility = View.GONE
+
+        alertLayout.cvContinue.setOnClickListener {
+            convidPoster.dismiss()
+            onBackPressed()
+        }
+
+        alertLayout.ccvCancel.setOnClickListener {
+            rvPendingReq.removeAllViewsInLayout()
+            rvPendingReq.removeAllViews()
+            adapter.clear()
+
+            hitPendingReq()
+            convidPoster.dismiss()
+
         }
 
     }
