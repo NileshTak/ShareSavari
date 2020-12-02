@@ -3,16 +3,13 @@ package com.ddsio.productionapp.sharesavari.ProfileScreen
 import android.Manifest
 import android.animation.ValueAnimator
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
-import android.text.method.TextKeyListener.clear
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -325,6 +322,34 @@ lateinit var cbPetsP : CheckBox
                     val intent = Intent(activity, EditProf::class.java)
                     intent.putExtra("userPojo",fetchProfileData)
                     startActivity(intent)
+                }
+
+                R.id.tnc -> {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("http://sharesawaari.com/tandc.html")
+                    )
+                    startActivity(intent)
+                }
+
+                R.id.privacy -> {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("http://sharesawaari.com/pp.html")
+                    )
+                    startActivity(intent)
+                }
+
+                R.id.help -> {
+                    val to: String = "support@sharesawaari.com"
+                    val sharingIntent = Intent(Intent.ACTION_SEND)
+                    sharingIntent.type = "text/plain"
+                    sharingIntent.setPackage("com.google.android.gm")
+                    val shareBody = ""
+                    sharingIntent.putExtra(Intent.EXTRA_EMAIL,arrayOf(to))
+                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Help Support")
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
+                    startActivity(sharingIntent)
                 }
             }
             true
