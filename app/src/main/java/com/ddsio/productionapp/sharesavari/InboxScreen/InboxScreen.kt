@@ -30,7 +30,6 @@ class InboxScreen : Fragment() {
 
         viewPagerInbox = view.findViewById<ViewPager>(R.id.viewPagerInbox)
 
-
         adapter = TabAdapter(activity!!.supportFragmentManager)
         adapter.addFragment(MessagesFrag(), "MESSAGES" )
         adapter.addFragment(NotificationFrag(), "BOOKED Rides")
