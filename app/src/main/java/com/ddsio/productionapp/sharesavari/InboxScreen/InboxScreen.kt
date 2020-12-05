@@ -27,7 +27,6 @@ class InboxScreen : Fragment() {
         val view = inflater.inflate(R.layout.fragment_inbox_screen, container, false)
 
         tabLayoutInbox = view.findViewById<TabLayout>(R.id.tabLayoutInbox)
-
         viewPagerInbox = view.findViewById<ViewPager>(R.id.viewPagerInbox)
 
         adapter = TabAdapter(activity!!.supportFragmentManager)
