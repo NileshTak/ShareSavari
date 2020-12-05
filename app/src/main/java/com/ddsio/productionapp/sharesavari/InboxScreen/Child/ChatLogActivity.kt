@@ -176,7 +176,7 @@ class ChatLogActivity : AppCompatActivity() {
         val p = Pattern.compile("\\b-?\\d+\\b")
         val m: Matcher = p.matcher(toString)
         while (m.find()) {
-            if (m.group().length == 10 || m.group().length == 11) {
+            if (m.group().length == 10 || m.group().length == 11 || m.group().length == 12) {
                 return checkNumber(m.group())
             }
         }

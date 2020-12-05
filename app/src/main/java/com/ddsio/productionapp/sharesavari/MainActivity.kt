@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.util.Patterns
 import android.view.View
@@ -364,6 +365,7 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
         }
 
+        rbTerms.setMovementMethod(LinkMovementMethod.getInstance());
         rbTerms.setOnClickListener {
             radio_button_click_seat(rbTerms)
         }
@@ -675,6 +677,8 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                 override fun onErrorResponse(error: VolleyError) {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
+
+                    Log.d( "ssss",error.networkResponse.statusCode.toString())
 
                     Toast.makeText(
                         applicationContext,

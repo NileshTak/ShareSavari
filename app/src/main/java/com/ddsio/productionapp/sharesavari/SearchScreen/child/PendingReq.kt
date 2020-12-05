@@ -18,12 +18,11 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
-import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
-import com.ddsio.productionapp.sharesavari.InboxScreen.Child.NewMessageActivity
 import com.ddsio.productionapp.sharesavari.ProfileScreen.Child.ChatPas
 import com.ddsio.productionapp.sharesavari.R
-import com.ddsio.productionapp.sharesavari.User
+import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
+import com.letsbuildthatapp.kotlinmessenger.models.ChatMessage
 import com.productionapp.amhimemekar.CommonUtils.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.Item
@@ -34,7 +33,6 @@ import kotlinx.android.synthetic.main.activity_ride_detail.view.ivprof
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvOfferedby
 import kotlinx.android.synthetic.main.custom_copas_list.view.*
 import kotlinx.android.synthetic.main.delete_ride_dialog.view.*
-import kotlinx.android.synthetic.main.ride_booking_type.view.*
 import kotlinx.android.synthetic.main.ride_booking_type.view.ccvCancel
 import kotlinx.android.synthetic.main.ride_booking_type.view.cvContinue
 import kotlinx.android.synthetic.main.ride_booking_type.view.tvNotice
@@ -49,6 +47,9 @@ class PendingReq : AppCompatActivity() {
     lateinit var USER_ID_KEY : String
     val adapter = GroupAdapter<ViewHolder>()
     var request: RequestQueue? = null
+
+    lateinit var custProfile : FetchProfileData
+    lateinit var driverProfile : FetchProfileData
 
     lateinit var pojoWithData : BookRidesPojoItem
 
@@ -226,6 +227,73 @@ class PendingReq : AppCompatActivity() {
 
 
 
+    fun getDriverData(customers : FetchProfileData) {
+        val url = Configure.BASE_URL + Configure.GET_USER_DETAILS +pojoWithData.user+"/"
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkjdd", response.toString())
+
+                    val gson = Gson()
+
+                    if (response != null ) {
+                        val userArray: FetchProfileData =
+                            gson.fromJson(response, FetchProfileData ::class.java)
+
+                        driverProfile = userArray
+
+                        sendNotificationSelf("You had accepted the request of ${customers.first_name} for Ride ${pojoWithData.leaving} to ${pojoWithData.going} on ${pojoWithData.date}. " +
+                                "Please check into app for more details.", driverProfile)
+
+
+                        var msg = "You%20had%20accepted%20the%20request%20of%20${customers.first_name}%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}.%20" +
+                                "Please%20check%20into%20app%20for%20more%20details."
+
+                        sendSMS(driverProfile, msg)
+
+                    } else {
+                        Toast.makeText(this@PendingReq,"No Request Found",
+                            Toast.LENGTH_LONG).show()
+                    }
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+                    Log.e("Responceis",  "Error: " + error.message)
+
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
+
+    }
+
+
+
 
     private fun runAnimation(recyclerview_xml_list_userprof: RecyclerView?, type : Int) {
         var context = recyclerview_xml_list_userprof!!.context
@@ -350,7 +418,9 @@ class PendingReq : AppCompatActivity() {
                     var msg = "Your%20Request%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}%20has%20been%20Accepted%20by%20Driver%20and%20you%20can%20contact%20directly%20to%20driver%20from%20Driver's%20Public%20Profile'.%20" +
                             "Please%20check%20into%20app%20for%20more%20details."
 
-                    getDriverData(passenger.passenger.toString(),customers)
+                    getDriverData(passenger ,customers)
+
+                    sendMessage(customers)
 
                     sendSMS(customers, msg)
 
@@ -398,11 +468,11 @@ class PendingReq : AppCompatActivity() {
     }
 
     fun getDriverData(
-        cust: String,
+        cust: bookrideItem,
         customers: FetchProfileData
     ) {
 
-        val url = Configure.BASE_URL + Configure.GET_USER_DETAILS +cust+"/"
+        val url = Configure.BASE_URL + Configure.GET_USER_DETAILS +cust.passenger+"/"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
@@ -419,13 +489,7 @@ class PendingReq : AppCompatActivity() {
                             gson.fromJson(response, FetchProfileData ::class.java)
 
                         if (userArray != null) {
-                            sendNotificationSelf("You had accepted the request of ${customers.first_name} for Ride ${pojoWithData.leaving} to ${pojoWithData.going} on ${pojoWithData.date}. " +
-                                    "Please check into app for more details.", userArray)
-
-                            var msg = "You%20had%20accepted%20the%20request%20of%20${customers.first_name}%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}.%20" +
-                                    "Please%20check%20into%20app%20for%20more%20details."
-
-                            sendSMS(userArray, msg)
+                            custProfile = userArray
                         }
 
                     }
@@ -464,6 +528,49 @@ class PendingReq : AppCompatActivity() {
 
     }
 
+
+    private fun sendMessage(
+        userArray: FetchProfileData
+    ) {
+
+        var text = "Your Ride has been Accepted by Driver."
+
+
+        val fromId = USER_ID_KEY
+        val toId = userArray.id.toString()
+
+        if (fromId == null) return
+
+        val reference = FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()
+
+        val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
+
+        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+
+        reference.setValue(chatMessage)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+
+                if (pojoWithData.is_direct == true) {
+
+                } else {
+                      }
+
+            }
+            .addOnFailureListener {
+                progressDialog.dismiss()
+            }
+
+        toReference.setValue(chatMessage)
+
+        val latestMessageRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")
+        latestMessageRef.setValue(chatMessage)
+
+        val latestMessageToRef = FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
+        latestMessageToRef.setValue(chatMessage)
+    }
+
+
     private fun sendSMS(
         customers: FetchProfileData,
         msg: String
@@ -477,6 +584,9 @@ class PendingReq : AppCompatActivity() {
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
                     Log.d("smsentvjjnd", response.toString())
+
+
+                    getDriverData(customers)
 
 
                 }

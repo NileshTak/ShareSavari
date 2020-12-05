@@ -142,10 +142,7 @@ class DriverProfile : AppCompatActivity() {
                 ).toBundle()
             intent.putExtra("driverid" , driverId.toString())
 
-
-
             startActivity(intent,bundle)
-
         }
 
 
@@ -269,21 +266,15 @@ class DriverProfile : AppCompatActivity() {
 
         var datePlus1 = Year1.toString()+"-"+Month1+"-"+Day1+" "+Hour1+":"+Minute1+":"+Second1
 
-        Log.d("jjjjjjjjj",datePlus)
-        Log.d("jjjjjjjjj",datePlus1)
-        Log.d("jjjjjjjjj",formattedDate)
 
         if (getTimeStamp(formattedDate) > getTimeStamp(datePlus1) && getTimeStamp(formattedDate) < getTimeStamp(datePlus)) {
 
-                Log.d("jjjjjjjjj","two")
                 ratingB.isEnabled = true
             tvReport.visibility = View.VISIBLE
 
         } else {
             ratingB.isEnabled = false
-            Log.d("llllllll","time no")
             tvReport.visibility = View.GONE
-            Log.d("jjjjjjjjj","gu")
         }
 
     }

@@ -252,7 +252,7 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
                 Toast.makeText(this,"Reaching Time should be greater then or equals to Leaving Time",
                     Toast.LENGTH_LONG).show()
 
-        }else  if (etReachDate.text.toString() == etSelectDate.text.toString() && reachHour.toInt()  == goingHour.toInt() && reachMin.toInt()  < goingMin.toInt()  ) {
+        } else  if (etReachDate.text.toString() == etSelectDate.text.toString() && reachHour.toInt()  == goingHour.toInt() && reachMin.toInt()  < goingMin.toInt()  ) {
 
             Toast.makeText(this,"Reaching Time should be greater then or equals to Leaving Time",
                 Toast.LENGTH_LONG).show()

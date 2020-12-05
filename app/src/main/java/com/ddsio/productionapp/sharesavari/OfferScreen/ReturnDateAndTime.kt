@@ -37,6 +37,14 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
 
     lateinit var pojoWithData : offerRideModel
 
+    var reachHour = ""
+
+    var goingHour = ""
+
+    var reachMin = ""
+
+    var goingMin = ""
+
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
     var formate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
@@ -141,6 +149,9 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
                 ) {
                     etReachBTime.setText("$hourOfDay : $minute")
 
+                    reachHour = "$hourOfDay"
+                    reachMin = "$minute"
+
                     pojoWithData.brtime = "$hourOfDay:$minute"
                 }
             }, mHour, mMinute, false
@@ -217,7 +228,17 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
         } else  if (etReachBDate.text.toString() < etSelectDateReturn.text.toString() ) {
             Toast.makeText(this,"Reaching Date should be greater then or equals to Leaving Date",
                 Toast.LENGTH_LONG).show()
-        }else  if  (pojoWithData.date.toString()  > etSelectDateReturn.text.toString() ) {
+        } else  if (etReachBDate.text.toString() == etSelectDateReturn.text.toString() && reachHour.toInt()  < goingHour.toInt() ) {
+
+            Toast.makeText(this,"Reaching Time should be greater then or equals to Leaving Time",
+                Toast.LENGTH_LONG).show()
+
+        } else  if (etReachBDate.text.toString() == etSelectDateReturn.text.toString() && reachHour.toInt()  == goingHour.toInt() && reachMin.toInt()  < goingMin.toInt()  ) {
+
+            Toast.makeText(this,"Reaching Time should be greater then or equals to Leaving Time",
+                Toast.LENGTH_LONG).show()
+
+        } else  if  (pojoWithData.date.toString()  > etSelectDateReturn.text.toString() ) {
             Toast.makeText(this,"Return Date should be greater then or equals to Leaving Date",
                 Toast.LENGTH_LONG).show()
         } else {
@@ -238,6 +259,8 @@ class ReturnDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListe
 
     override fun onTimeSet(timePicker: TimePicker?, hour: Int, minute: Int) {
 
+        goingHour = "$hour"
+        goingMin = "$minute"
         etSelectTimeReturn.setText(" $hour : $minute")
 
         pojoWithData.rtime = "$hour:$minute"

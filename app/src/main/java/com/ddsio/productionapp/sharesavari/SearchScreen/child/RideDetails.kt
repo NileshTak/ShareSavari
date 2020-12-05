@@ -356,7 +356,14 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     this ,
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
+
             int.putExtra("pojoWithData",pojoWithData)
+            if (pojoWithData.stitle == null || pojoWithData.stitle == "") {
+                int.putExtra("stoppointReturn",  "")
+            } else {
+                int.putExtra("stoppointReturn", pojoWithData.stitle)
+            }
+
             startActivity(int,bundle)
         }
 

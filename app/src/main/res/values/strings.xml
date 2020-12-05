@@ -8,4 +8,9 @@
     <string name="lbl_set_profile_photo">Upload Post</string>
     <string name="lbl_take_camera_picture">Take a picture</string>
     <string name="lbl_choose_from_gallery">Choose from gallery</string>
+
+
+    <string name="privacyPolicy">I accept all
+<a href="http://sharesawaari.com/pp.html">Terms and Conditions</a>
+</string>
 </resources>
