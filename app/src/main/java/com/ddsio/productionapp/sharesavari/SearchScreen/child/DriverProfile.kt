@@ -276,9 +276,6 @@ class DriverProfile : AppCompatActivity() {
                 ratingB.isEnabled = true
             tvReport.visibility = View.VISIBLE
 
-        } else {
-            ratingB.isEnabled = false
-            tvReport.visibility = View.GONE
         }
 //        else {
 //            ratingB.isEnabled = false
@@ -441,13 +438,16 @@ class DriverProfile : AppCompatActivity() {
 
 
     private fun getRating() {
+
+        Log.d("ratingsss","in " + USER_ID_KEY)
+
         val url = BASE_URL+ RATING +"?passenger=" + USER_ID_KEY
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
             url,
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
-                    Log.d("driverprofRate", response.toString())
+                    Log.d("ratingsss", response.toString())
                     val gson = Gson()
 
                     val userArray: ArrayList<RatingModelItem> =
@@ -457,15 +457,17 @@ class DriverProfile : AppCompatActivity() {
 
                         for (i in 0..userArray.size - 1) {
 
-                            if (userArray.get(i).driver.toString() == pojoWithData.user.toString()) {
-                                btnSubmitB.isEnabled = false
-                                ratingB.isEnabled = false
-                                Log.d("llllllll","getRating")
-                                ratingB.rating = userArray.get(i).points.toFloat()
+                            if (userArray.get(i).ride != null && userArray.get(i).ride.toString() != "null" ) {
+                                if (userArray.get(i).driver.toString() == cust.toString()
+                                    && userArray.get(i).ride.toString() == pojoWithData.id.toString() ) {
+                                    btnSubmitB.isEnabled = false
+                                    ratingB.isEnabled = false
+                                    Log.d("ratingsss","found")
+                                    ratingB.rating = userArray.get(i).points.toFloat()
+                                }
                             }
                         }
                     }
-
 
                     progressDialog.dismiss()
                 }
@@ -690,6 +692,8 @@ class DriverProfile : AppCompatActivity() {
                     params["driver"] = pojoWithData.user.toString()
                     params["passenger"] = USER_ID_KEY
                 }
+
+                params["ride"] = pojoWithData.id.toString()
 
                 params["points"] = rating.rating.roundToInt().toString()
                 params["comment"] = verificationCode

@@ -30,10 +30,11 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:scaleType="fitCenter"
         app:civ_border_width="2dp"
         app:civ_border_color="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_baseline_group_24"/>
+        android:src="@drawable/account"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

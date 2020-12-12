@@ -100,11 +100,11 @@ class ReviewsList : AppCompatActivity() {
 
         var datePlus = Year.toString()+"-"+Month+"-"+Day+" "+Hour+":"+Minute+":"+Second
 
-        if(getTimeStamp(datePlus) < getTimeStamp(formattedDate)) {
+//        if(getTimeStamp(datePlus) < getTimeStamp(formattedDate)) {
             getRating(user.toString())
-        } else {
-            Toast.makeText(this@ReviewsList, "No Review Found. Given Reviews Will appear after 24 hours", Toast.LENGTH_LONG).show()
-        }
+//        } else {
+//            Toast.makeText(this@ReviewsList, "No Review Found. Given Reviews Will appear after 24 hours", Toast.LENGTH_LONG).show()
+//        }
     }
 
     private fun getTimeStamp(s: String): Long {

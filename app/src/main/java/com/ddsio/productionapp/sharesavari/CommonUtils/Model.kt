@@ -154,6 +154,7 @@ class RatingModel : ArrayList<RatingModelItem>()
 
 data class RatingModelItem(
     val driver: Int,
+    val ride: Int,
     val id: Int,
     val passenger: Int,
     val points: Int,
