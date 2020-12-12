@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
         if (type == "SignUp") {
 
-            OneSignal.addSubscriptionObserver(this)
+
 
             nsvSignUp.visibility = View.VISIBLE
             llLogin.visibility = View.GONE
@@ -230,7 +230,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
             frame.visibility = View.GONE
         } else if (type == "LogIn") {
 
-            OneSignal.addSubscriptionObserver(this)
 
             llLogin.visibility = View.VISIBLE
             llNav.visibility = View.GONE
@@ -1404,6 +1403,8 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
 
+                    OneSignal.addSubscriptionObserver(this@MainActivity)
+
                     Log.i("Responceiskey", response.toString())
 
                     val obj = JSONObject(response)
@@ -1524,6 +1525,8 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                 override fun onResponse(response: String?) {
 
                     Log.i("Responceis", response.toString())
+
+                    OneSignal.addSubscriptionObserver(this@MainActivity)
 
                     val obj = JSONObject(response)
                     val key = obj.get("key")

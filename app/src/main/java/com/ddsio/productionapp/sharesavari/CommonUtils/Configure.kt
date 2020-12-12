@@ -35,7 +35,7 @@ object Configure {
     val REST_PASS = "password/reset/"
 
     //OneSignal
-    val ONESIGNAL = "http://ddsio.com/sharesawaari/send/single/"
+    val ONESIGNAL = "https://ddsio.com/sharesawaari/send/single/"
 
 
 

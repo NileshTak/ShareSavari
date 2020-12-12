@@ -277,10 +277,10 @@ class DriverProfile : AppCompatActivity() {
             tvReport.visibility = View.VISIBLE
 
         }
-//        else {
-//            ratingB.isEnabled = false
-//            tvReport.visibility = View.GONE
-//        }
+        else {
+            ratingB.isEnabled = false
+            tvReport.visibility = View.GONE
+        }
 
     }
 

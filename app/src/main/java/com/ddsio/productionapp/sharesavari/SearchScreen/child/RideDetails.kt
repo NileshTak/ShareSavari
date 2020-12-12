@@ -1197,13 +1197,16 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     val userArray :bookrideItem =
                         gson.fromJson(response, bookrideItem ::class.java)
 
+
                     sendNotificationSelf(customers)
                     sendNotification(customers)
                     sendSMSSelf(customers)
                     sendSMS(customers)
 
-                        sendMessage(customers,count)
 
+                    Handler().postDelayed({
+                        sendMessage(customers,count)
+                    }, 4000)
 
                 }
             }, object : Response.ErrorListener {
@@ -1262,8 +1265,6 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         val url = "http://login.bulksmsgateway.in/sendmessage.php?user=prasadbirari&password=Janardan1&mobile=${currentUser.mobile}&message=${msg}&sender=MSGSAY&type=3"
 
-        Log.d("smsentvjjnd", url.toString())
-        Log.d("smsentvjjnd", currentUser.mobile!!)
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
             url,
@@ -1317,11 +1318,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             ONESIGNAL,
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
-                     Log.d("ssssss","sendNoSuccess")
+                     Log.d("sssssss","sendNoSuccess")
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
-                    Log.d("ssssss","sendNoFailed"+" "+error.networkResponse.statusCode+" "+error.message)
+                    Log.d("sssssss","sendNoFailed"+" "+error.networkResponse.statusCode+" "+error.message)
                 }
             }) {
 
@@ -1336,6 +1337,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     params.put("message","Your Request to book a Ride from ${pojoWithData.leaving} to  ${pojoWithData.going} on  ${pojoWithData.date} has been sent," +
                             " Please check into app for more details.")
                 }
+
+                Log.d("ssssss","id =    " + userProf.oneid.toString())
 
                 params.put("user",player_id)
                 return params
@@ -1372,7 +1375,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 } else {
                     params.put("message"," ${currentUser.first_name} has requested to book your Ride. Please check into app for more details.")
                 }
-
+                Log.d("ssssss","id =    " + userProf.oneid.toString())
                 params.put("user",userProf.oneid.toString())
                 return params
             }
