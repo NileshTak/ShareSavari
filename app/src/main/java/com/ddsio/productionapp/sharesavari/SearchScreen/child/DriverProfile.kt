@@ -130,11 +130,7 @@ class DriverProfile : AppCompatActivity() {
 
         cvChat.setOnClickListener {
 
-//            var user = User(driverId.toString(), tvName.text.toString(),pojoWithData.image.toString())
-
-//
             val intent = Intent(this, ChatPas::class.java)
-//            intent.putExtra(NewMessageActivity.USER_KEY,user)
             val bundle =
                 ActivityOptionsCompat.makeCustomAnimation(
                     this ,
@@ -153,8 +149,16 @@ class DriverProfile : AppCompatActivity() {
         rvReview.setOnClickListener {
             var int = Intent(this,
                 ReviewsList::class.java)
+
             int.putExtra("pojoWithData",pojoWithData)
-            int.putExtra("driverid",pojoWithData.user.toString())
+            if (type == "self" || type == "copas") {
+                int.putExtra("driverid",cust)
+            } else {
+                int.putExtra("driverid",pojoWithData.user.toString())
+            }
+
+            int.putExtra("type",type)
+
             startActivity(int)
         }
 
@@ -276,6 +280,10 @@ class DriverProfile : AppCompatActivity() {
             ratingB.isEnabled = false
             tvReport.visibility = View.GONE
         }
+//        else {
+//            ratingB.isEnabled = false
+//            tvReport.visibility = View.GONE
+//        }
 
     }
 
@@ -674,8 +682,15 @@ class DriverProfile : AppCompatActivity() {
             override fun getParams(): Map<String, String> {
                 val params: MutableMap<String, String> =
                     HashMap()
-                params["driver"] = pojoWithData.user.toString()
-                params["passenger"] = USER_ID_KEY
+
+                if (type == "copas") {
+                    params["driver"] = cust
+                    params["passenger"] = USER_ID_KEY
+                } else {
+                    params["driver"] = pojoWithData.user.toString()
+                    params["passenger"] = USER_ID_KEY
+                }
+
                 params["points"] = rating.rating.roundToInt().toString()
                 params["comment"] = verificationCode
 

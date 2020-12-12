@@ -4,12 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 
 
+
 buildscript {
     repositories {
         maven { url 'https://plugins.gradle.org/m2/'}
     }
     dependencies {
-        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.8, 0.99.99]'
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.9, 0.99.99]'
     }
 }
 apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
@@ -153,5 +154,5 @@ dependencies {
 
     com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
 
-    implementation 'com.onesignal:OneSignal:[3.15.0, 3.99.99]'
+    implementation 'com.onesignal:OneSignal:[3.15.4, 3.99.99]'
 }

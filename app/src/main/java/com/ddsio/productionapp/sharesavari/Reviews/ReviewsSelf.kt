@@ -1,4 +1,4 @@
-package com.ddsio.productionapp.sharesavari.SearchScreen.child
+package com.ddsio.productionapp.sharesavari.Reviews
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -25,17 +25,20 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import de.hdodenhof.circleimageview.CircleImageView
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
+import kotlinx.android.synthetic.main.activity_co_pas_list.*
+import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_reviews_list.*
 import kotlinx.android.synthetic.main.activity_ride_detail.view.tvRating
 import kotlinx.android.synthetic.main.custom_reviews.view.*
 import kotlinx.android.synthetic.main.custom_reviews.view.tvName
+import kotlinx.android.synthetic.main.fragment_profile_screen.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class ReviewsList : AppCompatActivity() {
+class ReviewsSelf : AppCompatActivity() {
 
     lateinit var progressDialog: ProgressDialog
     lateinit var pojoWithData : BookRidesPojoItem
@@ -45,7 +48,6 @@ class ReviewsList : AppCompatActivity() {
     val adapter = GroupAdapter<ViewHolder>()
     var request: RequestQueue? = null
     lateinit var driverid : String
-    lateinit var type : String
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
@@ -58,7 +60,6 @@ class ReviewsList : AppCompatActivity() {
 
         val bundle: Bundle? = intent.extras
         driverid = bundle!!.getString("driverid")!!
-        type = bundle!!.getString("type")!!
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
@@ -70,17 +71,14 @@ class ReviewsList : AppCompatActivity() {
             onBackPressed()
         }
 
-        if (type == "self" || type == "copas") {
-            Log.d("aaaa","if" + driverid)
-            getRating(driverid)
+        if ( pojoWithData.user != null ) {
+            showRatings()
         } else {
-            Log.d("aaaa","if" + pojoWithData.user)
-            showRatings(pojoWithData.user.toString())
+            getRating()
         }
-
     }
 
-    private fun showRatings(user: String) {
+    private fun showRatings() {
         val c = Calendar.getInstance()
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val formattedDate = df.format(c.time)
@@ -100,11 +98,12 @@ class ReviewsList : AppCompatActivity() {
 
         var datePlus = Year.toString()+"-"+Month+"-"+Day+" "+Hour+":"+Minute+":"+Second
 
-        if(getTimeStamp(datePlus) < getTimeStamp(formattedDate)) {
-            getRating(user.toString())
-        } else {
-            Toast.makeText(this@ReviewsList, "No Review Found. Given Reviews Will appear after 24 hours", Toast.LENGTH_LONG).show()
-        }
+//        if(getTimeStamp(datePlus) < getTimeStamp(formattedDate)) {
+            getRating()
+//        } else {
+//            Toast.makeText(this@ReviewsList, "No Review Found. Given Reviews Will appear after 24 hours", Toast.LENGTH_LONG).show()
+//        }
+
     }
 
     private fun getTimeStamp(s: String): Long {
@@ -114,16 +113,16 @@ class ReviewsList : AppCompatActivity() {
     }
 
 
-    private fun getRating(user: String) {
+    private fun getRating() {
 
         progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Wait a Sec.... ")
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-        val url = Configure.BASE_URL + Configure.RATING +"?driver=" + user
+        val url = Configure.BASE_URL + Configure.RATING +"?driver=" + USER_ID_KEY
 
-        Log.d("ddddd",user)
+        Log.d("dddddd",driverid)
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,
@@ -138,15 +137,16 @@ class ReviewsList : AppCompatActivity() {
                     if (userArray != null) {
 
                         if (userArray.size == 0) {
-                            Toast.makeText(this@ReviewsList, "No Review Found", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@ReviewsSelf, "No Review Found", Toast.LENGTH_LONG).show()
                         }
                         for (i in 0..userArray.size-1)   {
-//                                adapter.add(ridesClass(userArray.get(i)))
 
-                            if (!userArray.get(i).passenger.toString().equals(user)) {
+                            Log.d("rrrrr",userArray.get(i).toString() +" "+driverid)
+
+//                            if (userArray.get(i).passenger.toString() == driverid.toString()){
+
                                 adapter.add(ridesClass(userArray.get(i)))
-                            }
-
+//                            }
                         }
 
                         runAnimation(recReview,2)
@@ -155,7 +155,7 @@ class ReviewsList : AppCompatActivity() {
                         recReview.scheduleLayoutAnimation()
                         progressDialog.dismiss()
                     } else {
-                        Toast.makeText(this@ReviewsList, "No Review Found", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@ReviewsSelf, "No Review Found", Toast.LENGTH_LONG).show()
                     }
                     progressDialog.dismiss()
                 }
@@ -164,7 +164,7 @@ class ReviewsList : AppCompatActivity() {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
                     Log.e("Responceis",  "Error: " + error.message)
-                    Toast.makeText(this@ReviewsList, "Please try after sometime", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@ReviewsSelf, "Please try after sometime", Toast.LENGTH_LONG).show()
                     progressDialog.dismiss()
                 }
             }) {
@@ -242,7 +242,7 @@ class ReviewsList : AppCompatActivity() {
                         tvName.text = userArray.first_name
 
                         if (userArray.image != null) {
-                            Glide.with(this@ReviewsList).load(userArray.image).into(ivprof)
+                            Glide.with(this@ReviewsSelf).load(userArray.image).into(ivprof)
                         }
                     }
                     progressDialog.dismiss()
@@ -253,7 +253,7 @@ class ReviewsList : AppCompatActivity() {
                     error.printStackTrace()
                     Log.e("Responceis",  "Error: " + error.message)
 
-                    Toast.makeText(this@ReviewsList,"Something Went Wrong ! Please try after some time",
+                    Toast.makeText(this@ReviewsSelf,"Something Went Wrong ! Please try after some time",
                         Toast.LENGTH_LONG).show()
 
                     progressDialog.dismiss()

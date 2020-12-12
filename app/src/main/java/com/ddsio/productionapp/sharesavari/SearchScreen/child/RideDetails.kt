@@ -1317,10 +1317,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             ONESIGNAL,
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
-
+                     Log.d("ssssss","sendNoSuccess")
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
+                    Log.d("ssssss","sendNoFailed"+" "+error.networkResponse.statusCode+" "+error.message)
                 }
             }) {
 
@@ -1352,11 +1353,11 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
             ONESIGNAL,
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
-
+                    Log.d("ssssss","sendNoSuccessSelf")
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
-
+                    Log.d("ssssss","sendNoSelffail"+" "+error.networkResponse.statusCode+" "+error.message)
                 }
             }) {
 

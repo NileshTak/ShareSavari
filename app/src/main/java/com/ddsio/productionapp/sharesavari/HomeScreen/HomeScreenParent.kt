@@ -23,7 +23,9 @@ import com.onesignal.OSSubscriptionObserver
 import com.onesignal.OSSubscriptionStateChanges
 import com.productionapp.amhimemekar.CommonUtils.Configure
 
-class HomeScreenParent : Fragment() , OSSubscriptionObserver {
+class HomeScreenParent : Fragment()
+//    , OSSubscriptionObserver
+    {
 
     lateinit var viewPagerInbox : ViewPager
     lateinit var tabLayoutInbox : TabLayout
@@ -54,13 +56,13 @@ class HomeScreenParent : Fragment() , OSSubscriptionObserver {
         return view
     }
 
-    override fun onOSSubscriptionChanged(stateChanges: OSSubscriptionStateChanges?) {
-        if (!stateChanges!!.getFrom().getSubscribed() &&
-            stateChanges.getTo().getSubscribed()) {
-
-            Log.d("ONESIGNALIS",stateChanges.to.userId)
-            player_id = stateChanges.to.userId
-            Utils.writeStringToPreferences(Configure.PLAYER_ID, stateChanges.to.userId.toString(), activity)
-        }
-    }
+//    override fun onOSSubscriptionChanged(stateChanges: OSSubscriptionStateChanges?) {
+//        if (!stateChanges!!.getFrom().getSubscribed() &&
+//            stateChanges.getTo().getSubscribed()) {
+//
+//            Log.d("ONESIGNALIS",stateChanges.to.userId)
+//            player_id = stateChanges.to.userId
+//            Utils.writeStringToPreferences(Configure.PLAYER_ID, stateChanges.to.userId.toString(), activity)
+//        }
+//    }
 }

@@ -614,7 +614,6 @@ lateinit var cbPetsP : CheckBox
         progressDialog.show()
 
         val url = BASE_URL+ GET_USER_DETAILS+USER_ID_KEY+"/"
-//        val url = "https://ddsio.com/sharesawaari/rest/users/22/"
 
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.GET,

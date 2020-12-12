@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.latest_message_row.view.*
+import java.util.*
 
 
 class LatestMessageRow(val chatMessage: ChatMessage) : Item<ViewHolder>() {
@@ -52,6 +53,7 @@ class LatestMessageRow(val chatMessage: ChatMessage) : Item<ViewHolder>() {
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 chatPartnerUser = p0.getValue(User::class.java)
+
                 viewHolder.itemView.username_textview_latest_message.text =
                     chatPartnerUser?.username
 

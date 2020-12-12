@@ -44,7 +44,9 @@ import kotlinx.android.synthetic.main.fragment_profile_screen.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.greenrobot.eventbus.Subscribe
 
-class HomeScreen : Fragment() , OSSubscriptionObserver {
+class HomeScreen : Fragment()
+//    , OSSubscriptionObserver
+{
 
     lateinit var progressDialog: ProgressDialog
     var LOGIN_TOKEN = ""
@@ -81,15 +83,15 @@ class HomeScreen : Fragment() , OSSubscriptionObserver {
         return view
     }
 
-    override fun onOSSubscriptionChanged(stateChanges: OSSubscriptionStateChanges?) {
-        if (!stateChanges!!.getFrom().getSubscribed() &&
-            stateChanges.getTo().getSubscribed()) {
-
-            Log.d("ONESIGNALIS",stateChanges.to.userId)
-            player_id = stateChanges.to.userId
-            Utils.writeStringToPreferences(Configure.PLAYER_ID, stateChanges.to.userId.toString(), activity)
-        }
-    }
+//    override fun onOSSubscriptionChanged(stateChanges: OSSubscriptionStateChanges?) {
+//        if (!stateChanges!!.getFrom().getSubscribed() &&
+//            stateChanges.getTo().getSubscribed()) {
+//
+//            Log.d("ONESIGNALIS",stateChanges.to.userId)
+//            player_id = stateChanges.to.userId
+//            Utils.writeStringToPreferences(Configure.PLAYER_ID, stateChanges.to.userId.toString(), activity)
+//        }
+//    }
 
 
 
@@ -130,6 +132,7 @@ class HomeScreen : Fragment() , OSSubscriptionObserver {
                         rvOfferedRides.scheduleLayoutAnimation()
                         progressDialog.dismiss()
 
+                        updateOneID()
 
                     }
 
@@ -222,6 +225,61 @@ class HomeScreen : Fragment() , OSSubscriptionObserver {
         }
 
         Utils.setVolleyRetryPolicy(jsonObjRequest)
+        request!!.add(jsonObjRequest)
+
+    }
+
+
+
+    fun updateOneID( ) {
+
+        if (player_id == null || player_id.isEmpty() || player_id == " ") {
+            player_id = Utils.getStringFromPreferences(Configure.PLAYER_ID,"",activity)!!
+        }
+
+       var update_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",activity)!!
+
+        val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+ update_ID +"/"
+
+        Log.d("aaaaaaa",player_id+"  sss");
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.PUT,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+
+                    Log.d("responceis",response.toString());
+
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+//                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    HashMap()
+                params.put("oneid",player_id)
+
+                return params
+            }
+        }
         request!!.add(jsonObjRequest)
 
     }

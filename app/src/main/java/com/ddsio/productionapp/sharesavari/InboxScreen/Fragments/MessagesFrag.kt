@@ -4,7 +4,9 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -16,13 +18,14 @@ import com.ddsio.productionapp.sharesavari.MainActivity
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.User
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.letsbuildthatapp.kotlinmessenger.models.ChatMessage
 import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_messages.*
+import java.util.*
+import kotlin.collections.HashMap
 
 class MessagesFrag : Fragment() {
 
@@ -56,6 +59,7 @@ class MessagesFrag : Fragment() {
 
 
         recyclerview_latest_messages.adapter = adapter
+        adapter.notifyDataSetChanged()
         recyclerview_latest_messages.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
 
 
@@ -92,7 +96,10 @@ class MessagesFrag : Fragment() {
         return view
     }
 
+
+
     val latestMessagesMap = HashMap<String, ChatMessage>()
+    var arr = arrayListOf<String>()
 
     private fun refreshRecyclerViewMessages() {
         adapter.clear()
@@ -101,9 +108,13 @@ class MessagesFrag : Fragment() {
         } else {
             llNoMsg.visibility = View.GONE
         }
+
         latestMessagesMap.values.forEach {
-            adapter.add(LatestMessageRow(it))
+
+                adapter.add(LatestMessageRow(it))
+
         }
+
         progressDialog.dismiss()
     }
 
@@ -111,9 +122,12 @@ class MessagesFrag : Fragment() {
         val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$USER_ID_KEY")
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+
                 val chatMessage = p0.getValue(ChatMessage::class.java) ?: return
                 latestMessagesMap[p0.key!!] = chatMessage
+
                 refreshRecyclerViewMessages()
+                Log.d("aaaaaa",chatMessage.text)
                 progressDialog.dismiss()
             }
 
@@ -136,6 +150,7 @@ class MessagesFrag : Fragment() {
     }
 
     val adapter = GroupAdapter<ViewHolder>()
+
 
 //  private fun setupDummyRows() {
 //

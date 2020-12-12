@@ -226,6 +226,7 @@ class CoPasList : AppCompatActivity() {
         var customers: FetchProfileData,
         var passenger: bookrideItem
     ) : Item<ViewHolder>() {
+
         override fun getLayout(): Int {
             return R.layout.custom_copas_list
         }

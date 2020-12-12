@@ -246,13 +246,13 @@ class PendingReq : AppCompatActivity() {
                         driverProfile = userArray
 
                         sendNotificationSelf("You had accepted the request of ${customers.first_name} for Ride ${pojoWithData.leaving} to ${pojoWithData.going} on ${pojoWithData.date}. " +
-                                "Please check into app for more details.", driverProfile)
+                                "Please check into app for more details.", userArray)
 
 
                         var msg = "You%20had%20accepted%20the%20request%20of%20${customers.first_name}%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}.%20" +
                                 "Please%20check%20into%20app%20for%20more%20details."
 
-                        sendSMS(driverProfile, msg)
+                        sendSMS(userArray, msg)
 
                     } else {
                         Toast.makeText(this@PendingReq,"No Request Found",
@@ -370,6 +370,7 @@ class PendingReq : AppCompatActivity() {
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
 
+
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
@@ -418,11 +419,13 @@ class PendingReq : AppCompatActivity() {
                     var msg = "Your%20Request%20for%20Ride%20${pojoWithData.leaving}%20to%20${pojoWithData.going}%20on%20${pojoWithData.date}%20has%20been%20Accepted%20by%20Driver%20and%20you%20can%20contact%20directly%20to%20driver%20from%20Driver's%20Public%20Profile'.%20" +
                             "Please%20check%20into%20app%20for%20more%20details."
 
-                    getDriverData(passenger ,customers)
+//                    getDriverData(passenger ,customers)
 
                     sendMessage(customers)
 
                     sendSMS(customers, msg)
+
+                    getDriverData(customers)
 
                     progressDialog.dismiss()
 
@@ -586,16 +589,12 @@ class PendingReq : AppCompatActivity() {
                     Log.d("smsentvjjnd", response.toString())
 
 
-                    getDriverData(customers)
-
-
                 }
             }, object : Response.ErrorListener {
                 override fun onErrorResponse(error: VolleyError) {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
                     Log.e("Responceis",  "Error: " + error.message)
-
 
                     progressDialog.dismiss()
                 }

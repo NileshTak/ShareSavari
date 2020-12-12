@@ -202,7 +202,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(LOGIN_KEY, "", this)!!
 
-        OneSignal.addSubscriptionObserver(this)
 
         Handler().postDelayed({
             Utils.checkConnection(this@MainActivity, frameContainer)
@@ -222,11 +221,17 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
         }
 
         if (type == "SignUp") {
+
+            OneSignal.addSubscriptionObserver(this)
+
             nsvSignUp.visibility = View.VISIBLE
             llLogin.visibility = View.GONE
             llNav.visibility = View.GONE
             frame.visibility = View.GONE
         } else if (type == "LogIn") {
+
+            OneSignal.addSubscriptionObserver(this)
+
             llLogin.visibility = View.VISIBLE
             llNav.visibility = View.GONE
             nsvSignUp.visibility = View.GONE
@@ -483,10 +488,7 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
 
 
-
-
-    private fun sendCode()
-    {
+    private fun sendCode() {
         val phoneNumber = "+91" +etMobile!!.text.toString()
 
         createOTPEnterDialog(phoneNumber)
@@ -527,7 +529,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                 Utils.showSnackMSG(alertLayout.parentAuth,"Please Enter Verification Code")
 
             } else {
-
 
                 dialog_verifying.show()
 
@@ -868,7 +869,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                 }
             }) {
 
-
             override fun getHeaders(): MutableMap<String, String> {
 
                 Log.d("jukjbkj", LOGIN_TOKEN.toString())
@@ -893,7 +893,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
         Utils.setVolleyRetryPolicy(jsonObjRequest)
         request!!.add(jsonObjRequest)
-
     }
 
 
@@ -1467,6 +1466,8 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
     fun updateOneID( ) {
         val url = Configure.BASE_URL + Configure.UPDATE_USER_DETAILS+USER_UPDATE_ID+"/"
 
+        Log.d("aaaaaaa",player_id+"  sss");
+
         val jsonObjRequest: StringRequest = object : StringRequest(
             Method.PUT,
             url,
@@ -1674,7 +1675,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
     }
 
 
-
     fun loadHomeFrag(fragHome : HomeScreenParent) {
 
         llLogin.visibility = View.GONE
@@ -1793,8 +1793,8 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
         if (!stateChanges!!.getFrom().getSubscribed() &&
             stateChanges.getTo().getSubscribed()) {
 
-            Log.d("ONESIGNALIS",stateChanges.to.userId)
-            player_id = stateChanges.to.userId
+            Log.d("ONESIGNALIS", stateChanges!!.to.userId)
+            player_id = stateChanges!!.to.userId
             Utils.writeStringToPreferences( PLAYER_ID, stateChanges.to.userId.toString(), this@MainActivity)
         }
     }
