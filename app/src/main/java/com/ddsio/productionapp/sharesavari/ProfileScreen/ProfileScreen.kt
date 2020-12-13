@@ -296,6 +296,23 @@ lateinit var cbPetsP : CheckBox
                     editor.clear()
                     editor.commit()
 
+                    preferences.getString(Configure.USER_UPDATE_ID,"")
+                    editor.clear()
+                    editor.commit()
+
+                    preferences.getString(Configure.SERACH_LAT_KEY,"")
+                    editor.clear()
+                    editor.commit()
+
+                    preferences.getString(Configure.SERACH_LOG_KEY,"")
+                    editor.clear()
+                    editor.commit()
+
+                    preferences.getString(Configure.USER_UPDATE_ID,"")
+                    editor.clear()
+                    editor.commit()
+
+
                     preferences.getString(Configure.PLAYER_ID,"")
                     editor.clear()
                     editor.commit()

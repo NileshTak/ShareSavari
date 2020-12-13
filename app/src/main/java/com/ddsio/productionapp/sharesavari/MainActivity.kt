@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.inputmethodservice.Keyboard
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +17,7 @@ import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.util.Patterns
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -70,9 +72,11 @@ import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import kotlinx.android.synthetic.main.activity_authentication.view.*
 import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.activity_max_seat.*
 import kotlinx.android.synthetic.main.convid_poster_layout.view.*
 import kotlinx.android.synthetic.main.reset_password_dialog.view.*
+import kotlinx.android.synthetic.main.reset_password_dialog.view.loginetEmail
 import kotlinx.android.synthetic.main.ride_booking_type.view.*
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -169,6 +173,8 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
     val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
     var formate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
+    lateinit var rlRelative : RelativeLayout
+
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
@@ -185,6 +191,7 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
         mAuth = FirebaseAuth.getInstance()
 
         tvSignUp = findViewById<TextView>(R.id.tvSignUp)
+        rlRelative = findViewById<RelativeLayout>(R.id.rlParent)
         tvForgotPass = findViewById<TextView>(R.id.tvForgotPass)
         nsvSignUp = findViewById<NestedScrollView>(R.id.nsvSignUp)
         tvLogin = findViewById<TextView>(R.id.tvLogin)
@@ -229,7 +236,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
             llNav.visibility = View.GONE
             frame.visibility = View.GONE
         } else if (type == "LogIn") {
-
 
             llLogin.visibility = View.VISIBLE
             llNav.visibility = View.GONE
@@ -360,6 +366,7 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
         llHome.setOnClickListener {
             changeIconColor(ivHome, tvHome, "Home")
             if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
+
                 loadHomeFrag(fragHome = HomeScreenParent())
             } else {
                 llLogin.visibility = View.VISIBLE
@@ -658,7 +665,7 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
         progressDialog.setCancelable(false)
         progressDialog.show()
 
-        var url = Configure.BASE_URL + Configure.REST_PASS
+        var url =  Configure.REST_PASS
 
         Log.d("Responceis", url)
 
@@ -669,7 +676,11 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                 override fun onResponse(response: String?) {
 
                     Log.i("Responceis", response.toString())
-
+                    Toast.makeText(
+                        applicationContext,
+                        "RESET E-Mail has been sent to your given E-Mail Address.",
+                        Toast.LENGTH_LONG
+                    ).show()
                     progressDialog.dismiss()
 
                 }
@@ -1056,6 +1067,8 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                     Toast.LENGTH_LONG
                 ).show()
 
+
+
                 loadScreens()
                 showConvidPoster()
                 progressDialog.dismiss()
@@ -1431,12 +1444,12 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                     if (error.networkResponse.statusCode == 400) {
                         Toast.makeText(
                             applicationContext,
-                            "Username or Mail ID Not Registered Yet. Please Create One..",
+                            "Mobile No. or Password is Incorrect.",
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
                         Toast.makeText(
-                            applicationContext, "Something Went Wrong ! Please try after some time",
+                            applicationContext, "Mobile No. Not Registered Yet. Please Create One..",
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -1596,6 +1609,7 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
     }
 
     private fun loadScreens() {
+        rlRelative.requestFocus();
         changeIconColor(ivHome, tvHome, "Home")
         if (LOGIN_TOKEN != null && LOGIN_TOKEN != "") {
             llNav.visibility = View.VISIBLE

@@ -1,27 +1,20 @@
 package com.ddsio.productionapp.sharesavari.HomeScreen
 
-import android.Manifest
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
-import com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag
 import com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.NotificationFrag
 import com.ddsio.productionapp.sharesavari.R
-import com.github.florent37.runtimepermission.kotlin.askPermission
+import com.google.android.material.tabs.TabLayout
 import com.nilprojects.androiduidesign.Adapter.TabAdapter
-import com.onesignal.OSSubscriptionObserver
-import com.onesignal.OSSubscriptionStateChanges
-import com.productionapp.amhimemekar.CommonUtils.Configure
+
 
 class HomeScreenParent : Fragment()
 //    , OSSubscriptionObserver
@@ -38,6 +31,8 @@ class HomeScreenParent : Fragment()
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_homeparent_screen, container, false)
+
+
 
         tabLayoutInbox = view.findViewById<TabLayout>(R.id.tabLayoutHome)
 

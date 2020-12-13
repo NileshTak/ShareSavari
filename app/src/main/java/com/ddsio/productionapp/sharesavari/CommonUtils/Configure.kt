@@ -32,7 +32,7 @@ object Configure {
     val Book_RIDE_URL = "ride/passenger/"
 
     //Rest Password
-    val REST_PASS = "password/reset/"
+    val REST_PASS = "https://ddsio.com/sharesawaari/rest/auth/password/reset/"
 
     //OneSignal
     val ONESIGNAL = "https://ddsio.com/sharesawaari/send/single/"

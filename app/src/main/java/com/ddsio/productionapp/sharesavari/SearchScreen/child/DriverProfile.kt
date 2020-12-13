@@ -457,9 +457,22 @@ class DriverProfile : AppCompatActivity() {
 
                         for (i in 0..userArray.size - 1) {
 
+
                             if (userArray.get(i).ride != null && userArray.get(i).ride.toString() != "null" ) {
-                                if (userArray.get(i).driver.toString() == cust.toString()
-                                    && userArray.get(i).ride.toString() == pojoWithData.id.toString() ) {
+
+
+                                Log.d("ratingsss", userArray.get(i).driver.toString() +"  "+pojoWithData.user.toString()+"  "
+                                        +userArray.get(i).ride.toString() +"  "+ pojoWithData.id.toString() +" "+type)
+
+
+                                if (userArray.get(i).driver.toString() == pojoWithData.user.toString()
+                                    && userArray.get(i).ride.toString() == pojoWithData.id.toString() && type == "driver") {
+                                    btnSubmitB.isEnabled = false
+                                    ratingB.isEnabled = false
+                                    Log.d("ratingsss","found")
+                                    ratingB.rating = userArray.get(i).points.toFloat()
+                                } else if (userArray.get(i).driver.toString() == cust.toString()
+                                    && userArray.get(i).ride.toString() == pojoWithData.id.toString() && type == "copas") {
                                     btnSubmitB.isEnabled = false
                                     ratingB.isEnabled = false
                                     Log.d("ratingsss","found")

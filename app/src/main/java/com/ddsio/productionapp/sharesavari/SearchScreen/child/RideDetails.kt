@@ -1035,7 +1035,10 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 override fun onErrorResponse(error: VolleyError) {
                     VolleyLog.d("volley", "Error: " + error.message)
                     error.printStackTrace()
-                    Log.e("Responceis",  "Error: " + error.message)
+                    Log.e("Responceis",  "Error: " + error.networkResponse.statusCode)
+
+
+                    Log.e("gggggggggg",  "Seat Check Failed")
 
                     Toast.makeText(this@RideDetails,"Something Went Wrong ! Please try after some time",
                         Toast.LENGTH_LONG).show()
@@ -1203,10 +1206,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     sendSMSSelf(customers)
                     sendSMS(customers)
 
-
-                    Handler().postDelayed({
                         sendMessage(customers,count)
-                    }, 4000)
+
 
                 }
             }, object : Response.ErrorListener {
@@ -1217,6 +1218,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
                     Toast.makeText(this@RideDetails,"Something Went Wrong ! Please try after some time",
                         Toast.LENGTH_LONG).show()
+
+                    Log.e("gggggggggg",  "Seat Book Failed")
 
                     progressDialog.dismiss()
                 }
@@ -1472,7 +1475,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
 
-        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000 )
 
         reference.setValue(chatMessage)
             .addOnSuccessListener {
@@ -1539,7 +1542,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
 
-        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000 )
 
         reference.setValue(chatMessage)
             .addOnSuccessListener {

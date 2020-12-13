@@ -89,7 +89,6 @@ class ChatLogActivity : AppCompatActivity() {
                 val chatMessage = p0.getValue(ChatMessage::class.java)
 
                 if (chatMessage != null) {
-                    Log.d(TAG, chatMessage.text)
 
                     if (chatMessage.fromId == USER_ID_KEY) {
                         val currentUser = MessagesFrag.currentUser ?: return
@@ -150,7 +149,7 @@ class ChatLogActivity : AppCompatActivity() {
                     FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
 
                 val chatMessage =
-                    ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+                    ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000 )
 
                 reference.setValue(chatMessage)
                     .addOnSuccessListener {

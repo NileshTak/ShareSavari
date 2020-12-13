@@ -548,16 +548,12 @@ class PendingReq : AppCompatActivity() {
 
         val toReference = FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
 
-        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000 )
 
         reference.setValue(chatMessage)
             .addOnSuccessListener {
                 progressDialog.dismiss()
 
-                if (pojoWithData.is_direct == true) {
-
-                } else {
-                      }
 
             }
             .addOnFailureListener {

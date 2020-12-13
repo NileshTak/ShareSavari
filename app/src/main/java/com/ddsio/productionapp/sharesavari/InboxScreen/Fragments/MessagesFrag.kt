@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +41,8 @@ class MessagesFrag : Fragment() {
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
 
+    lateinit var llNoMsg : LinearLayout
+
     lateinit var progressDialog: ProgressDialog
 
     override fun onCreateView(
@@ -52,6 +55,7 @@ class MessagesFrag : Fragment() {
         val view = inflater.inflate(R.layout.fragment_messages, container, false)
         recyclerview_latest_messages = view.findViewById<RecyclerView>(R.id.recyclerview_latest_messages)
         fabNewMsg = view.findViewById<FloatingActionButton>(R.id.fabNewMsg)
+        llNoMsg = view.findViewById<LinearLayout>(R.id.llNoMsg)
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",activity)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",activity)!!

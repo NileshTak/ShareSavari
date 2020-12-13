@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/md_white_1000"
+    android:focusable="true"
+    android:id="@+id/rlParent"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants"
     android:layout_height="match_parent"
     tools:context="com.ddsio.productionapp.sharesavari.MainActivity">
 

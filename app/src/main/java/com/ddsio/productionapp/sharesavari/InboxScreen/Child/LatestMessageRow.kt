@@ -1,5 +1,6 @@
 package com.ddsio.productionapp.sharesavari.InboxScreen.Child
 
+import android.view.View
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.User
@@ -13,6 +14,7 @@ import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.fragment_profile_screen.view.*
 import kotlinx.android.synthetic.main.latest_message_row.view.*
 import java.util.*
 
@@ -25,6 +27,12 @@ class LatestMessageRow(val chatMessage: ChatMessage) : Item<ViewHolder>() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.itemView.message_textview_latest_message.text = chatMessage.text
+
+//        if (chatMessage.seen) {
+//            viewHolder.itemView.ivNotSeen.visibility = View.GONE
+//        } else {
+//            viewHolder.itemView.ivNotSeen.visibility = View.VISIBLE
+//        }
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(
             Configure.LOGIN_KEY,
