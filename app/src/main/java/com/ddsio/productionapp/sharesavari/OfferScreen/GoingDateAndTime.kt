@@ -235,6 +235,9 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
         if (etSelectDate.text.toString().isEmpty() || etSelectDate.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Leaving Date ",
                 Toast.LENGTH_LONG).show()
+        } else  if (etSelectDate.text.toString() < currentDate ) {
+            Toast.makeText(this,"Leaving Date should be greater then or equals to Today's' Date",
+                Toast.LENGTH_LONG).show()
         } else  if (etSelectTime.text.toString().isEmpty() || etSelectTime.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Leaving Time",
                 Toast.LENGTH_LONG).show()
@@ -244,7 +247,7 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
         } else  if (etReachTime.text.toString().isEmpty() || etReachTime.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Reaching Time",
                 Toast.LENGTH_LONG).show()
-        }else  if (etReachDate.text.toString() < etSelectDate.text.toString() ) {
+        } else  if (etReachDate.text.toString() < etSelectDate.text.toString() ) {
             Toast.makeText(this,"Reaching Date should be greater then or equals to Leaving Date",
                 Toast.LENGTH_LONG).show()
         } else  if (etReachDate.text.toString() == etSelectDate.text.toString() && reachHour.toInt()  < goingHour.toInt() ) {

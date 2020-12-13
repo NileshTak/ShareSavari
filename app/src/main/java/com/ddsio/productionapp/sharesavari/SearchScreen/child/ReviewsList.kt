@@ -70,9 +70,11 @@ class ReviewsList : AppCompatActivity() {
             onBackPressed()
         }
 
-        if (type == "self" || type == "copas") {
+        if (type == "self"  ) {
             Log.d("aaaa","if" + driverid)
             getRating(driverid)
+        } else if ( type == "copas") {
+            showRatings(driverid)
         } else {
             Log.d("aaaa","if" + pojoWithData.user)
             showRatings(pojoWithData.user.toString())

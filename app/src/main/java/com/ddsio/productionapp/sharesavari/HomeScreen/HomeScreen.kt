@@ -77,6 +77,8 @@ class HomeScreen : Fragment()
         progressDialog.setCancelable(false)
         progressDialog.show()
 
+        Utils.hideKeyboard(activity)
+
         sendMobielVerifiedTrueAPI()
         hitFindOfferedRideAPI()
 

@@ -1,5 +1,6 @@
 package com.ddsio.productionapp.sharesavari.CommonUtils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.location.Address
@@ -12,6 +13,7 @@ import android.preference.PreferenceManager
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import com.android.volley.DefaultRetryPolicy
@@ -45,6 +47,19 @@ object Utils {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity)
         return sharedPreferences.getString(key, defaultValue)
     }
+
+
+    fun hideKeyboard(activity: Activity?) {
+        if (activity == null) return
+        val view = activity.currentFocus
+        if (view != null) {
+            val imm: InputMethodManager =
+                activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+
 
     fun CheckGpsStatus(context: Context) : Boolean {
        var locationManager =
