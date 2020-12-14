@@ -230,8 +230,6 @@ class GoingDateAndTime : AppCompatActivity(),TimePickerFragment.TimePickerListen
 
     private fun checkFields() {
 
-        Log.d("ddddddddd",etReachDate.text.toString() +"  "+ etSelectDate.text.toString() +"  "+ reachHour +"  "+ goingHour)
-
         if (etSelectDate.text.toString().isEmpty() || etSelectDate.text.toString() == "") {
             Toast.makeText(this,"Please Select Correct Leaving Date ",
                 Toast.LENGTH_LONG).show()

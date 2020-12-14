@@ -130,6 +130,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
         var screen  = bundle!!.get("screen") as String
         IDToCancel  = bundle!!.get("IDToCancel") as String
 
+        Log.d("aaaaaaaaaaa",pojoWithData.id.toString())
+
 
         if (screen == "home") {
             rlBottom.visibility = View.GONE
