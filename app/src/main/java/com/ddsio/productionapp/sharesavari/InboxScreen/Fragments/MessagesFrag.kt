@@ -107,7 +107,12 @@ class MessagesFrag : Fragment() {
         } else {
             llNoMsgFrag.visibility = View.GONE
         }
-        latestMessagesMap.values.forEach {
+
+        val result = latestMessagesMap.toList().sortedByDescending {
+                (_, value) -> value.timestamp
+        }.toMap()
+
+        result.values.forEach {
             adapter.add(LatestMessageRow(it))
         }
         progressDialog.dismiss()

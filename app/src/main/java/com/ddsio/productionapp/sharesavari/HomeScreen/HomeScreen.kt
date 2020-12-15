@@ -96,7 +96,6 @@ class HomeScreen : Fragment()
 //    }
 
 
-
     private fun hitFindOfferedRideAPI() {
 
         val adapter = GroupAdapter<ViewHolder>()
