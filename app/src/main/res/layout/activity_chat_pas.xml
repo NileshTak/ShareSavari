@@ -8,13 +8,13 @@
     tools:context="com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag">
 
     <RelativeLayout
-        android:id="@+id/rl"
+        android:id="@+id/rlChat"
         android:layout_width="match_parent"
         android:background="@color/colorPrimary"
         android:layout_height="60dp">
 
         <ImageView
-            android:id="@+id/ivBacS"
+            android:id="@+id/ivBacSChat"
             android:layout_width="40dp"
             android:layout_marginStart="15dp"
             android:src="@drawable/ic_baseline_chevron_left_24_white"
@@ -23,8 +23,8 @@
             android:layout_height="40dp"/>
 
         <TextView
-            android:id="@+id/tvTitleTooll"
-            android:layout_toRightOf="@id/ivBacS"
+            android:id="@+id/tvTitleToollChat"
+            android:layout_toRightOf="@id/ivBacSChat"
             android:layout_marginStart="10dp"
             android:text="Chat With Passenger"
             android:textSize="22sp"
@@ -41,7 +41,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/llNoMsg"
+        android:id="@+id/llNoMsgChat"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_margin="10dp"
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tvTitleTool"
+                android:id="@+id/tvTitleToolChat"
                 android:layout_marginStart="20dp"
                 android:text="ShareSavari"
                 android:textSize="18sp"
@@ -100,7 +100,7 @@
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_latest_messages"
+            android:id="@+id/recyclerview_latest_messagesChat"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:padding="4dp"
             android:layout_margin="4dp"
@@ -112,7 +112,7 @@
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/fabNewMsg"
+            android:id="@+id/fabNewMsgChat"
             app:borderWidth="0dp"
             android:visibility="gone"
             android:src="@drawable/ic_baseline_chevron_left_24_white"

@@ -24,8 +24,7 @@ import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
-import kotlinx.android.synthetic.main.activity_smokingand_booking.*
-import kotlinx.android.synthetic.main.fragment_messages.*
+import kotlinx.android.synthetic.main.activity_chat_pas.*
 
 class ChatPas : AppCompatActivity() {
 
@@ -52,8 +51,8 @@ class ChatPas : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_pas)
 
-        recyclerview_latest_messages = findViewById<RecyclerView>(R.id.recyclerview_latest_messages)
-        fabNewMsg = findViewById<FloatingActionButton>(R.id.fabNewMsg)
+        recyclerview_latest_messages = findViewById<RecyclerView>(R.id.recyclerview_latest_messagesChat)
+        fabNewMsg = findViewById<FloatingActionButton>(R.id.fabNewMsgChat)
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
@@ -65,7 +64,7 @@ class ChatPas : AppCompatActivity() {
         recyclerview_latest_messages.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
 
-        ivBacS.setOnClickListener {
+        ivBacSChat.setOnClickListener {
             onBackPressed()
         }
 
@@ -107,12 +106,10 @@ class ChatPas : AppCompatActivity() {
 //        if (latestMessagesMap.size < 1) {
 //            llNoMsg.visibility = View.VISIBLE
 //        } else {
-            llNoMsg.visibility = View.GONE
+        llNoMsgChat.visibility = View.GONE
 //        }
         latestMessagesMap.values.forEach {
             if (it.toId == driverid) {
-                adapter.add(LatestMessageRow(it))
-            } else if (it.fromId == driverid) {
                 adapter.add(LatestMessageRow(it))
             }
         }
@@ -120,7 +117,7 @@ class ChatPas : AppCompatActivity() {
     }
 
     private fun listenForLatestMessages() {
-        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$USER_ID_KEY").orderByKey()
+        val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$USER_ID_KEY")
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 val chatMessage = p0.getValue(ChatMessage::class.java) ?: return

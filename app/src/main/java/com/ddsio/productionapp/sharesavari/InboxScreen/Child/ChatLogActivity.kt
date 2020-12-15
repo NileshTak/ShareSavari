@@ -3,8 +3,12 @@ package com.ddsio.productionapp.sharesavari.InboxScreen.Child
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -33,16 +37,21 @@ class ChatLogActivity : AppCompatActivity() {
         val TAG = "ChatLog"
     }
 
-  var toPlayerId = ""
+    var toPlayerId = ""
 
     var LOGIN_TOKEN = ""
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY: String
     val adapter = GroupAdapter<ViewHolder>()
 
-  var request: RequestQueue? = null
+    var request: RequestQueue? = null
 
     var toUser: User? = null
+
+    lateinit var send_button_chat_log : Button
+    lateinit var ivBacknumberSave : ImageView
+    lateinit var edittext_chat_log : EditText
+    lateinit var recyclerview_chat_log : RecyclerView
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
@@ -52,12 +61,17 @@ class ChatLogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
 
+        send_button_chat_log = findViewById<Button>(R.id.send_button_chat_log)
+        ivBacknumberSave = findViewById<ImageView>(R.id.ivBacknumberSave)
+        edittext_chat_log = findViewById<EditText>(R.id.edittext_chat_log)
+        recyclerview_chat_log = findViewById<RecyclerView>(R.id.recyclerview_chat_log)
+
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY, "", this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID, "", this)!!
         USER_ID_KEY = Utils.getStringFromPreferences(Configure.USER_ID_KEY, "", this)!!
 
-      request= Volley.newRequestQueue(this)
+        request= Volley.newRequestQueue(this)
 
         recyclerview_chat_log.adapter = adapter
 
@@ -89,6 +103,7 @@ class ChatLogActivity : AppCompatActivity() {
                 val chatMessage = p0.getValue(ChatMessage::class.java)
 
                 if (chatMessage != null) {
+                    Log.d(TAG, chatMessage.text)
 
                     if (chatMessage.fromId == USER_ID_KEY) {
                         val currentUser = MessagesFrag.currentUser ?: return
@@ -127,77 +142,90 @@ class ChatLogActivity : AppCompatActivity() {
         if (edittext_chat_log.text.toString().isEmpty()) {
             edittext_chat_log.error = "Enter Valid Message"
         } else if (getNumbers(edittext_chat_log.text.toString())) {
-                edittext_chat_log.error = "Mobile Number not allowed"
-        } else if (isValidMobile(edittext_chat_log.text.toString())) {
-            edittext_chat_log.error = "Mobile Number and Country Codes not allowed"
+            edittext_chat_log.error = "Mobile Number not allowed"
+        } else if (getTweleveNumbers(edittext_chat_log.text.toString())) {
+            edittext_chat_log.error = "Mobile Number not allowed"
         } else {
-                val text = edittext_chat_log.text.toString()
+            val text = edittext_chat_log.text.toString()
 
-                val fromId = USER_ID_KEY
-                val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-                val toId = user!!.uid
+            val fromId = USER_ID_KEY
+            val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+            val toId = user!!.uid
 
-                getUserData(user!!.uid.toString())
+            getUserData(user!!.uid.toString())
 
-                if (fromId == null) return
+            if (fromId == null) return
 
 //    val reference = FirebaseDatabase.getInstance().getReference("/messages").push()
-                val reference =
-                    FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()
+            val reference =
+                FirebaseDatabase.getInstance().getReference("/user-messages/$fromId/$toId").push()
 
-                val toReference =
-                    FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
+            val toReference =
+                FirebaseDatabase.getInstance().getReference("/user-messages/$toId/$fromId").push()
 
-                val chatMessage =
-                    ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000 )
+            val chatMessage =
+                ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
 
-                reference.setValue(chatMessage)
-                    .addOnSuccessListener {
-                        Log.d(TAG, "Saved our chat message: ${reference.key}")
-                        edittext_chat_log.text.clear()
-                        recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
-                    }
+            reference.setValue(chatMessage)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Saved our chat message: ${reference.key}")
+                    edittext_chat_log.text.clear()
+                    recyclerview_chat_log.scrollToPosition(adapter.itemCount - 1)
+                }
 
-                toReference.setValue(chatMessage)
+            toReference.setValue(chatMessage)
 
-                val latestMessageRef =
-                    FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")
-                latestMessageRef.setValue(chatMessage)
+            val latestMessageRef =
+                FirebaseDatabase.getInstance().getReference("/latest-messages/$fromId/$toId")
+            latestMessageRef.setValue(chatMessage)
 
-                val latestMessageToRef =
-                    FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
-                latestMessageToRef.setValue(chatMessage)
-            }
+            val latestMessageToRef =
+                FirebaseDatabase.getInstance().getReference("/latest-messages/$toId/$fromId")
+            latestMessageToRef.setValue(chatMessage)
         }
+    }
 
 
     private fun getNumbers(toString: String): Boolean {
         val p = Pattern.compile("\\b-?\\d+\\b")
         val m: Matcher = p.matcher(toString)
         while (m.find()) {
-            if (m.group().length == 10 || m.group().length == 11 || m.group().length == 12) {
+            if (m.group().length == 10) {
                 return checkNumber(m.group())
             }
         }
         return false
     }
 
-    private fun isValidMobile(phone: String): Boolean {
-        if ( phone.toLowerCase().indexOf("+91") != -1 ) {
-           return true
-
-        } else {
-            return false
+    private fun getTweleveNumbers(toString: String): Boolean {
+        val p = Pattern.compile("\\b-?\\d+\\b")
+        val m: Matcher = p.matcher(toString)
+        while (m.find()) {
+            if (m.group().length == 10) {
+                return checkTweleveNumber(m.group())
+            }
         }
+        return false
     }
 
     private fun checkNumber(toString: String ): Boolean {
 
-            if(Pattern.matches("[0-9]{10,11}", toString)) {
-                return true
-            }
-            return false
+        if(Pattern.matches("[0-9]{10}", toString)) {
+            return true
         }
+        return false
+    }
+
+
+    private fun checkTweleveNumber(toString: String ): Boolean {
+
+        if(Pattern.matches("[0-9]{12}", toString)) {
+            return true
+        }
+        return false
+    }
+
+
 
     fun getUserData(userId: String) {
         val url = Configure.BASE_URL + Configure.GET_USER_DETAILS + userId + "/"
@@ -216,7 +244,7 @@ class ChatLogActivity : AppCompatActivity() {
                         val userArray: FetchProfileData =
                             gson.fromJson(response, FetchProfileData::class.java)
 
-                      sendNotification(userArray.oneid.toString())
+                        sendNotification(userArray.oneid.toString())
 
                     }
 
@@ -257,32 +285,32 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
 
-  private fun sendNotification(oneId: String) {
+    private fun sendNotification(oneId: String) {
 
-    val jsonObjRequest: StringRequest = object : StringRequest(
-      Method.POST,
-      Configure.ONESIGNAL,
-      object : Response.Listener<String?> {
-        override fun onResponse(response: String?) {
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            Configure.ONESIGNAL,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
 
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                }
+            }) {
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    java.util.HashMap()
+
+                params.put("message","You got a New Message. Please check into app for more details.")
+
+                params.put("user",oneId)
+                return params
+            }
         }
-      }, object : Response.ErrorListener {
-        override fun onErrorResponse(error: VolleyError) {
-        }
-      }) {
-
-      @Throws(AuthFailureError::class)
-      override fun getParams(): Map<String, String> {
-        val params: MutableMap<String, String> =
-          java.util.HashMap()
-
-        params.put("message","You got a New Message. Please check into app for more details.")
-
-        params.put("user",oneId)
-        return params
-      }
+        request!!.add(jsonObjRequest)
     }
-    request!!.add(jsonObjRequest)
-  }
 
 }

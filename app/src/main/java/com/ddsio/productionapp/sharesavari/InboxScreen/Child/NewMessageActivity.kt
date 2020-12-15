@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.ddsio.productionapp.sharesavari.R
 import com.ddsio.productionapp.sharesavari.User
 import com.google.firebase.database.DataSnapshot
@@ -21,6 +23,9 @@ import kotlinx.android.synthetic.main.user_row_new_message.view.*
 
 class NewMessageActivity : AppCompatActivity() {
 
+  lateinit var ivBacknumberSaveNew : ImageView
+  lateinit var recyclerview_newmessage : RecyclerView
+
   override fun attachBaseContext(newBase: Context) {
     super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
   }
@@ -29,13 +34,16 @@ class NewMessageActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_new_message)
 
+    ivBacknumberSaveNew = findViewById<ImageView>(R.id.ivBacknumberSaveNew)
+    recyclerview_newmessage = findViewById<RecyclerView>(R.id.recyclerview_newmessage)
+
     supportActionBar?.title = "Select User"
 
     fetchUsers()
 
 
 
-    ivBacknumberSave.setOnClickListener {
+    ivBacknumberSaveNew.setOnClickListener {
       onBackPressed()
     }
 

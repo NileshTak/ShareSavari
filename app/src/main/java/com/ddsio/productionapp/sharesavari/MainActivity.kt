@@ -1067,8 +1067,6 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
                     Toast.LENGTH_LONG
                 ).show()
 
-
-
                 loadScreens()
                 showConvidPoster()
                 progressDialog.dismiss()

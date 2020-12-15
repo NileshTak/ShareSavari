@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ddsio.productionapp.sharesavari.CommonUtils.Utils
 import com.ddsio.productionapp.sharesavari.InboxScreen.Child.ChatLogActivity
@@ -25,8 +26,7 @@ import com.productionapp.amhimemekar.CommonUtils.Configure
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.fragment_messages.*
-import java.util.*
-import kotlin.collections.HashMap
+
 
 class MessagesFrag : Fragment() {
 
@@ -41,9 +41,9 @@ class MessagesFrag : Fragment() {
     var USER_UPDATE_ID = ""
     lateinit var USER_ID_KEY : String
 
-    lateinit var llNoMsg : LinearLayout
-
     lateinit var progressDialog: ProgressDialog
+
+    lateinit var llNoMsgFrag : LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,11 +51,10 @@ class MessagesFrag : Fragment() {
     ): View? {
 
 
-
         val view = inflater.inflate(R.layout.fragment_messages, container, false)
         recyclerview_latest_messages = view.findViewById<RecyclerView>(R.id.recyclerview_latest_messages)
         fabNewMsg = view.findViewById<FloatingActionButton>(R.id.fabNewMsg)
-        llNoMsg = view.findViewById<LinearLayout>(R.id.llNoMsg)
+        llNoMsgFrag = view.findViewById<LinearLayout>(R.id.llNoMsgFrag)
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",activity)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",activity)!!
@@ -63,7 +62,6 @@ class MessagesFrag : Fragment() {
 
 
         recyclerview_latest_messages.adapter = adapter
-        adapter.notifyDataSetChanged()
         recyclerview_latest_messages.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
 
 
@@ -100,25 +98,18 @@ class MessagesFrag : Fragment() {
         return view
     }
 
-
-
     val latestMessagesMap = HashMap<String, ChatMessage>()
-    var arr = arrayListOf<String>()
 
     private fun refreshRecyclerViewMessages() {
         adapter.clear()
         if (latestMessagesMap.size < 1) {
-            llNoMsg.visibility = View.VISIBLE
+            llNoMsgFrag.visibility = View.VISIBLE
         } else {
-            llNoMsg.visibility = View.GONE
+            llNoMsgFrag.visibility = View.GONE
         }
-
         latestMessagesMap.values.forEach {
-
-                adapter.add(LatestMessageRow(it))
-
+            adapter.add(LatestMessageRow(it))
         }
-
         progressDialog.dismiss()
     }
 
@@ -126,12 +117,9 @@ class MessagesFrag : Fragment() {
         val ref = FirebaseDatabase.getInstance().getReference("/latest-messages/$USER_ID_KEY")
         ref.addChildEventListener(object: ChildEventListener {
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-
                 val chatMessage = p0.getValue(ChatMessage::class.java) ?: return
                 latestMessagesMap[p0.key!!] = chatMessage
-
                 refreshRecyclerViewMessages()
-                Log.d("aaaaaa",chatMessage.text)
                 progressDialog.dismiss()
             }
 
@@ -154,7 +142,6 @@ class MessagesFrag : Fragment() {
     }
 
     val adapter = GroupAdapter<ViewHolder>()
-
 
 //  private fun setupDummyRows() {
 //
