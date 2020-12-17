@@ -345,7 +345,7 @@ lateinit var cbPetsP : CheckBox
                 R.id.tnc -> {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("http://sharesawaari.com/tandc.html")
+                        Uri.parse("https://sharesawaari.com/terms/")
                     )
                     startActivity(intent)
                 }
@@ -353,7 +353,7 @@ lateinit var cbPetsP : CheckBox
                 R.id.privacy -> {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("http://sharesawaari.com/pp.html")
+                        Uri.parse("https://sharesawaari.com/privacy/")
                     )
                     startActivity(intent)
                 }
@@ -365,7 +365,7 @@ lateinit var cbPetsP : CheckBox
                     sharingIntent.setPackage("com.google.android.gm")
                     val shareBody = ""
                     sharingIntent.putExtra(Intent.EXTRA_EMAIL,arrayOf(to))
-                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Help Support")
+                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "ShareSawaari Help Center")
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
                     startActivity(sharingIntent)
                 }
