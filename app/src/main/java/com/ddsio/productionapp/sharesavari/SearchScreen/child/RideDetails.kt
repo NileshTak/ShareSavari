@@ -1024,6 +1024,8 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                     val userArray : ArrayList<bookrideItem> =
                         gson.fromJson(response, bookride ::class.java)
 
+                    Log.d("hahaha",userArray.size.toString() +"   "+customers.passenger.toString())
+
                     if (userArray.size == customers.passenger!!.toInt() ) {
                         progressDialog.dismiss()
                         Toast.makeText(this@RideDetails,"No seat available for this Ride. Choose another ride.",Toast.LENGTH_LONG).show()

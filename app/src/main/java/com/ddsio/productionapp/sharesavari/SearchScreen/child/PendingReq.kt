@@ -73,6 +73,8 @@ class PendingReq : AppCompatActivity() {
             onBackPressed()
         }
 
+        progressDialog = ProgressDialog(this)
+
         hitPendingReq()
 
     }
@@ -402,11 +404,6 @@ class PendingReq : AppCompatActivity() {
         customers: FetchProfileData,
         passenger: bookrideItem
     ) {
-        progressDialog = ProgressDialog(this)
-        progressDialog.setMessage("Wait a Sec....Accepting Rides..")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-
 
         val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"${passenger.id}/"
 
@@ -645,7 +642,10 @@ class PendingReq : AppCompatActivity() {
 
 
         alertLayout.cvContinue.setOnClickListener {
-            acceptReq(customers,passenger)
+
+            bookRideAPI(customers,passenger)
+
+
             convidPoster.dismiss()
         }
 
@@ -653,6 +653,104 @@ class PendingReq : AppCompatActivity() {
             convidPoster.dismiss()
         }
 
+    }
+
+
+    private fun bookRideAPI(
+        customers: FetchProfileData,
+        ridePojo: bookrideItem
+    ) {
+
+
+        progressDialog.setMessage("Wait a Sec....Booking Ride for you..")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+
+        var bookedSeats = 0
+
+
+        val url = Configure.BASE_URL + Configure.Book_RIDE_URL+"?ride=${pojoWithData.id}"
+
+        Log.e("gggggggggg",  url)
+
+        val jsonObjRequest: StringRequest = object : StringRequest(
+            Method.GET,
+            url,
+            object : Response.Listener<String?> {
+                override fun onResponse(response: String?) {
+                    Log.d("jukjbkjf", response.toString())
+
+                    val gson = Gson()
+
+                    val userArray : java.util.ArrayList<bookrideItem> =
+                        gson.fromJson(response, bookride ::class.java)
+
+                    Log.e("gggggggggg",  userArray.size.toString()+"    "+pojoWithData.passenger)
+
+                    for (i in 0..userArray.size-1) {
+
+                        if (userArray.get(i).is_confirm) {
+                            bookedSeats = bookedSeats + userArray.get(i).seats.toInt()
+                        }
+
+                        if (i == userArray.size-1) {
+                            if (bookedSeats == pojoWithData.passenger!!.toInt()) {
+                                progressDialog.dismiss()
+                                Toast.makeText(
+                                    this@PendingReq,
+                                    "No seat available for this Ride. Choose another ride.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                var reaminINgSeats = pojoWithData.passenger!!.toInt() - bookedSeats
+                                if (ridePojo.seats.toInt() <= reaminINgSeats) {
+                                    acceptReq(customers, ridePojo)
+                                } else {
+                                    Toast.makeText(
+                                        this@PendingReq,
+                                        "Only ${reaminINgSeats} seats available for this Ride. ",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    progressDialog.dismiss()
+                                }
+                            }
+                        }
+                    }
+                }
+            }, object : Response.ErrorListener {
+                override fun onErrorResponse(error: VolleyError) {
+                    VolleyLog.d("volley", "Error: " + error.message)
+                    error.printStackTrace()
+
+                    Log.e("gggggggggg",  "Seat Check Failed")
+
+                    Toast.makeText(this@PendingReq,"Something Went Wrong ! Please try after some time",
+                        Toast.LENGTH_LONG).show()
+
+                    progressDialog.dismiss()
+                }
+            }) {
+
+
+            override fun getHeaders(): MutableMap<String, String> {
+
+                Log.d("jukjbkj", LOGIN_TOKEN.toString())
+
+                var params = java.util.HashMap<String, String>()
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Token "+LOGIN_TOKEN!!);
+                return params;
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> =
+                    java.util.HashMap()
+
+                return params
+            }
+        }
+        request!!.add(jsonObjRequest)
     }
 
 
