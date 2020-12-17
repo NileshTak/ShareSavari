@@ -14,7 +14,7 @@ class ChatFromItem(val text: String, val user: User): Item<ViewHolder>() {
 
     val uri = user.profileImageUrl
     val targetImageView = viewHolder.itemView.imageview_chat_from_row
-    Picasso.get().load(uri).into(targetImageView)
+    Picasso.get().load(uri).placeholder(R.drawable.account).into(targetImageView)
   }
 
   override fun getLayout(): Int {
@@ -29,7 +29,7 @@ class ChatToItem(val text: String, val user: User): Item<ViewHolder>() {
     // load our user image into the star
     val uri = user.profileImageUrl
     val targetImageView = viewHolder.itemView.imageview_chat_to_row
-    Picasso.get().load(uri).into(targetImageView)
+    Picasso.get().load(uri).placeholder(R.drawable.account).into(targetImageView)
   }
 
   override fun getLayout(): Int {

@@ -335,6 +335,7 @@ class PendingReq : AppCompatActivity() {
                     ).toBundle()
                 int.putExtra("pojoWithData",pojoWithData)
                 int.putExtra("type","driver")
+                int.putExtra("screen", "")
                 int.putExtra("cust",customers.id.toString())
                 startActivity(int,bundle)
             }
@@ -355,6 +356,9 @@ class PendingReq : AppCompatActivity() {
                         R.anim.fade_in, R.anim.fade_out
                     ).toBundle()
                 intent.putExtra("driverid" ,customers.id.toString() )
+                intent.putExtra("type" ,"from")
+                intent.putExtra("screen" , "")
+
                 startActivity(intent,bundle)
             }
         }

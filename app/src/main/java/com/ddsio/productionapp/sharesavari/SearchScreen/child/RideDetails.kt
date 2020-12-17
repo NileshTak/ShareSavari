@@ -86,6 +86,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
     lateinit var rvCoPas : LinearLayout
 
     var IDToCancel = "0"
+    var screen = ""
 
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -127,7 +128,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
 
         val bundle: Bundle? = intent.extras
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
-        var screen  = bundle!!.get("screen") as String
+        screen  = bundle!!.get("screen") as String
         IDToCancel  = bundle!!.get("IDToCancel") as String
 
         Log.d("aaaaaaaaaaa",pojoWithData.id.toString())
@@ -323,6 +324,7 @@ class RideDetails : AppCompatActivity(), OnMapReadyCallback,
                 ).toBundle()
             int.putExtra("pojoWithData",pojoWithData)
             int.putExtra("type","driver")
+            int.putExtra("screen",screen)
             if (USER_ID_KEY == pojoWithData.user.toString()) {
                 int.putExtra("cust",pojoWithData.user.toString())
             } else {

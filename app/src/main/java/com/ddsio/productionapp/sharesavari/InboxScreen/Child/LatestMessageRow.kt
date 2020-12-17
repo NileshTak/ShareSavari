@@ -56,7 +56,7 @@ class LatestMessageRow(val chatMessage: ChatMessage) : Item<ViewHolder>() {
                     chatPartnerUser?.username
 
                 val targetImageView = viewHolder.itemView.imageview_latest_message
-                Picasso.get().load(chatPartnerUser?.profileImageUrl).into(targetImageView)
+                Picasso.get().load(chatPartnerUser?.profileImageUrl).placeholder(R.drawable.account).into(targetImageView)
             }
 
             override fun onCancelled(p0: DatabaseError) {

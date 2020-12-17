@@ -40,6 +40,10 @@ import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvName
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvRating
 import kotlinx.android.synthetic.main.custom_show_list_rides.view.tvToCity
 import kotlinx.android.synthetic.main.fragment_search.*
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class SerachResult : AppCompatActivity() {
 
@@ -93,6 +97,15 @@ class SerachResult : AppCompatActivity() {
 
     private fun hitSearchAPI() {
 
+        val cTime = Calendar.getInstance()
+        val dfTime = SimpleDateFormat("HH:mm:ss")
+        val formattedTime = dfTime.format(cTime.time)
+
+
+        val c = Calendar.getInstance()
+        val df = SimpleDateFormat("yyyy-MM-dd")
+        val formattedDate = df.format(c.time)
+
         progressDialog = ProgressDialog(this)
         progressDialog.setMessage("Wait a Sec....Loading Rides..")
         progressDialog.setCancelable(false)
@@ -105,7 +118,7 @@ class SerachResult : AppCompatActivity() {
             url,
             object : Response.Listener<String?> {
                 override fun onResponse(response: String?) {
-                    Log.d("jukjbkj", response.toString())
+                    Log.d("jukjbkj", date+"   "+formattedDate.toString()+"   "+formattedTime.toString())
 
                     val gson = Gson()
 
@@ -120,9 +133,14 @@ class SerachResult : AppCompatActivity() {
 
                         for (rides in userArray) {
                             if (rides != null) {
-                                if (rides.user.toString() != USER_ID_KEY) {
+                                if (date == formattedDate) {
+                                    if (rides.user.toString() != USER_ID_KEY && rides.time.toString() > formattedTime.toString()) {
+                                        checkPass(rides)
+                                    }
+                                } else if (rides.user.toString() != USER_ID_KEY) {
                                     checkPass(rides)
                                 }
+
                             }
                         }
 

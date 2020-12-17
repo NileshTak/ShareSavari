@@ -174,6 +174,7 @@ lateinit var cbPetsP : CheckBox
             int.putExtra("pojoWithData",bookRidepOjo)
             int.putExtra("cust",USER_ID_KEY)
             int.putExtra("type","self")
+            int.putExtra("screen", "")
             startActivity(int,bundle)
         }
 

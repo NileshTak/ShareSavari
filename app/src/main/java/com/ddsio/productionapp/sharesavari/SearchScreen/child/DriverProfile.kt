@@ -64,6 +64,7 @@ class DriverProfile : AppCompatActivity() {
     private val REQUEST_CALL = 1
     lateinit var cust : String
     lateinit var type : String
+    lateinit var screen : String
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
@@ -77,6 +78,7 @@ class DriverProfile : AppCompatActivity() {
         pojoWithData = bundle!!.get("pojoWithData") as BookRidesPojoItem
         cust = bundle!!.get("cust") as String
         type = bundle!!.get("type") as String
+        screen = bundle!!.get("screen") as String
 
         LOGIN_TOKEN = Utils.getStringFromPreferences(Configure.LOGIN_KEY,"",this)!!
         USER_UPDATE_ID = Utils.getStringFromPreferences(Configure.USER_UPDATE_ID,"",this)!!
@@ -137,6 +139,8 @@ class DriverProfile : AppCompatActivity() {
                     R.anim.fade_in, R.anim.fade_out
                 ).toBundle()
             intent.putExtra("driverid" , driverId.toString())
+            intent.putExtra("type" ,"from")
+            intent.putExtra("screen" ,screen)
 
             startActivity(intent,bundle)
         }

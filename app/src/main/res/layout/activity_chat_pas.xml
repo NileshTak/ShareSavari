@@ -103,11 +103,22 @@
             android:id="@+id/recyclerview_latest_messagesChat"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:padding="4dp"
+            android:visibility="gone"
             android:layout_margin="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </androidx.recyclerview.widget.RecyclerView>
 
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerUser"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:padding="4dp"
+            android:visibility="gone"
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </androidx.recyclerview.widget.RecyclerView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -126,6 +137,7 @@
             />
 
     </RelativeLayout>
+
 
 
 </LinearLayout>
