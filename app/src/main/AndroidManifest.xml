@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.ddsio.productionapp.sharesavari">
+    package="com.ddsio.productionapp.sharesawaari">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -30,7 +30,7 @@
     <dist:module dist:instant="true" />
 
     <application
-        android:name=".Application"
+        android:name="com.ddsio.productionapp.sharesawaari.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -39,47 +39,49 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProfileScreen.Child.ChatPas"></activity>
-        <activity android:name=".ProfileScreen.EditProf" />
-        <activity android:name=".SearchScreen.child.PendingReq" />
-        <activity android:name=".OfferScreen.SmokingandBooking" />
-        <activity android:name=".OfferScreen.Hault" />
-        <activity android:name=".OfferScreen.PassengerCount" />
-        <activity android:name=".OfferScreen.MaxSeat" />
-        <activity android:name=".SearchScreen.child.ReviewsList" />
-        <activity android:name=".SearchScreen.child.CoPasList" />
-        <activity android:name=".SearchScreen.child.SerachResult" />
-        <activity android:name=".HomeScreen.Child.EditRide" />
-        <activity android:name=".SearchScreen.child.BookedSuccess" />
-        <activity android:name=".SearchScreen.child.DriverProfile" />
-        <activity android:name=".InboxScreen.Child.NewMessageActivity" />
-        <activity android:name=".InboxScreen.Child.ChatLogActivity" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.HomeScreen.ForgetPassword"></activity>
+        <activity android:name="com.ddsio.productionapp.sharesawaari.ProfileScreen.Child.ChatPas" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.ProfileScreen.EditProf" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.SearchScreen.child.PendingReq" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.SmokingandBooking" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.Hault" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.PassengerCount" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.MaxSeat" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.SearchScreen.child.ReviewsList" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.SearchScreen.child.CoPasList" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.SearchScreen.child.SerachResult" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.HomeScreen.Child.EditRide" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.SearchScreen.child.BookedSuccess" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.SearchScreen.child.DriverProfile" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.InboxScreen.Child.NewMessageActivity" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.InboxScreen.Child.ChatLogActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".SearchScreen.child.RideDetails" />
-        <activity android:name=".OfferScreen.NumberOfPassenersToTake" />
-        <activity android:name=".OfferScreen.GoingDateAndTime" />
-        <activity android:name=".OfferScreen.ReturnDateAndTime" />
-        <activity android:name=".ShowMap.ShowMapActivity" />
-        <activity android:name=".OfferScreen.ShowMapActivityPickUp" />
-        <activity android:name=".OfferScreen.ShowMapActivityDrop" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.SearchScreen.child.RideDetails" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.NumberOfPassenersToTake" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.GoingDateAndTime" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.ReturnDateAndTime" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.ShowMap.ShowMapActivity" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.ShowMapActivityPickUp" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.OfferScreen.ShowMapActivityDrop" />
         <activity
-            android:name=".LogInSignUpQues.QuesBottomSheet"
+            android:name="com.ddsio.productionapp.sharesawaari.LogInSignUpQues.QuesBottomSheet"
             android:theme="@style/Theme.UserDialog" />
-        <activity android:name=".LogInSignUpQues.LogInSignUpQues" />
-        <activity android:name=".SplashScreen">
+        <activity android:name="com.ddsio.productionapp.sharesawaari.LogInSignUpQues.LogInSignUpQues" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity android:name=".Intro.IntroActivity" />
+        <activity
+            android:name="com.ddsio.productionapp.sharesawaari.MainActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name="com.ddsio.productionapp.sharesawaari.Intro.IntroActivity" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

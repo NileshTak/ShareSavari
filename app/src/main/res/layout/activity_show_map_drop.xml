@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/parentConst"
     android:layout_height="match_parent"
-    tools:context="com.ddsio.productionapp.sharesavari.ShowMap.ShowMapActivity">
+    tools:context="com.ddsio.productionapp.sharesawaari.ShowMap.ShowMapActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

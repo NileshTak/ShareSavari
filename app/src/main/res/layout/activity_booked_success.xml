@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="com.ddsio.productionapp.sharesavari.LogInSignUpQues.LogInSignUpQues">
+    tools:context="com.ddsio.productionapp.sharesawaari.LogInSignUpQues.LogInSignUpQues">
 
 
     <com.airbnb.lottie.LottieAnimationView

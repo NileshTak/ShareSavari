@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.ddsio.productionapp.sharesavari.InboxScreen.Fragments.MessagesFrag">
+    tools:context="com.ddsio.productionapp.sharesawaari.InboxScreen.Fragments.MessagesFrag">
 
 
     <RelativeLayout
@@ -52,7 +52,7 @@
 
             <TextView
                 android:layout_marginStart="20dp"
-                android:text="ShareSavari"
+                android:text="ShareSawaari"
                 android:textSize="18sp"
                 fontPath="Comfortaa-Bold.ttf"
                 android:textAlignment="center"

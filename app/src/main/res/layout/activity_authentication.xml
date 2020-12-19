@@ -75,7 +75,7 @@
                 app:lineWidth="2dp"
                 app:viewType="rectangle" />
 
-            <com.ddsio.productionapp.sharesavari.CommonUtils.CircularProgress.CircleProgressBar
+            <com.ddsio.productionapp.sharesawaari.CommonUtils.CircularProgress.CircleProgressBar
                 android:id="@+id/cpv"
                 android:layout_marginTop="10dp"
                 android:layout_width="50dp"
