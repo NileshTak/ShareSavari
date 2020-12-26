@@ -6,12 +6,24 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-
+    <TextView
+        android:text="Why ShareSawaari needs to access Location ?"
+        android:textSize="25sp"
+        android:layout_margin="10dp"
+        android:visibility="visible"
+        fontPath="Comfortaa-Bold.ttf"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textColor="@color/colorHeadingColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingPrefix" />
 
     <TextView
         android:id="@+id/tvTitleTool"
-        android:text="Please Enable GPS in order to use Share Sawaari"
-        android:textSize="25sp"
+        android:text="When the drivers starts there trip need to access there location to track the valid path and to search rides nearby you.
+In order to use services, please allow us to access the location."
+        android:textSize="22sp"
         android:layout_margin="10dp"
         android:visibility="visible"
         fontPath="Comfortaa-Bold.ttf"

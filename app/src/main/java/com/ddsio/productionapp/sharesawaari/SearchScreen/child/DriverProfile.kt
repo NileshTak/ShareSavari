@@ -763,25 +763,27 @@ class DriverProfile : AppCompatActivity() {
                             Glide.with(this@DriverProfile).load(userArray.image).into(cvProf)
 
                             tvName.text =  userArray.first_name
-                            if (userArray.bio == "" || userArray.bio!!.isEmpty()) {
+
+                            if (userArray.bio == null || userArray.bio == "" || userArray.bio!!.isEmpty() ) {
                                 tvDetail.text = "No Bio"
                             } else {
                                 tvDetail.text = userArray.bio
                             }
 
 
+                            if (userArray.status == "True") {
+//                                ivAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
+                                ivAlertProf.setImageDrawable(resources.getDrawable(R.drawable.tick))
+
+                            } else {
+//                                ivAlert.setImageDrawable(resources.getDrawable(R.drawable.tick))
+                                ivAlertProf.setImageDrawable(resources.getDrawable(R.drawable.alert))
+                            }
+
                             calculateAge(userArray.birthdate)
 
                             hitFindOfferedRideAPI(cust)
 
-                            if (userArray.verification == "False") {
-                                ivAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
-                                ivAlertProf.setImageDrawable(resources.getDrawable(R.drawable.alert))
-
-                            } else {
-                                ivAlert.setImageDrawable(resources.getDrawable(R.drawable.tick))
-                                ivAlertProf.setImageDrawable(resources.getDrawable(R.drawable.tick))
-                            }
 
                         }
 

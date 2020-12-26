@@ -334,7 +334,7 @@
                             <ImageView
                                 android:id="@+id/tvAlert"
                                 android:layout_width="30dp"
-                                android:src="@drawable/alert"
+                                android:src="@drawable/tick"
                                 android:layout_marginEnd="20dp"
                                 android:layout_marginBottom="8dp"
                                 android:layout_alignParentEnd="true"

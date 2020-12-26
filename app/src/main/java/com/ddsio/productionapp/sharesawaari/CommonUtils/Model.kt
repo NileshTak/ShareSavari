@@ -81,6 +81,7 @@ data class UserUpdateDetailsModel(
      var pets: String? = null
      var smoking: String? = null
      var oneid: String? = null
+     var status: String? = null
 }
 
 

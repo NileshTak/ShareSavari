@@ -1654,6 +1654,12 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
     fun loadSearchFrag(fragHome : SearchFragment) {
 
+
+        Utils.checkConnection(this@MainActivity, frameContainer)
+        if (!Utils.CheckGpsStatus(this@MainActivity)) {
+            Utils.enableGPS(this@MainActivity)
+        }
+
         llLogin.visibility = View.GONE
         nsvSignUp.visibility = View.GONE
         frame.visibility = View.VISIBLE
@@ -1689,6 +1695,11 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
     fun loadHomeFrag(fragHome : HomeScreenParent) {
 
+        Utils.checkConnection(this@MainActivity, frameContainer)
+        if (!Utils.CheckGpsStatus(this@MainActivity)) {
+            Utils.enableGPS(this@MainActivity)
+        }
+
         llLogin.visibility = View.GONE
         nsvSignUp.visibility = View.GONE
         frame.visibility = View.VISIBLE
@@ -1701,6 +1712,11 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
 
 
     fun loadProfileFrag(fragHome : ProfileScreen) {
+
+        Utils.checkConnection(this@MainActivity, frameContainer)
+        if (!Utils.CheckGpsStatus(this@MainActivity)) {
+            Utils.enableGPS(this@MainActivity)
+        }
 
         llLogin.visibility = View.GONE
         nsvSignUp.visibility = View.GONE
@@ -1716,6 +1732,11 @@ class MainActivity : AppCompatActivity(), OSSubscriptionObserver {
     }
 
     fun loadInboxFrag(fragHome : MessagesFrag) {
+
+        Utils.checkConnection(this@MainActivity, frameContainer)
+        if (!Utils.CheckGpsStatus(this@MainActivity)) {
+            Utils.enableGPS(this@MainActivity)
+        }
 
         llLogin.visibility = View.GONE
         nsvSignUp.visibility = View.GONE

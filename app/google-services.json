@@ -1,21 +1,61 @@
 {
   "project_info": {
-    "project_number": "126307994995",
-    "firebase_url": "https://sharesawaari-454a2-default-rtdb.firebaseio.com",
-    "project_id": "sharesawaari-454a2",
-    "storage_bucket": "sharesawaari-454a2.appspot.com"
+    "project_number": "97255814552",
+    "firebase_url": "https://sharesavaari.firebaseio.com",
+    "project_id": "sharesavaari",
+    "storage_bucket": "sharesavaari.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:126307994995:android:14103068263ad935e7c906",
+        "mobilesdk_app_id": "1:97255814552:android:92e64551836ab2473a67ed",
+        "android_client_info": {
+          "package_name": "com.ddsio.productionapp.sharesavari"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97255814552-p9mapfui0htli9mt00ur6ja9h7uidc6q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ddsio.productionapp.sharesavari",
+            "certificate_hash": "158715a10c940f5a5e1cd6e3b6eb71b546172f34"
+          }
+        },
+        {
+          "client_id": "97255814552-vq6g4cagcdl6aja0rqmv7oepnehn99do.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBY9Hc3WUJqYMH3n3q2vYeNaTEjytB94s"
+        },
+        {
+          "current_key": "AIzaSyABlS4OVEmQYKuIaIaBt9kWsmN7VrtAF9s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97255814552-vq6g4cagcdl6aja0rqmv7oepnehn99do.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97255814552:android:278c6d75827afa803a67ed",
         "android_client_info": {
           "package_name": "com.ddsio.productionapp.sharesawaari"
         }
       },
       "oauth_client": [
         {
-          "client_id": "126307994995-d8g0qgkce24mj7cbek4v408r4a3jcer8.apps.googleusercontent.com",
+          "client_id": "97255814552-h9si26f2o8tuce0jit1ubcsd3k2pibl9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ddsio.productionapp.sharesawaari",
@@ -23,20 +63,23 @@
           }
         },
         {
-          "client_id": "126307994995-ac4puhb0jkpdqeabobc63lf09en3dnca.apps.googleusercontent.com",
+          "client_id": "97255814552-vq6g4cagcdl6aja0rqmv7oepnehn99do.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC9QrykvDR6N-X9xRI-KggjWgVg3Ii2H4A"
+          "current_key": "AIzaSyDBY9Hc3WUJqYMH3n3q2vYeNaTEjytB94s"
+        },
+        {
+          "current_key": "AIzaSyABlS4OVEmQYKuIaIaBt9kWsmN7VrtAF9s"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "126307994995-ac4puhb0jkpdqeabobc63lf09en3dnca.apps.googleusercontent.com",
+              "client_id": "97255814552-vq6g4cagcdl6aja0rqmv7oepnehn99do.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

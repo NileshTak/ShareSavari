@@ -55,7 +55,9 @@ import id.zelory.compressor.constraint.resolution
 import id.zelory.compressor.constraint.size
 import id.zelory.compressor.loadBitmap
 import kotlinx.android.synthetic.main.activity_authentication.view.*
+import kotlinx.android.synthetic.main.activity_driver_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_screen.*
+import kotlinx.android.synthetic.main.fragment_profile_screen.tvName
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -655,14 +657,14 @@ lateinit var cbPetsP : CheckBox
 
                         lottieSelectImage.visibility= View.GONE
                         rlParent.visibility= View.VISIBLE
-
-                        if (userArray.verification == "False") {
-                            tvAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
-                            ivVerified.setImageDrawable(resources.getDrawable(R.drawable.alert))
-                        } else {
-                            tvAlert.setImageDrawable(resources.getDrawable(R.drawable.tick))
+                        btnVerify.visibility = View.GONE
+                        if (userArray.status == "True") {
+//                            tvAlert.setImageDrawable(resources.getDrawable(R.drawable.alert))
                             ivVerified.setImageDrawable(resources.getDrawable(R.drawable.tick))
-                            btnVerify.visibility = View.GONE
+                        } else {
+//                            tvAlert.setImageDrawable(resources.getDrawable(R.drawable.tick))
+                            ivVerified.setImageDrawable(resources.getDrawable(R.drawable.alert))
+
                         }
 
                         pets = userArray.pets.toString()
@@ -691,10 +693,22 @@ lateinit var cbPetsP : CheckBox
                         tvLN.text = userArray.last_name
                         tvBio.setText(userArray.bio)
                         etBio.setText(userArray.bio)
+
+                        if (userArray.bio == null || userArray.bio == "" || userArray.bio!!.isEmpty() ) {
+
+                            etBio.setText("No Bio")
+                            tvBio.text = "No Bio"
+
+                        } else {
+                            tvBio.setText(userArray.bio)
+                            etBio.setText(userArray.bio)
+                        }
+
+
                         tvDate.text = userArray.birthdate
                         tvEMail.text = userArray.email
                         tvMN.text = userArray.mobile
-                        tvVerified.text = userArray.verification
+                        tvVerified.text = userArray.status
                         tvName.text = userArray.first_name+" "+userArray.last_name
                         if (userArray.gender == "1" ) {
                             tvGender.text = "Male"
